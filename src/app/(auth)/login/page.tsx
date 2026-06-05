@@ -4,13 +4,18 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Log In | BuildWatch',
-  description: 'Log in to your BuildWatch owner account.'
+  description: 'Log in to your BuildWatch account.'
 }
 
-export default function LoginPage() {
+type Props = {
+  searchParams: Promise<{ error?: string }>
+}
+
+export default async function LoginPage({ searchParams }: Props) {
+  const { error } = await searchParams
   return (
     <AuthLayout>
-      <LoginForm />
+      <LoginForm error={error} />
     </AuthLayout>
   )
 }

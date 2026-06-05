@@ -93,11 +93,11 @@ export function PhotoUploader({ projectId, milestoneId, onComplete }: Props) {
     setIsSubmitting(true)
     setError(null)
 
+    let geoLat: number | undefined
+    let geoLng: number | undefined
+
     try {
       // Get GPS if possible (best effort as per PRD)
-      let geoLat: number | undefined
-      let geoLng: number | undefined
-
       try {
         const pos = await new Promise<GeolocationPosition>((res, rej) => {
           navigator.geolocation.getCurrentPosition(res, rej, { timeout: 5000 })
@@ -172,7 +172,28 @@ export function PhotoUploader({ projectId, milestoneId, onComplete }: Props) {
       onComplete?.()
     } catch (err) {
       console.error('[uploader] Submission failed:', err)
-      setError(err instanceof Error ? err.message : 'Failed to submit. Please try again.')
+      
+      // Fallback to offline queue if the error looks like a network failure
+      const isNetworkError = !navigator.onLine || 
+        err instanceof TypeError || 
+        (err instanceof Error && err.message.includes('fetch'))
+
+      if (isNetworkError) {
+        await offlineQueue.add({
+          id: nanoid(),
+          projectId,
+          milestoneId,
+          photos: photos.map(p => p.blob),
+          caption: caption || undefined,
+          geoLat,
+          geoLng,
+          timestamp: now(),
+        })
+        alert('Network connection lost. Your submission has been saved offline and will sync when you are back online.')
+        reset()
+      } else {
+        setError(err instanceof Error ? err.message : 'Failed to submit. Please try again.')
+      }
     } finally {
       setIsSubmitting(false)
     }

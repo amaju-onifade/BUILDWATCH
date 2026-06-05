@@ -55,7 +55,7 @@ export async function generateInviteLink(params: {
       email: params.inviteeEmail.toLowerCase(),
     })
       .setProtectedHeader({ alg: 'HS256' })
-      .setExpirationTime(expiresAt.toISOString())
+      .setExpirationTime(Math.floor(expiresAt.getTime() / 1000))
       .sign(secret)
 
     const inviteUrl = `${config.appUrl}/invite/${encodeURIComponent(token)}`

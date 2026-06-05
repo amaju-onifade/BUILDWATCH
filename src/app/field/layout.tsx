@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { LogoutButton } from '@/components/LogoutButton'
 import styles from './layout.module.css'
 
 export default function FieldLayout({ children }: { children: React.ReactNode }) {
@@ -18,6 +19,7 @@ export default function FieldLayout({ children }: { children: React.ReactNode })
           <Link href="/field" className={styles.navLink} id="nav-field-dashboard">
             My Projects
           </Link>
+          <LogoutButton className={styles.logoutBtn} />
         </nav>
       </header>
       <main className={styles.content}>

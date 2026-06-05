@@ -1,10 +1,27 @@
+require('dotenv').config({ path: '.env.local' })
 const { PrismaClient } = require('@prisma/client')
-const prisma = new PrismaClient()
+const { PrismaPg } = require('@prisma/adapter-pg')
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
+const prisma = new PrismaClient({ adapter })
 
 async function main() {
   const user = await prisma.users.findFirst({ where: { role: 'owner' } })
   if (!user) {
-    console.log('No owner user found. Please register a user first.')
+    console.log('No owner found. Register first.')
+    return
+  }
+
+  // Check if project already exists
+  const existing = await prisma.projects.findFirst({ where: { ownerId: user.id } })
+  if (existing) {
+    console.log(`Project "${existing.name}" already exists. Approving milestones for progress bars...`)
+    const updated = await prisma.milestones.updateMany({
+      where: { projectId: existing.id, status: { notIn: ['approved', 'locked'] } },
+      data: { status: 'approved' },
+    })
+    console.log(`Approved ${updated.count} milestones.`)
+    console.log(`→ See progress bars at http://localhost:3000/dashboard`)
     return
   }
 
@@ -19,18 +36,28 @@ async function main() {
       status: 'active',
       milestones: {
         create: [
-          { name: 'Site Preparation', order: 1, status: 'approved', tranche1Expected: 1000000, tranche1Actual: 1000000 },
-          { name: 'Foundation', order: 2, status: 'approved', tranche1Expected: 5000000, tranche1Actual: 5000000 },
-          { name: 'Ground Floor Columns', order: 3, status: 'under_review', tranche1Expected: 3000000 },
-          { name: 'First Floor Slab', order: 4, status: 'pending', tranche1Expected: 8000000 },
-        ]
-      }
-    }
+          { name: 'Site Preparation', order: 1, status: 'approved', plannedCostTotal: 1000000, currency: 'NGN' },
+          { name: 'Foundation', order: 2, status: 'approved', plannedCostTotal: 5000000, currency: 'NGN' },
+          { name: 'Ground Floor Columns', order: 3, status: 'under_review', plannedCostTotal: 3000000, currency: 'NGN' },
+          { name: 'First Floor Slab', order: 4, status: 'in_progress', plannedCostTotal: 8000000, currency: 'NGN' },
+          { name: 'Walling', order: 5, status: 'pending', plannedCostTotal: 3000000, currency: 'NGN' },
+          { name: 'Roofing', order: 6, status: 'pending', plannedCostTotal: 2000000, currency: 'NGN' },
+          { name: 'Plumbing & Electrical', order: 7, status: 'pending', plannedCostTotal: 1500000, currency: 'NGN' },
+          { name: 'Plastering & Flooring', order: 8, status: 'pending', plannedCostTotal: 1000000, currency: 'NGN' },
+          { name: 'Carcass Joinery', order: 9, status: 'pending', plannedCostTotal: 500000, currency: 'NGN' },
+          { name: 'Finishing Joinery', order: 10, status: 'pending', plannedCostTotal: 500000, currency: 'NGN' },
+          { name: 'Painting & Decorating', order: 11, status: 'pending', plannedCostTotal: 500000, currency: 'NGN' },
+          { name: 'Completion', order: 12, status: 'pending', plannedCostTotal: 500000, currency: 'NGN' },
+        ],
+      },
+    },
   })
 
-  console.log(`Seed complete. Project ID: ${project.id}`)
+  console.log(`Project "${project.name}" created with 12 milestones (2 approved).`)
+  console.log(`→ Dashboard: http://localhost:3000/dashboard`)
+  console.log(`→ Configure budgets: http://localhost:3000/dashboard/projects/${project.id}/milestones`)
 }
 
 main()
   .catch(e => console.error(e))
-  .finally(async () => await prisma.$disconnect())
+  .finally(() => prisma.$disconnect())

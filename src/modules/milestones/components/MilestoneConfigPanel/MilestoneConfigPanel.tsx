@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import { ChevronDown, Lock } from 'lucide-react'
 import { Button } from '@/components/ui/Button/Button'
 import { Input } from '@/components/ui/Input/Input'
 import { MILESTONE_STATUS, type MilestoneRow } from '@/modules/milestones/types'
@@ -155,14 +156,10 @@ export function MilestoneConfigPanel({ projectId, milestones }: Props) {
                     {STATUS_LABEL[milestone.status] ?? milestone.status}
                   </span>
                   {!locked && (
-                    <svg className={styles.chevron} data-open={isExpanded} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                      <polyline points="6 9 12 15 18 9" />
-                    </svg>
+                    <ChevronDown size={16} className={styles.chevron} data-open={isExpanded} />
                   )}
                   {locked && (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                    </svg>
+                    <Lock size={16} />
                   )}
                 </div>
               </button>

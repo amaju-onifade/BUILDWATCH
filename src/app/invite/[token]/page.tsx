@@ -8,14 +8,11 @@ export const metadata: Metadata = {
 }
 
 type Props = {
-  params: {
-    token: string
-  }
+  params: Promise<{ token: string }>
 }
 
 export default async function InvitePage({ params }: Props) {
-  // We strictly await params for next 15 compatibility dynamically mapping if needed
-  const token = params.token
+  const { token } = await params
   return (
     <AuthLayout>
       <RedeemInviteForm token={token} />

@@ -21,6 +21,12 @@ export async function handleRedeemInvite(req: NextRequest): Promise<NextResponse
     const result = await redeemInvite(parseResult.data)
 
     if (!result.ok) {
+      logger.warn('Invite redeem failed', {
+        module: 'auth',
+        requestId,
+        code: result.code,
+        error: result.error,
+      })
       const status = result.code === 'INVITE_NOT_FOUND' || result.code === 'INVITE_INVALID' ? 404 : 400
       return NextResponse.json({ error: result.error, code: result.code }, { status: status })
     }
@@ -34,7 +40,7 @@ export async function handleRedeemInvite(req: NextRequest): Promise<NextResponse
     response.cookies.set('bw_session', result.data.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60,
       path: '/',
     })

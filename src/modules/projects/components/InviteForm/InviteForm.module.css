@@ -1,0 +1,262 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  padding: var(--space-xl);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+}
+
+.title {
+  font-family: var(--typography-title-medium-font-family);
+  font-size: var(--typography-title-medium-font-size);
+  font-weight: var(--typography-title-medium-font-weight);
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+.subtitle {
+  font-family: var(--typography-body-medium-font-family);
+  font-size: var(--typography-body-medium-font-size);
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.row {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.inputWrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.selectWrap {
+  flex: 0 0 160px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.label {
+  font-family: var(--typography-label-medium-font-family);
+  font-size: var(--typography-label-medium-font-size);
+  font-weight: var(--typography-label-medium-font-weight);
+  color: var(--color-on-surface-variant);
+}
+
+.input {
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--space-md);
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-md);
+  font-family: var(--typography-body-large-font-family);
+  font-size: var(--typography-body-large-font-size);
+  color: var(--color-on-surface);
+  background-color: var(--color-surface);
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--color-primary);
+}
+
+.select {
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--space-md);
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-md);
+  font-family: var(--typography-body-large-font-family);
+  font-size: var(--typography-body-large-font-size);
+  color: var(--color-on-surface);
+  background-color: var(--color-surface);
+  outline: none;
+  cursor: pointer;
+}
+
+.select:focus {
+  border-color: var(--color-primary);
+}
+
+.error {
+  font-family: var(--typography-body-small-font-family);
+  font-size: var(--typography-body-small-font-size);
+  color: var(--color-error);
+}
+
+.submitBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 var(--space-xl);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--typography-label-large-font-family);
+  font-size: var(--typography-label-large-font-size);
+  font-weight: var(--typography-label-large-font-weight);
+  cursor: pointer;
+  transition: opacity 150ms ease;
+  align-self: flex-start;
+}
+
+.submitBtn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.resultCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background-color: var(--color-primary-container);
+  border-radius: var(--radius-md);
+}
+
+.resultLabel {
+  font-family: var(--typography-label-large-font-family);
+  font-size: var(--typography-label-large-font-size);
+  font-weight: var(--typography-label-large-font-weight);
+  color: var(--color-on-primary-container);
+  margin: 0;
+}
+
+.linkRow {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+.linkCode {
+  flex: 1;
+  font-size: 12px;
+  word-break: break-all;
+  padding: var(--space-sm);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-sm);
+  color: var(--color-on-surface);
+}
+
+.copyBtn {
+  flex-shrink: 0;
+  height: 36px;
+  padding: 0 var(--space-lg);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--typography-label-medium-font-family);
+  font-size: var(--typography-label-medium-font-size);
+  font-weight: var(--typography-label-medium-font-weight);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.copyBtn:hover {
+  opacity: 0.9;
+}
+
+.whatsappBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 var(--space-lg);
+  background-color: #25D366;
+  color: white;
+  border-radius: var(--radius-md);
+  font-family: var(--typography-label-large-font-family);
+  font-size: var(--typography-label-large-font-size);
+  font-weight: var(--typography-label-large-font-weight);
+  text-decoration: none;
+  align-self: flex-start;
+}
+
+@media (max-width: 600px) {
+  .row {
+    flex-direction: column;
+  }
+  .selectWrap {
+    flex: 1;
+  }
+  .submitBtn {
+    width: 100%;
+  }
+}
+
+/* ── Member list inside card ─────────────────── */
+.emptyText {
+  font-family: var(--typography-body-medium-font-family);
+  font-size: var(--typography-body-medium-font-size);
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.memberList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.memberRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--color-surface-container);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-md);
+}
+
+.memberInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  min-width: 0;
+}
+
+.memberName {
+  font-family: var(--typography-title-small-font-family);
+  font-size: var(--typography-title-small-font-size);
+  font-weight: var(--typography-title-small-font-weight);
+  color: var(--color-on-surface);
+}
+
+.memberEmail {
+  font-family: var(--typography-body-small-font-family);
+  font-size: var(--typography-body-small-font-size);
+  color: var(--color-on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.memberRole {
+  flex-shrink: 0;
+  font-family: var(--typography-label-small-font-family);
+  font-size: var(--typography-label-small-font-size);
+  font-weight: var(--typography-label-small-font-weight);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+}

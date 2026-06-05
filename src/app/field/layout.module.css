@@ -52,6 +52,22 @@
   color: var(--color-on-surface);
 }
 
+.logoutBtn {
+  border: none;
+  background: none;
+  font-family: var(--typography-label-large-font-family);
+  font-size: var(--typography-label-large-font-size);
+  font-weight: var(--typography-label-large-font-weight);
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+  padding: 0;
+  transition: color 150ms ease;
+}
+
+.logoutBtn:hover {
+  color: var(--color-error);
+}
+
 .content {
   flex: 1;
   padding: var(--space-2xl) var(--space-xl);

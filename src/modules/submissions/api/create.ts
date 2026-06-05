@@ -4,6 +4,7 @@ import { prisma } from '@/lib/db'
 import { logger } from '@/lib/logger'
 import { encrypt } from '@/lib/encryption'
 import { CreateSubmissionSchema } from '../types'
+import { analyzeSubmission } from '../../ai-analysis/lib/analyzeSubmission'
 import type { SessionUser } from '@/lib/auth'
 
 /**
@@ -103,7 +104,21 @@ export async function handleCreateSubmission(
         },
       })
 
+      // Tier 2: Transition milestone to 'under_review'
+      await tx.milestones.update({
+        where: { id: milestoneId },
+        data: { status: 'under_review' },
+      })
+
       return s
+    })
+
+    // Tier 2: Fire-and-forget AI analysis
+    analyzeSubmission(submission.id).catch(err => {
+      logger.error('AI analysis background job failed to start', {
+        submissionId: submission.id,
+        error: { message: err.message }
+      })
     })
 
     logger.info('Submission created', {

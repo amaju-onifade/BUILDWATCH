@@ -1,0 +1,22 @@
+.button {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: var(--typography-label-medium-font-size);
+  font-weight: var(--typography-label-medium-font-weight);
+  cursor: pointer;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.button:hover {
+  opacity: 0.9;
+}
+
+.button:disabled {
+  background: var(--color-surface-container-high);
+  color: var(--color-on-surface-variant);
+  cursor: not-allowed;
+}

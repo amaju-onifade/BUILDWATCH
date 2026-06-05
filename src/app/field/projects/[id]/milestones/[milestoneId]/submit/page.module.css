@@ -26,6 +26,8 @@
   font-family: var(--typography-headline-small-font-family);
   font-size: var(--typography-headline-small-font-size);
   font-weight: var(--typography-headline-small-font-weight);
+  letter-spacing: var(--typography-headline-small-letter-spacing);
+  line-height: var(--typography-headline-small-line-height);
   color: var(--color-on-surface);
   margin: 0;
 }

@@ -51,15 +51,42 @@ export default async function DashboardPage() {
     )
   )
 
+  const totalProjects = projects.length
+  const totalMilestones = projects.reduce((s, p) => s + p._count.milestones, 0)
+  const totalApproved = approvedCounts.reduce((s, c) => s + c, 0)
+  const totalSubmissions = projects.reduce((s, p) => s + p._count.submissions, 0)
+  const overallProgress = totalMilestones > 0 ? Math.round((totalApproved / totalMilestones) * 100) : 0
+
   return (
-    <div className={styles.page}>
+    <div className={styles.layout}>
+      {/* Stats row */}
+      <div className={styles.statsRow}>
+        <div className={styles.statCard}>
+          <span className={styles.statValue}>{totalProjects}</span>
+          <span className={styles.statLabel}>Projects</span>
+        </div>
+        <div className={styles.statCard}>
+          <span className={styles.statValue}>{totalMilestones}</span>
+          <span className={styles.statLabel}>Total phases</span>
+        </div>
+        <div className={styles.statCard}>
+          <span className={styles.statValue}>{overallProgress}%</span>
+          <span className={styles.statLabel}>Overall progress</span>
+        </div>
+        <div className={styles.statCard}>
+          <span className={styles.statValue}>{totalSubmissions}</span>
+          <span className={styles.statLabel}>Submissions</span>
+        </div>
+      </div>
+
+      {/* Section header */}
       <div className={styles.pageHeader}>
         <div>
-          <h1 className={styles.pageTitle}>Your Projects</h1>
+          <h2 className={styles.pageTitle}>Your Projects</h2>
           <p className={styles.pageSubtitle}>
-            {projects.length === 0
+            {totalProjects === 0
               ? 'No projects yet — create your first one below.'
-              : `${projects.length} project${projects.length !== 1 ? 's' : ''}`}
+              : `${totalProjects} project${totalProjects !== 1 ? 's' : ''}`}
           </p>
         </div>
         <Link href="/dashboard/projects/new" className={styles.newProjectBtn} id="btn-new-project">
@@ -67,7 +94,8 @@ export default async function DashboardPage() {
         </Link>
       </div>
 
-      {projects.length === 0 ? (
+      {/* Project grid or empty state */}
+      {totalProjects === 0 ? (
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon} aria-hidden="true">🏗️</div>
           <p className={styles.emptyTitle}>No projects yet</p>
@@ -79,15 +107,15 @@ export default async function DashboardPage() {
           </Link>
         </div>
       ) : (
-        <ol className={styles.projectList}>
+        <div className={styles.projectGrid}>
           {projects.map((project, idx) => {
             const total = project._count.milestones
             const approved = approvedCounts[idx]
             const progress = total > 0 ? Math.round((approved / total) * 100) : 0
 
             return (
-              <li key={project.id} className={styles.projectCard}>
-                <a
+              <div key={project.id} className={styles.projectCard}>
+                <Link
                   href={`/dashboard/projects/${project.id}`}
                   className={styles.cardLink}
                   id={`project-card-${project.id}`}
@@ -140,11 +168,11 @@ export default async function DashboardPage() {
                       {project._count.submissions} submission{project._count.submissions !== 1 ? 's' : ''}
                     </span>
                   </div>
-                </a>
-              </li>
+                </Link>
+              </div>
             )
           })}
-        </ol>
+        </div>
       )}
     </div>
   )

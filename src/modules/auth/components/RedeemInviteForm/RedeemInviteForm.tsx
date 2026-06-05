@@ -41,12 +41,7 @@ export function RedeemInviteForm({ token }: RedeemInviteFormProps) {
         return
       }
 
-      // Success: proxy or contractor route. Since it's dynamic based on role, 
-      // the middleware handles redirection if we just hit root, but we can default push to `/` 
-      // or check the session (they might be contractor or proxy).
-      // We will push to / which will let middleware correctly route.
-      router.push('/')
-      router.refresh()
+      window.location.href = '/field'
     } catch {
       setError('A network error occurred. Please try again.')
       setIsLoading(false)
