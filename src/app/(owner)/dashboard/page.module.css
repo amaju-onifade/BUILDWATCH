@@ -1,0 +1,261 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+  padding: var(--space-xl);
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding: var(--space-2xl) var(--space-3xl);
+  }
+}
+
+/* ── Page Header ─────────────────────────── */
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.pageTitle {
+  font-family: var(--typography-headline-medium-font-family);
+  font-size: var(--typography-headline-medium-font-size);
+  font-weight: var(--typography-headline-medium-font-weight);
+  letter-spacing: var(--typography-headline-medium-letter-spacing);
+  line-height: var(--typography-headline-medium-line-height);
+  color: var(--color-on-surface);
+  margin: 0 0 var(--space-xs);
+}
+
+.pageSubtitle {
+  font-family: var(--typography-body-medium-font-family);
+  font-size: var(--typography-body-medium-font-size);
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.newProjectBtn {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 var(--space-xl);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  border-radius: var(--radius-md);
+  font-family: var(--typography-label-large-font-family);
+  font-size: var(--typography-label-large-font-size);
+  font-weight: var(--typography-label-large-font-weight);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 150ms ease;
+  flex-shrink: 0;
+}
+
+.newProjectBtn:hover {
+  opacity: 0.9;
+}
+
+/* ── Empty State ─────────────────────────── */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-4xl) var(--space-xl);
+  background-color: var(--color-surface);
+  border: 1px dashed var(--color-outline);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.emptyTitle {
+  font-family: var(--typography-title-medium-font-family);
+  font-size: var(--typography-title-medium-font-size);
+  font-weight: var(--typography-title-medium-font-weight);
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+.emptyDesc {
+  font-family: var(--typography-body-medium-font-family);
+  font-size: var(--typography-body-medium-font-size);
+  line-height: var(--typography-body-medium-line-height);
+  color: var(--color-on-surface-variant);
+  max-width: 360px;
+  margin: 0;
+}
+
+.emptyAction {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 var(--space-xl);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  border-radius: var(--radius-md);
+  font-family: var(--typography-label-large-font-family);
+  font-size: var(--typography-label-large-font-size);
+  font-weight: var(--typography-label-large-font-weight);
+  text-decoration: none;
+  margin-top: var(--space-md);
+  transition: opacity 150ms ease;
+}
+
+.emptyAction:hover {
+  opacity: 0.9;
+}
+
+/* ── Project List ────────────────────────── */
+.projectList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
+  gap: var(--space-md);
+}
+
+/* ── Project Card ────────────────────────── */
+.projectCard {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.projectCard:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 8px hsl(0 0% 0% / 0.06);
+}
+
+.cardLink {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  padding: var(--space-xl);
+  text-decoration: none;
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.cardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.projectName {
+  font-family: var(--typography-title-medium-font-family);
+  font-size: var(--typography-title-medium-font-size);
+  font-weight: var(--typography-title-medium-font-weight);
+  color: var(--color-on-surface);
+}
+
+.projectMeta {
+  font-family: var(--typography-body-small-font-family);
+  font-size: var(--typography-body-small-font-size);
+  color: var(--color-on-surface-variant);
+}
+
+.buildTypePill {
+  align-self: flex-start;
+  font-family: var(--typography-label-small-font-family);
+  font-size: var(--typography-label-small-font-size);
+  font-weight: var(--typography-label-small-font-weight);
+  color: var(--color-on-secondary-container);
+  background-color: var(--color-secondary-container);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+.statusBadge {
+  flex-shrink: 0;
+  font-family: var(--typography-label-small-font-family);
+  font-size: var(--typography-label-small-font-size);
+  font-weight: var(--typography-label-small-font-weight);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-container);
+  color: var(--color-on-surface-variant);
+}
+
+.statusBadge[data-status='active'] {
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+}
+
+/* ── Progress Bar ────────────────────────── */
+.cardProgress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.progressTrack {
+  flex: 1;
+  height: 6px;
+  background-color: var(--color-surface-container-high);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  width: var(--progress-pct, 0%);
+  background-color: var(--color-primary);
+  border-radius: 99px;
+  transition: width 400ms ease;
+}
+
+.progressLabel {
+  flex-shrink: 0;
+  font-family: var(--typography-label-small-font-family);
+  font-size: var(--typography-label-small-font-size);
+  color: var(--color-on-surface-variant);
+}
+
+/* ── Card Footer ─────────────────────────── */
+.cardFooter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-outline-variant);
+}
+
+.footerItem {
+  font-family: var(--typography-body-small-font-family);
+  font-size: var(--typography-body-small-font-size);
+  color: var(--color-on-surface-variant);
+}
+
+/* ── Mobile ──────────────────────────────── */
+@media (max-width: 480px) {
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .newProjectBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cardTop {
+    flex-direction: column-reverse;
+  }
+}

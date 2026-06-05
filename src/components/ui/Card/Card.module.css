@@ -1,0 +1,10 @@
+.card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg); /* 12px for cards */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+  border: 1px solid var(--color-outline-variant);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}

@@ -1,0 +1,282 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Users {
+  id              String            @id @default(cuid())
+  email           String            @unique
+  passwordHash    String
+  fullName        String
+  phone           String?
+  role            String            // owner, proxy, contractor
+  timezone        String            @default("Africa/Lagos")
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  deletedAt       DateTime?
+
+  projectsOwned   Projects[]        @relation("ProjectOwner")
+  projectMembers  ProjectMembers[]
+  submissions     Submissions[]
+  milestonesAppr  Milestones[]      @relation("MilestoneApprover")
+  auditEvents     AuditEvents[]
+  invitesSent     InviteTokens[]
+  subscription    Subscriptions?
+  notifications   Notifications[]
+  pendingPayments PendingPayments[]
+
+  @@map("users")
+}
+
+model Projects {
+  id              String            @id @default(cuid())
+  ownerId         String
+  owner           Users             @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  name            String
+  location        String
+  buildType       String?
+  startDate       DateTime?
+  totalBudget     Float?
+  currency        String            @default("NGN")
+  status          String            @default("active")
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  members         ProjectMembers[]
+  milestones      Milestones[]
+  submissions     Submissions[]
+  aiReports       AIReports[]
+  auditEvents     AuditEvents[]
+  inviteTokens    InviteTokens[]
+
+  @@index([ownerId])
+  @@map("projects")
+}
+
+model ProjectMembers {
+  projectId       String
+  project         Projects          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId          String
+  user            Users             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role            String            // proxy, contractor
+  inviteStatus    String            @default("accepted")
+  joinedAt        DateTime          @default(now())
+
+  @@id([projectId, userId])
+  @@index([userId])
+  @@index([projectId])
+  @@map("project_members")
+}
+
+model Milestones {
+  id                  String        @id @default(cuid())
+  projectId           String
+  project             Projects      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name                String
+  order               Int
+  plannedCostTotal    Float?
+  paymentScheduleType String        @default("single") // single, tranche3
+  tranche1Planned     Float?
+  tranche1Actual      Float?
+  tranche2Planned     Float?
+  tranche2Actual      Float?
+  tranche3Planned     Float?
+  tranche3Actual      Float?
+  currency            String        @default("NGN")
+  status              String        @default("pending") // pending, in_progress, under_review, approved, locked
+  startDate           DateTime?
+  completedAt         DateTime?
+  approvedAt          DateTime?
+  approvedById        String?
+  approvedBy          Users?        @relation("MilestoneApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+
+  submissions         Submissions[]
+  aiReports           AIReports[]
+
+  @@index([projectId])
+  @@index([approvedById])
+  @@map("milestones")
+}
+
+model Submissions {
+  id                  String        @id @default(cuid())
+  projectId           String
+  project             Projects      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  milestoneId         String
+  milestone           Milestones    @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+  submittedById       String
+  submittedBy         Users         @relation(fields: [submittedById], references: [id], onDelete: Restrict)
+  caption             String?
+  geoLat              String?       // Encrypted at rest
+  geoLng              String?       // Encrypted at rest
+  geoAccuracy         Float?
+  geoAvailable        Boolean       @default(false)
+  status              String        @default("delivered") // queued, delivered, reviewed, queried
+  createdAt           DateTime      @default(now())
+  deliveredAt         DateTime?     @default(now())
+
+  photos              SubmissionPhotos[]
+  aiReport            AIReports?
+
+  @@index([projectId])
+  @@index([milestoneId])
+  @@index([submittedById])
+  @@map("submissions")
+}
+
+model SubmissionPhotos {
+  id                  String        @id @default(cuid())
+  submissionId        String
+  submission          Submissions   @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  storageKey          String
+  thumbnailKey        String?
+  sizeBytes           Int
+  compressedSizeBytes Int
+  capturedAt          DateTime?
+  order               Int           @default(0)
+
+  @@index([submissionId])
+  @@map("submission_photos")
+}
+
+// Append-only
+model AIReports {
+  id                      String        @id @default(cuid())
+  submissionId            String        @unique
+  submission              Submissions   @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  projectId               String
+  project                 Projects      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  milestoneId             String
+  milestone               Milestones    @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+  status                  String        @default("complete") // complete, failed
+  overallAssessment       String?
+  progressIndicator       String?
+  observations            Json?
+  concerns                Json?
+  photoQuality            String?
+  photoQualityNote        String?
+  recommendedOwnerAction  String?
+  modelUsed               String?
+  generatedAt             DateTime?
+  createdAt               DateTime      @default(now())
+
+  @@index([projectId])
+  @@index([milestoneId])
+  @@map("ai_reports")
+}
+
+model Notifications {
+  id                  String        @id @default(cuid())
+  userId              String
+  user                Users         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type                String
+  title               String
+  body                String
+  relatedEntityId     String?
+  relatedEntityType   String?
+  readAt              DateTime?
+  channel             String        // push, email, in_app
+  createdAt           DateTime      @default(now())
+
+  @@index([userId])
+  @@map("notifications")
+}
+
+// Append-only, no updatedAt
+model AuditEvents {
+  id                  String        @id @default(cuid())
+  projectId           String?
+  project             Projects?     @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  actorId             String
+  actor               Users         @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  eventType           String
+  resourceId          String?
+  resourceType        String?
+  metadata            Json?
+  ipAddress           String?
+  createdAt           DateTime      @default(now())
+
+  @@index([projectId])
+  @@index([actorId])
+  @@index([resourceId, resourceType])
+  @@map("audit_events")
+}
+
+model InviteTokens {
+  id                  String        @id @default(cuid())
+  projectId           String
+  project             Projects      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  invitedByUserId     String
+  invitedBy           Users         @relation(fields: [invitedByUserId], references: [id], onDelete: Restrict)
+  inviteeEmail        String
+  role                String        // proxy, contractor
+  status              String        @default("pending") // pending, consumed, invalidated
+  expiresAt           DateTime
+  consumedAt          DateTime?
+  consumedByUserId    String?
+
+  @@index([projectId])
+  @@index([invitedByUserId])
+  @@index([inviteeEmail])
+  @@map("invite_tokens")
+}
+
+model Subscriptions {
+  id                      String        @id @default(cuid())
+  userId                  String        @unique
+  user                    Users         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status                  String        @default("trialing") // trialing, active, past_due, cancelled, expired
+  planId                  String?
+  trialEndsAt             DateTime?
+  currentPeriodEnd        DateTime?
+  flutterwaveCustomerId   String?
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
+
+  @@map("subscriptions")
+}
+
+model WebhookEvents {
+  id                  String        @id @default(cuid())
+  flutterwaveEventId  String        @unique
+  eventType           String
+  status              String        @default("processing") // processing, processed, failed
+  rawPayload          String        @db.Text
+  errorMessage        String?
+  processedAt         DateTime?
+  createdAt           DateTime      @default(now())
+
+  @@map("webhook_events")
+}
+
+model PendingPayments {
+  id                  String        @id @default(cuid())
+  txRef               String        @unique
+  ownerId             String
+  owner               Users         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  planId              String
+  amount              Float
+  currency            String        @default("NGN")
+  status              String        @default("pending") // pending, processed, failed, suspicious
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  @@index([ownerId])
+  @@map("pending_payments")
+}
+
+model Inspectors {
+  id                  String        @id @default(cuid())
+  name                String
+  qualifications      String?
+  registrationNumber  String?
+  registrationBody    String?
+  location            String?
+  verified            Boolean       @default(false)
+  createdAt           DateTime      @default(now())
+
+  @@map("inspectors")
+}

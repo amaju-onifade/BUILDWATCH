@@ -1,0 +1,13 @@
+
+ DEV  v4.1.8 C:/Users/Amaju/Documents/PRODUCT DESIGN/DESIGN 2 MVP BOOTCAMP TRAINING/CAPSTONE PROJECT/BUILDWATCH
+
+Cancelling test run. Press CTRL+c again to exit forcefully.
+
+
+ Test Files   (1)
+      Tests  no tests
+   Start at  14:43:15
+   Duration  2.52s (transform 0ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)
+
+ CANCELLED  Test run cancelled. Watching for file changes...
+       press h to show help, press q to quit
