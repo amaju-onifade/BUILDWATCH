@@ -1,0 +1,156 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.backLink {
+  font-family: var(--typography-body-medium-font-family);
+  font-size: var(--typography-body-medium-font-size);
+  color: var(--color-primary);
+  text-decoration: none;
+  align-self: flex-start;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.title {
+  font-family: var(--typography-headline-small-font-family);
+  font-size: var(--typography-headline-small-font-size);
+  font-weight: var(--typography-headline-small-font-weight);
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+.subtitle {
+  font-family: var(--typography-body-medium-font-family);
+  font-size: var(--typography-body-medium-font-size);
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.sectionTitle {
+  font-family: var(--typography-title-large-font-family);
+  font-size: var(--typography-title-large-font-size);
+  font-weight: var(--typography-title-large-font-weight);
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+.milestoneList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.milestoneCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+}
+
+.milestoneOrder {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  font-family: var(--typography-label-large-font-family);
+  font-size: var(--typography-label-large-font-size);
+  font-weight: var(--typography-label-large-font-weight);
+}
+
+.milestoneInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.milestoneName {
+  font-family: var(--typography-title-small-font-family);
+  font-size: var(--typography-title-small-font-size);
+  font-weight: var(--typography-title-small-font-weight);
+  color: var(--color-on-surface);
+}
+
+.milestoneStatus {
+  align-self: flex-start;
+  font-family: var(--typography-label-small-font-family);
+  font-size: var(--typography-label-small-font-size);
+  font-weight: var(--typography-label-small-font-weight);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-container-high);
+  color: var(--color-on-surface-variant);
+}
+
+.milestoneStatus[data-status='approved'] {
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+}
+
+.milestoneStatus[data-status='in_progress'] {
+  background-color: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
+}
+
+.milestoneActions {
+  flex-shrink: 0;
+}
+
+.submitLink {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 var(--space-lg);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  border-radius: var(--radius-md);
+  font-family: var(--typography-label-large-font-family);
+  font-size: var(--typography-label-large-font-size);
+  font-weight: var(--typography-label-large-font-weight);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 150ms ease;
+}
+
+.submitLink:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 600px) {
+  .milestoneCard {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .milestoneActions {
+    width: 100%;
+  }
+  .submitLink {
+    width: 100%;
+    justify-content: center;
+  }
+}

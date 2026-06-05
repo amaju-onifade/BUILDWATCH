@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { nanoid } from 'nanoid'
 import { compressImage } from '../../lib/compression'
 import { offlineQueue } from '../../lib/offlineQueue'
@@ -12,10 +12,42 @@ type Props = {
   onComplete?: () => void
 }
 
+type PhotoState = {
+  id: string
+  blob: Blob
+  preview: string
+  uploadStatus: 'pending' | 'uploading' | 'done' | 'failed'
+}
+
+function now(): number {
+  return Date.now()
+}
+
+async function uploadPhoto(blob: Blob, projectId: string, submissionId: string): Promise<string> {
+  const res = await fetch(
+    `/api/submissions/upload-url?projectId=${encodeURIComponent(projectId)}&submissionId=${encodeURIComponent(submissionId)}`
+  )
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.error || 'Failed to get upload URL')
+  }
+  const { data } = await res.json()
+
+  const uploadRes = await fetch(data.url, {
+    method: 'PUT',
+    body: blob,
+    headers: { 'Content-Type': 'image/jpeg' },
+  })
+  if (!uploadRes.ok) throw new Error('Failed to upload image to storage')
+
+  return data.key
+}
+
 export function PhotoUploader({ projectId, milestoneId, onComplete }: Props) {
-  const [photos, setPhotos] = useState<{ id: string; blob: Blob; preview: string }[]>([])
-  const [isCompresing, setIsCompressing] = useState(false)
-  const [isUploading, setIsUploading] = useState(false)
+  const [photos, setPhotos] = useState<PhotoState[]>([])
+  const [caption, setCaption] = useState('')
+  const [isCompressing, setIsCompressing] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -34,6 +66,7 @@ export function PhotoUploader({ projectId, milestoneId, onComplete }: Props) {
             id: nanoid(),
             blob: compressed,
             preview: URL.createObjectURL(compressed),
+            uploadStatus: 'pending' as const,
           }
         })
       )
@@ -57,14 +90,14 @@ export function PhotoUploader({ projectId, milestoneId, onComplete }: Props) {
 
   const handleSubmit = async () => {
     if (photos.length === 0) return
-    setIsUploading(true)
+    setIsSubmitting(true)
     setError(null)
 
     try {
       // Get GPS if possible (best effort as per PRD)
       let geoLat: number | undefined
       let geoLng: number | undefined
-      
+
       try {
         const pos = await new Promise<GeolocationPosition>((res, rej) => {
           navigator.geolocation.getCurrentPosition(res, rej, { timeout: 5000 })
@@ -77,53 +110,84 @@ export function PhotoUploader({ projectId, milestoneId, onComplete }: Props) {
 
       // Check connectivity
       if (!navigator.onLine) {
-        // Queue offline
         await offlineQueue.add({
           id: nanoid(),
           projectId,
           milestoneId,
           photos: photos.map(p => p.blob),
+          caption: caption || undefined,
           geoLat,
           geoLng,
-          timestamp: Date.now(),
+          timestamp: now(),
         })
         alert('You are offline. Your submission has been saved and will upload automatically when you reconnect.')
-        setPhotos([])
-        onComplete?.()
+        reset()
         return
       }
 
-      // Online submission flow (Simplified for now - will need API routes)
-      // For now, we'll simulate success and alert about background sync being the way
-      // TODO: Implement /api/submissions and actual R2 upload
-      
-      // TEMPORARY: Store to offline queue even if online for background sync to handle
-      // This ensures background sync is the single source of thrush for upload logic
-      await offlineQueue.add({
-        id: nanoid(),
-        projectId,
-        milestoneId,
-        photos: photos.map(p => p.blob),
-        geoLat,
-        geoLng,
-        timestamp: Date.now(),
+      // Upload each photo to R2 via signed URL
+      const submissionId = nanoid(12)
+      const storageKeys: string[] = []
+
+      for (const photo of photos) {
+        setPhotos((prev) =>
+          prev.map((p) => (p.id === photo.id ? { ...p, uploadStatus: 'uploading' as const } : p))
+        )
+
+        try {
+          const key = await uploadPhoto(photo.blob, projectId, submissionId)
+          storageKeys.push(key)
+          setPhotos((prev) =>
+            prev.map((p) => (p.id === photo.id ? { ...p, uploadStatus: 'done' as const } : p))
+          )
+        } catch (err) {
+          console.error('[uploader] Photo upload failed:', err)
+          setPhotos((prev) =>
+            prev.map((p) => (p.id === photo.id ? { ...p, uploadStatus: 'failed' as const } : p))
+          )
+          throw new Error(`Failed to upload photo ${storageKeys.length + 1}`)
+        }
+      }
+
+      // Create the submission record
+      const createRes = await fetch('/api/submissions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          milestoneId,
+          projectId,
+          photos: storageKeys,
+          caption: caption || undefined,
+          geoLat,
+          geoLng,
+        }),
       })
-      
-      setPhotos([])
+
+      if (!createRes.ok) {
+        const body = await createRes.json().catch(() => ({}))
+        throw new Error(body.error || 'Failed to create submission')
+      }
+
+      reset()
       onComplete?.()
-      
     } catch (err) {
       console.error('[uploader] Submission failed:', err)
-      setError('Failed to submit. Please try again.')
+      setError(err instanceof Error ? err.message : 'Failed to submit. Please try again.')
     } finally {
-      setIsUploading(false)
+      setIsSubmitting(false)
     }
   }
 
-  // Cleanup previews
+  const reset = useCallback(() => {
+    photos.forEach((p) => URL.revokeObjectURL(p.preview))
+    setPhotos([])
+    setCaption('')
+  }, [photos])
+
+  // Cleanup previews on unmount
   useEffect(() => {
     return () => {
-      photos.forEach(p => URL.revokeObjectURL(p.preview))
+      photos.forEach((p) => URL.revokeObjectURL(p.preview))
     }
   }, [photos])
 
@@ -136,12 +200,28 @@ export function PhotoUploader({ projectId, milestoneId, onComplete }: Props) {
 
       <div className={styles.photoGrid}>
         {photos.map((photo) => (
-          <div key={photo.id} className={styles.photoCard}>
+          <div key={photo.id} className={styles.photoCard} data-status={photo.uploadStatus}>
             <img src={photo.preview} alt="Preview" className={styles.preview} />
+            {photo.uploadStatus === 'uploading' && (
+              <div className={styles.uploadOverlay}>
+                <span className={styles.spinner} />
+              </div>
+            )}
+            {photo.uploadStatus === 'failed' && (
+              <div className={styles.uploadOverlay}>
+                <span className={styles.failedIcon}>!</span>
+              </div>
+            )}
+            {photo.uploadStatus === 'done' && (
+              <div className={styles.uploadOverlay}>
+                <span className={styles.doneIcon}>✓</span>
+              </div>
+            )}
             <button
               onClick={() => removePhoto(photo.id)}
               className={styles.removeBtn}
               aria-label="Remove photo"
+              disabled={isSubmitting || photo.uploadStatus === 'uploading'}
             >
               ×
             </button>
@@ -152,9 +232,9 @@ export function PhotoUploader({ projectId, milestoneId, onComplete }: Props) {
           <button
             className={styles.addBtn}
             onClick={() => fileInputRef.current?.click()}
-            disabled={isCompresing || isUploading}
+            disabled={isCompressing || isSubmitting}
           >
-            {isCompresing ? (
+            {isCompressing ? (
               <span className={styles.spinner} />
             ) : (
               <>
@@ -175,15 +255,25 @@ export function PhotoUploader({ projectId, milestoneId, onComplete }: Props) {
         hidden
       />
 
+      <textarea
+        className={styles.captionInput}
+        placeholder="Add notes about this progress update (optional)"
+        value={caption}
+        onChange={(e) => setCaption(e.target.value)}
+        maxLength={500}
+        rows={2}
+        disabled={isSubmitting}
+      />
+
       {error && <div className={styles.error} role="alert">{error}</div>}
 
       <div className={styles.actions}>
         <button
           className={styles.submitBtn}
           onClick={handleSubmit}
-          disabled={photos.length === 0 || isUploading || isCompresing}
+          disabled={photos.length === 0 || isSubmitting || isCompressing}
         >
-          {isUploading ? 'Submitting...' : 'Submit Progress'}
+          {isSubmitting ? 'Uploading...' : 'Submit Progress'}
         </button>
       </div>
     </div>

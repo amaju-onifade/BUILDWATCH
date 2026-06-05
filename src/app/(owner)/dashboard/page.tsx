@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import styles from './page.module.css'
@@ -61,9 +62,9 @@ export default async function DashboardPage() {
               : `${projects.length} project${projects.length !== 1 ? 's' : ''}`}
           </p>
         </div>
-        <a href="/dashboard/projects/new" className={styles.newProjectBtn} id="btn-new-project">
+        <Link href="/dashboard/projects/new" className={styles.newProjectBtn} id="btn-new-project">
           + New project
-        </a>
+        </Link>
       </div>
 
       {projects.length === 0 ? (
@@ -73,9 +74,9 @@ export default async function DashboardPage() {
           <p className={styles.emptyDesc}>
             Create your first project to start tracking construction milestones with your team.
           </p>
-          <a href="/dashboard/projects/new" className={styles.emptyAction} id="btn-create-first-project">
+          <Link href="/dashboard/projects/new" className={styles.emptyAction} id="btn-create-first-project">
             Create a project
-          </a>
+          </Link>
         </div>
       ) : (
         <ol className={styles.projectList}>
