@@ -5,6 +5,7 @@ import { logger } from '@/lib/logger'
 import { encrypt } from '@/lib/encryption'
 import { CreateSubmissionSchema } from '../types'
 import { analyzeSubmission } from '../../ai-analysis/lib/analyzeSubmission'
+import { notifyOwnerNewSubmission } from '../../notifications/lib/dispatch'
 import type { SessionUser } from '@/lib/auth'
 
 /**
@@ -46,7 +47,7 @@ export async function handleCreateSubmission(
       )
     }
 
-    // Verify milestone belongs to project
+    // Verify milestone belongs to project and is NOT locked
     const milestone = await prisma.milestones.findFirst({
       where: { id: milestoneId, projectId },
     })
@@ -54,6 +55,13 @@ export async function handleCreateSubmission(
     if (!milestone) {
       return NextResponse.json(
         { error: 'Forbidden — Milestone does not belong to project', code: 'FORBIDDEN' },
+        { status: 403 }
+      )
+    }
+
+    if (milestone.status === 'locked') {
+      return NextResponse.json(
+        { error: 'This milestone is locked. Please complete previous phases first.', code: 'MILESTONE_LOCKED' },
         { status: 403 }
       )
     }
@@ -120,6 +128,17 @@ export async function handleCreateSubmission(
         error: { message: err.message }
       })
     })
+
+    // Tier 2: Notify owner (runs after AI so it can check for flags)
+    setTimeout(() => {
+      notifyOwnerNewSubmission(submission.id).catch(err => {
+        logger.error('Owner notification failed', {
+          module: 'notifications',
+          submissionId: submission.id,
+          error: { message: err.message },
+        })
+      })
+    }, 5000) // 5s delay to let AI analysis write its report first
 
     logger.info('Submission created', {
       module: 'submissions',

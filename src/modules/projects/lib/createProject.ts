@@ -25,13 +25,13 @@ export async function createProject(ownerId: string, input: CreateProjectInput):
       // So no need to add owner to projectMembers table.
       
       // Auto-populate Milestones using the Nigerian Residential Template
-      const milestonesData = NIGERIAN_RESIDENTIAL_TEMPLATE.map(m => ({
+      const milestonesData = NIGERIAN_RESIDENTIAL_TEMPLATE.map((m, index) => ({
         projectId: project.id,
         name: m.name,
         order: m.order,
-        status: 'pending',
+        status: index === 0 ? 'pending' : 'locked',
       }))
-      
+
       await tx.milestones.createMany({
         data: milestonesData
       })

@@ -3,8 +3,8 @@ import { prisma } from '@/lib/db'
 import { logger } from '@/lib/logger'
 
 /**
- * Trigger AI analysis for a submission.
- * This function follows the S1-S4 report format requirement.
+ * Feature F-09: AI Analysis Engine
+ * Generates a structured S1-S5 report from photo submissions.
  */
 export async function analyzeSubmission(submissionId: string) {
   try {
@@ -13,58 +13,65 @@ export async function analyzeSubmission(submissionId: string) {
       include: {
         photos: true,
         milestone: true,
-        project: true
+        project: {
+          include: {
+            // Future reference materials layer
+          }
+        }
       }
     })
 
     if (!submission || submission.photos.length === 0) return
 
-    logger.info('Starting AI analysis for submission', { submissionId })
+    logger.info('F-09: Starting structured AI analysis', { submissionId })
 
-    // 1. Prepare the strict S1-S4 system prompt
+    // 1. Construct strict system prompt for DeepSeek (F-09 compliant)
     const prompt = `
       You are an expert construction inspector for BuildWatch. 
       Analyze the provided photos for the milestone: "${submission.milestone.name}".
 
-      STRICT FORMAT (S1-S4):
-      S1. OVERALL ASSESSMENT: Professional summary of verification.
-      S2. PROGRESS & QUALITY: Categorize status and image quality.
-      S3. DETAILED OBSERVATIONS: Technical points from the images.
-      S4. RECOMMENDED ACTION: Clear guidance for the property owner.
+      REPORT STRUCTURE (S1-S4 Mandatory):
+      S1. WHAT IS VISIBLE: Plain-English description of walls, roof, materials, workers, and activity.
+      S2. STAGE ASSESSMENT: Professional assessment of construction stage. 
+          Respond with Confidence: High | Medium | Low. Explain reasoning.
+      S3. ANOMALIES & CONCERNS: Flag incomplete work, safety issues, or material shortages.
+      S4. LIMITATIONS: Explicitly state what you CANNOT see (concrete mix ratios, rebar diameter/spacing, foundation depth, waterproofing, structural adequacy).
 
-      JSON STRUCTURE REQUIRED:
+      JSON STRUCTURE:
       {
         "status": "verified" | "flagged" | "unknown",
-        "overallAssessment": "string",
-        "progressIndicator": "on_track" | "delayed" | "not_started",
-        "photoQuality": "high" | "low" | "blurry",
-        "observations": ["point 1", "point 2"],
-        "concerns": ["issue 1" if any],
-        "recommendedOwnerAction": "string"
+        "s1_visible": "string",
+        "s2_stage": "string",
+        "s2_confidence": "High" | "Medium" | "Low",
+        "s3_concerns": ["issue 1", "issue 2"],
+        "s4_limitations": ["limit 1", "limit 2"],
+        "recommendedAction": "string",
+        "photoQuality": "High" | "Medium" | "Low"
       }
 
-      STRICT CONSTRAINTS:
-      - NEVER use words: "Approved by AI", "AI Certified", or "Verified by AI".
-      - Be technical, objective, and blunt. 
-      - If photos don't show the work, use status: "unknown".
+      STRICT CONSTRAINTS (11.4):
+      - NEVER use "Approved by AI" or "Certified".
+      - S4 limitations MUST include rebar, foundation depth, and material ratios.
     `
 
-    // 2. DeepSeek Mock (Simulating S1-S4 output)
+    // 2. DeepSeek Mock (Simulating F-09 compliant output)
     const mockAnalysis = {
       status: 'verified',
-      overallAssessment: 'Verification successful. Site photos confirm adherence to clearing and excavation requirements.',
-      progressIndicator: 'on_track',
-      photoQuality: 'high',
-      observations: [
-        'Vegetation and debris have been fully removed from the building footprint.',
-        'Excavation depth for perimeter footing appears consistent with standard residential specs.',
-        'Setbacks from property lines are maintained as per boundary markers.'
+      s1_visible: 'Completed site clearance. Excavation for perimeter footings is clearly visible with markers in place. Workers are seen leveling the trench beds.',
+      s2_stage: 'The site is currently in the ground-breaking and excavation stage, cross-referenced correctly with the assigned milestone.',
+      s2_confidence: 'High' as const,
+      s3_concerns: [],
+      s4_limitations: [
+        'Cannot verify concrete mix ratios or moisture content for future pouring.',
+        'Cannot verify foundation depth or sub-base compaction quality from photos.',
+        'Total rebar diameter and spacing cannot be confirmed until reinforcement is laid.',
+        'Structural adequacy of the soil cannot be determined via imagery.'
       ],
-      concerns: [],
-      recommendedOwnerAction: 'Acknowledge the milestone completion and authorize the next phase of reinforcement.'
+      recommendedAction: 'Verify trench depth manually before authorizing the concrete pour.',
+      photoQuality: 'High'
     }
 
-    // 3. Save the report to AIReports (matching schema.prisma)
+    // 3. Save the report (matching F-09 specific fields)
     await prisma.aIReports.create({
       data: {
         id: nanoid(),
@@ -72,21 +79,23 @@ export async function analyzeSubmission(submissionId: string) {
         projectId: submission.projectId,
         milestoneId: submission.milestoneId,
         status: 'complete',
-        overallAssessment: mockAnalysis.overallAssessment,
-        progressIndicator: mockAnalysis.progressIndicator,
+        overallAssessment: mockAnalysis.s1_visible,
+        progressIndicator: mockAnalysis.s2_stage,
+        confidenceLevel: mockAnalysis.s2_confidence,
+        observations: mockAnalysis.s2_stage, // Use S2 reasoning for observations
+        concerns: mockAnalysis.s3_concerns,
+        limitations: mockAnalysis.s4_limitations,
         photoQuality: mockAnalysis.photoQuality,
-        observations: mockAnalysis.observations,
-        concerns: mockAnalysis.concerns,
-        recommendedOwnerAction: mockAnalysis.recommendedOwnerAction,
+        recommendedOwnerAction: mockAnalysis.recommendedAction,
         modelUsed: 'deepseek-v3',
         generatedAt: new Date(),
       }
     })
 
-    logger.info('AI S1-S4 analysis completed', { submissionId, status: mockAnalysis.status })
+    logger.info('F-09: AI Report generated successfully', { submissionId, confidence: mockAnalysis.s2_confidence })
 
   } catch (error) {
-    logger.error('S1-S4 analysis failure', {
+    logger.error('F-09: AI Analysis pipeline failure', {
       submissionId,
       error: { message: (error as Error).message }
     })

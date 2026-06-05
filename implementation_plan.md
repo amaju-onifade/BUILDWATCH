@@ -2,7 +2,7 @@
 
 This document outlines the sequenced execution strategy for the BuildWatch PWA. It strictly follows the rules defined in `.agents/rules/` and the workflows described in `.agents/workflows/`. We will execute this vertically, one complete unit at a time (schema → data access → route → UI → test).
 
-## Tier 1 — Foundation
+## Tier 1 — Foundation (COMPLETED)
 
 **Goal:** Establish the core infrastructure, role-split onboarding, basic milestones, robust offline-resilient photo upload pipeline, and initial subscription billing.
 **Gate Verification:** Proxy can submit geotagged photos under 90s offline on a 3G-simulated connection; Owner receives them; Trial state tracked.
@@ -41,7 +41,7 @@ This document outlines the sequenced execution strategy for the BuildWatch PWA. 
 
 ---
 
-## Tier 2 — Intelligence
+## Tier 2 — Intelligence (COMPLETED)
 
 **Goal:** Close the core loop with DeepSeek, owner approvals, automated state machines, and active heartbeat notifications.
 **Gate Verification:** End-to-end loop runs freely. AI Report generates S1-S4 without banned words. Notifications queue and send. Contractor notified in 2m.

@@ -36,4 +36,7 @@ export const config = {
 
   // App
   appUrl:             requireVar('NEXT_PUBLIC_APP_URL', isTest ? 'http://localhost:3000' : undefined),
+
+  // Cron
+  cronSecret:         requireVar('CRON_SECRET', isTest ? 'mock-cron-secret' : undefined),
 } as const

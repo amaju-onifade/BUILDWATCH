@@ -17,9 +17,51 @@ const STATUS_LABEL: Record<string, string> = {
   archived: 'Archived',
 }
 
+import { OnboardingChecklist } from '@/modules/projects/components/OnboardingChecklist'
+import { InspectorRegistration } from '@/modules/inspectors/components/InspectorRegistration'
+
 export default async function DashboardPage() {
   const session = await getSession()
   if (!session || session.role !== 'owner') redirect('/login')
+
+  // Onboarding Logic
+  const [projectCount, memberCount, submissionCount, activeMilestoneCount] = await Promise.all([
+    prisma.projects.count({ where: { ownerId: session.userId } }),
+    prisma.projectMembers.count({ where: { project: { ownerId: session.userId } } }),
+    prisma.submissions.count({ where: { project: { ownerId: session.userId } } }),
+    prisma.milestones.count({ where: { project: { ownerId: session.userId }, status: 'in_progress' } }),
+  ])
+
+  const onboardingSteps = [
+    {
+      id: 'project',
+      label: 'Create your first project',
+      isComplete: projectCount > 0,
+      link: '/dashboard/projects/new',
+      icon: '🏗️',
+    },
+    {
+      id: 'invite',
+      label: 'Invite a site proxy',
+      isComplete: memberCount > 0,
+      link: projectCount > 0 ? `/dashboard/projects` : '/dashboard/projects/new',
+      icon: '👥',
+    },
+    {
+      id: 'activate',
+      label: 'Start a construction phase',
+      isComplete: activeMilestoneCount > 0 || submissionCount > 0,
+      link: projectCount > 0 ? `/dashboard/projects` : '/dashboard/projects/new',
+      icon: '⚡',
+    },
+    {
+      id: 'submission',
+      label: 'Receive your first update',
+      isComplete: submissionCount > 0,
+      link: '#',
+      icon: '📸',
+    },
+  ]
 
   const projects = await prisma.projects.findMany({
     where: { ownerId: session.userId },
@@ -59,6 +101,9 @@ export default async function DashboardPage() {
 
   return (
     <div className={styles.layout}>
+      {/* Onboarding Guidance */}
+      <OnboardingChecklist steps={onboardingSteps} />
+
       {/* Stats row */}
       <div className={styles.statsRow}>
         <div className={styles.statCard}>
@@ -174,6 +219,8 @@ export default async function DashboardPage() {
           })}
         </div>
       )}
+      {/* Inspector Network CTA */}
+      <InspectorRegistration />
     </div>
   )
 }

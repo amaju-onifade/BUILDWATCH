@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 import { InviteForm } from '@/modules/projects/components/InviteForm/InviteForm'
 import { SubmissionFeed } from '@/modules/submissions/components/SubmissionFeed/SubmissionFeed'
 import styles from './page.module.css'
+import { ProjectHealthCard } from '@/modules/projects/components/ProjectHealthCard'
 
 type Props = {
   params: Promise<{ id: string }>
@@ -49,6 +50,17 @@ export default async function ProjectDetailPage({ params }: Props) {
     _sum: { plannedCostTotal: true },
   })
   const totalAllocated = budgetAgg._sum.plannedCostTotal ?? 0
+
+  // Tier 3: Calculate Actual Spend
+  const spentAgg = await prisma.milestones.aggregate({
+    where: { projectId: id },
+    _sum: {
+      tranche1Actual: true,
+      tranche2Actual: true,
+      tranche3Actual: true,
+    }
+  })
+  const totalSpent = (spentAgg._sum.tranche1Actual ?? 0) + (spentAgg._sum.tranche2Actual ?? 0) + (spentAgg._sum.tranche3Actual ?? 0)
 
   return (
     <div className={styles.container}>
@@ -98,6 +110,22 @@ export default async function ProjectDetailPage({ params }: Props) {
 
       <div className={styles.grid2Col}>
         <div className={styles.gridCol}>
+          <ProjectHealthCard 
+            totalBudget={project.totalBudget ?? 0}
+            spentAmount={totalSpent}
+            totalPhases={totalMilestones}
+            completedPhases={approvedCount}
+            currency={project.currency}
+          />
+          <div style={{ marginTop: 'var(--space-lg)' }}>
+            <a 
+              href={`/api/projects/${id}/dossier`} 
+              className={styles.downloadBtn}
+              download
+            >
+              📥 Download Project Dossier (PDF)
+            </a>
+          </div>
           <InviteForm projectId={id} members={project.members} />
         </div>
 

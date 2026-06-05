@@ -62,40 +62,27 @@ export async function SubmissionFeed({ projectId }: Props) {
               {submission.aiReport && (
                 <div className={styles.aiReport}>
                   <div className={styles.aiHeader}>
-                    <span className={styles.aiBadge}>S1. Assessment</span>
-                    <span className={styles.aiStatus} data-status={submission.aiReport.status}>
-                      {submission.aiReport.status === 'complete' ? 'VERIFIED' : 'FLAGGED'}
-                    </span>
-                  </div>
-                  <p className={styles.aiAssessment}>{submission.aiReport.overallAssessment}</p>
-                  
-                  <div className={styles.aiGrid}>
-                    <div className={styles.aiStat}>
-                      <strong>S2. Progress:</strong> {submission.aiReport.progressIndicator?.replace('_', ' ')}
-                    </div>
-                    <div className={styles.aiStat}>
-                      <strong>S2. Quality:</strong> {submission.aiReport.photoQuality}
+                    <div className={styles.aiBadgeGroup}>
+                      <span className={styles.aiBadge}>AI Inspection Report</span>
+                      <span className={styles.aiConfidence} data-level={submission.aiReport.confidenceLevel}>
+                        {submission.aiReport.confidenceLevel} Confidence
+                      </span>
                     </div>
                   </div>
 
-                  {submission.aiReport.observations && (
-                    <div className={styles.aiObservations}>
-                      <strong>S3. Observations:</strong>
-                      <ul>
-                        {Array.isArray(submission.aiReport.observations) ? (
-                          (submission.aiReport.observations as string[]).map((obs, j) => (
-                            <li key={j}>{obs}</li>
-                          ))
-                        ) : (
-                          <li>{submission.aiReport.observations as string}</li>
-                        )}
-                      </ul>
-                    </div>
-                  )}
+                  <div className={styles.aiSection}>
+                    <strong>S1. What is Visible:</strong>
+                    <p>{submission.aiReport.overallAssessment}</p>
+                  </div>
 
-                  {submission.aiReport.concerns && (
+                  <div className={styles.aiSection}>
+                    <strong>S2. Stage Assessment:</strong>
+                    <p>{submission.aiReport.progressIndicator}</p>
+                  </div>
+
+                  {submission.aiReport.concerns && (Array.isArray(submission.aiReport.concerns) ? (submission.aiReport.concerns.length > 0) : !!submission.aiReport.concerns) && (
                     <div className={styles.aiConcerns}>
-                      <strong>Safety & Quality Concerns:</strong>
+                      <strong>S3. Anomalies & Concerns:</strong>
                       <ul>
                         {Array.isArray(submission.aiReport.concerns) ? (
                           (submission.aiReport.concerns as string[]).map((con, k) => (
@@ -108,9 +95,24 @@ export async function SubmissionFeed({ projectId }: Props) {
                     </div>
                   )}
 
+                  {submission.aiReport.limitations && (
+                    <div className={styles.aiLimitations}>
+                      <strong>S4. Mandatory Limitations:</strong>
+                      <ul>
+                        {Array.isArray(submission.aiReport.limitations) ? (
+                          (submission.aiReport.limitations as string[]).map((lim, l) => (
+                            <li key={l}>{lim}</li>
+                          ))
+                        ) : (
+                          <li>{submission.aiReport.limitations as string}</li>
+                        )}
+                      </ul>
+                    </div>
+                  )}
+
                   {submission.aiReport.recommendedOwnerAction && (
                     <div className={styles.aiAction}>
-                      <strong>S4. Recommended Action:</strong>
+                      <strong>Recommended Owner Action:</strong>
                       <p>{submission.aiReport.recommendedOwnerAction}</p>
                     </div>
                   )}

@@ -1,0 +1,112 @@
+.container {
+  background: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xl);
+}
+
+.title {
+  font-size: var(--typography-title-medium-font-size);
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-on-surface);
+}
+
+.statusBadge {
+  font-size: var(--typography-label-small-font-size);
+  font-weight: 700;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+
+.statusBadge[data-status="ok"] {
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+}
+
+.statusBadge[data-status="warn"] {
+  background: var(--color-error-container);
+  color: var(--color-on-error-container);
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  margin-bottom: var(--space-xl);
+}
+
+.metricLabel {
+  display: block;
+  font-size: var(--typography-body-small-font-size);
+  color: var(--color-on-surface-variant);
+  margin-bottom: var(--space-xs);
+}
+
+.metricValue {
+  display: block;
+  font-size: var(--typography-title-small-font-size);
+  font-weight: 700;
+  color: var(--color-on-surface);
+  margin-bottom: var(--space-sm);
+}
+
+.barContainer {
+  height: 6px;
+  background: var(--color-surface-container-highest);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: var(--space-xs);
+}
+
+.barFill {
+  height: 100%;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.metricSub {
+  font-size: 10px;
+  color: var(--color-on-surface-variant);
+}
+
+.chartArea {
+  margin: var(--space-lg) 0;
+  padding: var(--space-md);
+  background: var(--color-surface-container-low);
+  border-radius: var(--radius-md);
+}
+
+.healthSvg {
+  width: 100%;
+  height: auto;
+}
+
+.svgText {
+  font-size: 8px;
+  fill: var(--color-on-surface-variant);
+  font-weight: 500;
+}
+
+.svgTextLabel {
+  font-size: 6px;
+  fill: var(--color-error);
+  font-weight: 700;
+}
+
+.insight {
+  font-size: var(--typography-body-small-font-size);
+  color: var(--color-on-surface-variant);
+  margin: var(--space-md) 0 0;
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-outline-variant);
+  line-height: 1.5;
+}

@@ -98,6 +98,7 @@ export function InviteForm({ projectId, members }: Props) {
               onChange={e => setEmail(e.target.value)}
               placeholder="cole@example.com"
               className={styles.input}
+              suppressHydrationWarning={true}
             />
           </div>
           <div className={styles.selectWrap}>
@@ -107,6 +108,7 @@ export function InviteForm({ projectId, members }: Props) {
               value={role}
               onChange={e => setRole(e.target.value as 'proxy' | 'contractor')}
               className={styles.select}
+              suppressHydrationWarning={true}
             >
               <option value="proxy">Site Proxy</option>
               <option value="contractor">Contractor</option>

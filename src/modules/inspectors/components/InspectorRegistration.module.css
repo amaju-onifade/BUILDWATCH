@@ -1,0 +1,96 @@
+.card {
+  background: var(--color-surface-container-low);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin-top: var(--space-2xl);
+}
+
+.title {
+  font-size: var(--typography-title-medium-font-size);
+  font-weight: 600;
+  color: var(--color-on-surface);
+  margin: 0 0 var(--space-xs);
+}
+
+.subtitle {
+  font-size: var(--typography-body-medium-font-size);
+  color: var(--color-on-surface-variant);
+  margin: 0 0 var(--space-lg);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.label {
+  font-size: var(--typography-label-medium-font-size);
+  font-weight: 500;
+  color: var(--color-on-surface-variant);
+}
+
+.input {
+  height: 48px;
+  padding: 0 var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-outline-variant);
+  background: var(--color-surface);
+  font-size: var(--typography-body-medium-font-size);
+  transition: border-color 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.button {
+  height: 48px;
+  background: var(--color-inverse-surface);
+  color: var(--color-inverse-on-surface);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.button:hover {
+  opacity: 0.9;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.success {
+  padding: var(--space-xl);
+  background: var(--color-primary-container);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.success h3 {
+  color: var(--color-on-primary-container);
+  margin: 0 0 var(--space-sm);
+}
+
+.success p {
+  color: var(--color-on-primary-container);
+  margin: 0;
+}
+
+.error {
+  color: var(--color-error);
+  font-size: var(--typography-body-small-font-size);
+  margin: 0;
+}

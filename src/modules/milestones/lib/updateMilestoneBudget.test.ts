@@ -6,6 +6,7 @@ const MOCK_MILESTONE = {
   id: 'ms_001',
   projectId: 'proj_001',
   name: 'Foundation',
+  status: 'pending',
   project: { ownerId: 'owner_001' },
 } as any
 
@@ -20,9 +21,10 @@ describe('updateMilestoneBudget', () => {
   })
 
   it('updates budget and writes audit event in a transaction', async () => {
-    prismaMock.milestones.findFirst.mockResolvedValueOnce(MOCK_MILESTONE)
-    prismaMock.milestones.findUniqueOrThrow.mockResolvedValueOnce({ status: 'in_progress' } as any)
-    prismaMock.$transaction.mockResolvedValueOnce([{}, {}])
+    prismaMock.milestones.findFirst.mockResolvedValue(MOCK_MILESTONE)
+    
+    // Mock the callback form of $transaction
+    prismaMock.$transaction.mockImplementation(async (cb) => await cb(prismaMock))
 
     const result = await updateMilestoneBudget('ms_001', VALID_INPUT, 'owner_001')
 
@@ -30,7 +32,13 @@ describe('updateMilestoneBudget', () => {
     if (result.ok) {
       expect(result.data.milestoneId).toBe('ms_001')
     }
-    expect(prismaMock.$transaction).toHaveBeenCalledOnce()
+    expect(prismaMock.milestones.update).toHaveBeenCalledOnce()
+    expect(prismaMock.auditEvents.create).toHaveBeenCalledWith(expect.objectContaining({
+      data: expect.objectContaining({
+        eventType: 'MILESTONE_BUDGET_UPDATED',
+        signature: expect.any(String)
+      })
+    }))
   })
 
   it('returns FORBIDDEN when the milestone project is not owned by requester', async () => {
@@ -60,8 +68,7 @@ describe('updateMilestoneBudget', () => {
   })
 
   it('returns MILESTONE_LOCKED when status is approved', async () => {
-    prismaMock.milestones.findFirst.mockResolvedValueOnce(MOCK_MILESTONE)
-    prismaMock.milestones.findUniqueOrThrow.mockResolvedValueOnce({ status: 'approved' } as any)
+    prismaMock.milestones.findFirst.mockResolvedValueOnce({ ...MOCK_MILESTONE, status: 'approved' })
 
     const result = await updateMilestoneBudget('ms_001', VALID_INPUT, 'owner_001')
 
@@ -73,8 +80,7 @@ describe('updateMilestoneBudget', () => {
   })
 
   it('returns MILESTONE_LOCKED when status is locked', async () => {
-    prismaMock.milestones.findFirst.mockResolvedValueOnce(MOCK_MILESTONE)
-    prismaMock.milestones.findUniqueOrThrow.mockResolvedValueOnce({ status: 'locked' } as any)
+    prismaMock.milestones.findFirst.mockResolvedValueOnce({ ...MOCK_MILESTONE, status: 'locked' })
 
     const result = await updateMilestoneBudget('ms_001', VALID_INPUT, 'owner_001')
 

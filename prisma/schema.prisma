@@ -154,8 +154,10 @@ model AIReports {
   status                  String        @default("complete") // complete, failed
   overallAssessment       String?
   progressIndicator       String?
+  confidenceLevel         String?       // High, Medium, Low
   observations            Json?
   concerns                Json?
+  limitations             Json?
   photoQuality            String?
   photoQualityNote        String?
   recommendedOwnerAction  String?
@@ -197,6 +199,7 @@ model AuditEvents {
   resourceType        String?
   metadata            Json?
   ipAddress           String?
+  signature           String?       // Cryptographic signature for non-repudiation
   createdAt           DateTime      @default(now())
 
   @@index([projectId])

@@ -1,0 +1,152 @@
+.checklistCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-2xl);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+.checklistCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--color-primary);
+}
+
+.checklistHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-xl);
+}
+
+.checklistTitle {
+  font-size: var(--typography-title-large-font-size);
+  font-weight: var(--typography-title-large-font-weight);
+  color: var(--color-on-surface);
+  margin: 0 0 var(--space-xs);
+}
+
+.checklistSubtitle {
+  font-size: var(--typography-body-medium-font-size);
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.progressCircle {
+  width: 64px;
+  height: 64px;
+}
+
+.circularChart {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.circleBg {
+  fill: none;
+  stroke: var(--color-surface-variant);
+  stroke-width: 3.8;
+}
+
+.circle {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 3.8;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.6s ease;
+}
+
+.percentage {
+  fill: var(--color-on-surface);
+  font-family: var(--typography-label-medium-font-family);
+  font-size: 8px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.stepList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+@media (min-width: 768px) {
+  .stepList {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.stepItem {
+  display: flex;
+  align-items: center;
+  padding: var(--space-md);
+  background: var(--color-surface-container-low);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.stepItem[data-complete="true"] {
+  background: var(--color-primary-container);
+  opacity: 0.8;
+}
+
+.stepIcon {
+  font-size: 20px;
+  margin-right: var(--space-md);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.stepContent {
+  flex: 1;
+}
+
+.stepLabel {
+  font-size: var(--typography-label-large-font-size);
+  color: var(--color-on-primary-container);
+  font-weight: 500;
+}
+
+.stepLink {
+  font-size: var(--typography-label-large-font-size);
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stepLink span {
+  transition: transform 0.2s ease;
+}
+
+.stepLink:hover span {
+  transform: translateX(4px);
+}
+
+.checkMark {
+  width: 20px;
+  height: 20px;
+  color: var(--color-primary);
+  margin-left: var(--space-sm);
+}
