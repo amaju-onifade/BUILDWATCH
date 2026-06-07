@@ -7,6 +7,7 @@ import { nanoid } from 'nanoid'
 
 /**
  * Updates the budget allocation for a single milestone.
+ * Can also mark the milestone as completed (approved) in the same request.
  * Confirms the requesting user owns the parent project before writing.
  * Writes an audit event in the same transaction as the budget update.
  */
@@ -32,28 +33,42 @@ export async function updateMilestoneBudget(
       return err('Forbidden', 'FORBIDDEN')
     }
 
-    // Only allow budget edits on milestones that are not yet approved/locked
-    if (['approved', 'locked'].includes(milestone.status)) {
-      return err('Cannot edit budget of an approved or locked milestone', 'MILESTONE_LOCKED')
+    // Only allow budget edits on milestones that are not yet approved
+    if (milestone.status === 'approved') {
+      return err('Cannot edit budget of an approved milestone', 'MILESTONE_LOCKED')
     }
 
     await prisma.$transaction(async (tx) => {
+      const updateData: any = {
+        plannedCostTotal: input.plannedCostTotal,
+        paymentScheduleType: input.paymentScheduleType,
+        tranche1Planned: input.tranche1Planned ?? null,
+        tranche2Planned: input.tranche2Planned ?? null,
+        tranche3Planned: input.tranche3Planned ?? null,
+      }
+
+      // If marking as completed, set approval timestamps
+      if (input.status === 'approved') {
+        updateData.status = 'approved'
+        updateData.approvedAt = new Date()
+        updateData.completedAt = new Date()
+        updateData.approvedById = requestingUserId
+      }
+
       await tx.milestones.update({
         where: { id: milestoneId },
-        data: {
-          plannedCostTotal: input.plannedCostTotal,
-          paymentScheduleType: input.paymentScheduleType,
-          tranche1Planned: input.tranche1Planned ?? null,
-          tranche2Planned: input.tranche2Planned ?? null,
-          tranche3Planned: input.tranche3Planned ?? null,
-        },
+        data: updateData,
       })
 
       const eventDate = new Date()
+      const auditEventType = input.status === 'approved'
+        ? 'MILESTONE_APPROVED'
+        : 'MILESTONE_BUDGET_UPDATED'
+
       await tx.auditEvents.create({
         data: {
           id: nanoid(),
-          eventType: 'MILESTONE_BUDGET_UPDATED',
+          eventType: auditEventType,
           actorId: requestingUserId,
           resourceId: milestoneId,
           resourceType: 'milestone',
@@ -62,11 +77,12 @@ export async function updateMilestoneBudget(
             milestoneName: milestone.name,
             plannedCostTotal: input.plannedCostTotal,
             paymentScheduleType: input.paymentScheduleType,
+            ...(input.status === 'approved' && { wasCompletedOnCreation: true }),
           },
           createdAt: eventDate,
           signature: signAuditEvent({
             actorId: requestingUserId,
-            eventType: 'MILESTONE_BUDGET_UPDATED',
+            eventType: auditEventType,
             resourceId: milestoneId,
             createdAt: eventDate
           })

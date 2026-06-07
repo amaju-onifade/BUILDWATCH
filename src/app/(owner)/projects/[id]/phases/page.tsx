@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { formatCurrency } from '@/lib/format'
 import { notFound } from 'next/navigation'
 import { ApproveButton } from '@/modules/milestones/components/ApproveButton/ApproveButton'
 import styles from './page.module.css'
@@ -40,7 +41,7 @@ export default async function PhasesPage({ params }: Props) {
 
   return (
     <div className={styles.page}>
-      <Link href={`/dashboard/projects/${id}`} className={styles.backLink}>
+      <Link href={`/projects/${id}`} className={styles.backLink}>
         &larr; Back to project
       </Link>
 
@@ -62,11 +63,7 @@ export default async function PhasesPage({ params }: Props) {
                 <span className={styles.cardName}>{m.name}</span>
                 {m.plannedCostTotal != null && (
                   <span className={styles.cardBudget}>
-                    {new Intl.NumberFormat('en-NG', {
-                      style: 'currency',
-                      currency: m.currency ?? 'NGN',
-                      maximumFractionDigits: 0,
-                    }).format(m.plannedCostTotal)}
+                    {formatCurrency(m.plannedCostTotal, m.currency)}
                   </span>
                 )}
               </div>

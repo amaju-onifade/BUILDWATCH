@@ -1,13 +1,7 @@
 import { jsPDF } from 'jspdf'
-import 'jspdf-autotable'
+import autoTable from 'jspdf-autotable'
 import { prisma } from '@/lib/db'
-
-// Note: jspdf-autotable adds autoTable to jsPDF type
-declare module 'jspdf' {
-  interface jsPDF {
-    autoTable: (options: any) => jsPDF
-  }
-}
+import { formatCurrency } from '@/lib/format'
 
 /**
  * Generates a Project Dossier PDF.
@@ -16,7 +10,19 @@ declare module 'jspdf' {
 export async function generateProjectDossier(projectId: string): Promise<Uint8Array> {
   const project = await prisma.projects.findUnique({
     where: { id: projectId },
-    include: {
+    select: {
+      id: true,
+      name: true,
+      location: true,
+      streetNumber: true,
+      streetName: true,
+      lga: true,
+      state: true,
+      googleMapsPin: true,
+      buildType: true,
+      totalBudget: true,
+      currency: true,
+      status: true,
       owner: { select: { fullName: true, email: true } },
       milestones: {
         orderBy: { order: 'asc' },
@@ -55,20 +61,29 @@ export async function generateProjectDossier(projectId: string): Promise<Uint8Ar
   doc.text('Project Overview', 14, 45)
   
   doc.setFontSize(10)
-  const info = [
+  // Build structured address string for the dossier
+  const streetLine = [project.streetNumber, project.streetName].filter(Boolean).join(' ')
+  const localityLine = [project.lga, project.state].filter(Boolean).join(', ')
+  const fullAddress = [streetLine, localityLine].filter(Boolean).join(', ') || project.location
+
+  const info: [string, string][] = [
     ['Project Name', project.name],
-    ['Location', project.location],
+    ['Site Address', fullAddress],
+    ['LGA', project.lga ?? '—'],
+    ['State', project.state ?? '—'],
+    ...(project.googleMapsPin ? [['Google Maps Pin', project.googleMapsPin] as [string, string]] : []),
+    ['Build Type', project.buildType ?? '—'],
     ['Owner', project.owner.fullName],
     ['Status', project.status.toUpperCase()],
-    ['Total Budget', `${project.currency} ${project.totalBudget?.toLocaleString() || 'N/A'}`]
+    ['Total Budget', formatCurrency(project.totalBudget, project.currency)]
   ]
 
-  doc.autoTable({
+  autoTable(doc, {
     startY: 50,
     head: [['Field', 'Value']],
     body: info,
     theme: 'striped',
-    headStyles: { fillStyle: 'f', fillColor: [15, 109, 78] }
+    headStyles: { fillColor: [15, 109, 78] }
   })
 
   // Milestones Summary
@@ -84,7 +99,7 @@ export async function generateProjectDossier(projectId: string): Promise<Uint8Ar
     m.approvedBy?.fullName || 'N/A'
   ])
 
-  doc.autoTable({
+  autoTable(doc, {
     startY: lastY + 20,
     head: [['#', 'Phase Name', 'Status', 'Approved At', 'Approved By']],
     body: milestoneRows,
@@ -104,7 +119,7 @@ export async function generateProjectDossier(projectId: string): Promise<Uint8Ar
       e.signature ? (e.signature as string).substring(0, 8) + '...' : 'UNSIGNED'
     ])
 
-    doc.autoTable({
+    autoTable(doc, {
       startY: auditY + 20,
       head: [['Timestamp', 'Event', 'Digital Signature']],
       body: auditRows,

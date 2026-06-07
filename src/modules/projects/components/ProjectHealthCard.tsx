@@ -1,4 +1,5 @@
 import React from 'react'
+import { formatCurrency } from '@/lib/format'
 import styles from './ProjectHealthCard.module.css'
 
 interface ProjectHealthCardProps {
@@ -23,11 +24,7 @@ export function ProjectHealthCard({
   const isHealthy = budgetProgress <= timeProgress + 10
   const statusLabel = isHealthy ? 'On Track' : 'Over Budget'
 
-  const formatter = new Intl.NumberFormat('en-NG', {
-    style: 'currency',
-    currency: currency || 'NGN',
-    maximumFractionDigits: 0,
-  })
+  const formatter = (v: number) => formatCurrency(v, currency)
 
   return (
     <div className={styles.container} data-healthy={isHealthy}>
@@ -41,7 +38,7 @@ export function ProjectHealthCard({
       <div className={styles.metricsGrid}>
         <div className={styles.metric}>
           <span className={styles.metricLabel}>Budget Spent</span>
-          <span className={styles.metricValue}>{formatter.format(spentAmount)}</span>
+          <span className={styles.metricValue}>{formatter(spentAmount)}</span>
           <div className={styles.barContainer}>
             <div 
               className={styles.barFill} 

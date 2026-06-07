@@ -1,37 +1,38 @@
 import { logger } from '@/lib/logger'
 import { config } from '@/lib/config'
 
-type Severity = 'low' | 'medium' | 'high'
-type Observation = {
-  issue: string
-  severity: Severity
-  recommendation: string
-}
-
 export type AIAnalysisResult = {
   overallAssessment: string
-  progressIndicator: 'on_track' | 'at_risk' | 'critical'
-  observations: Observation[]
+  progressIndicator: string
+  confidenceLevel: 'High' | 'Medium' | 'Low'
   concerns: string[]
-  photoQuality: 'clear' | 'blurry' | 'distorted' | 'not_relevant'
+  limitations: string[]
+  photoQuality: 'High' | 'Medium' | 'Low'
   recommendedOwnerAction: string
 }
 
-const SYSTEM_PROMPT = `You are the BuildWatch AI site inspector. Your goal is to analyze construction site photos and provide a technical assessment for the property owner.
+const SYSTEM_PROMPT = `You are the BuildWatch AI site inspector. Analyze construction site photos and provide a structured S1-S4 report.
+
+REPORT STRUCTURE:
+S1. WHAT IS VISIBLE: Plain-English description of walls, roof, materials, workers, and activity.
+S2. STAGE ASSESSMENT: Professional assessment of construction stage with confidence level (High/Medium/Low).
+S3. ANOMALIES & CONCERNS: Flag incomplete work, safety issues, or material shortages.
+S4. LIMITATIONS: Explicitly state what you CANNOT see (concrete mix ratios, rebar diameter/spacing, foundation depth, waterproofing, structural adequacy).
 
 CONSTRAINTS:
-1. NEVER use words like "approved", "certified", "verified", or "guaranteed". Use phrases like "appears consistent with", "recommended review of", or "observed progress".
-2. Be critical but objective. If photos are blurry or not relevant to the milestone, flag it immediately.
-3. Your output MUST be a valid JSON object matching the requested schema.
+1. NEVER use "approved", "certified", "verified", or "guaranteed". Use "appears consistent with", "recommended review of", or "observed progress".
+2. S4 limitations MUST include rebar, foundation depth, and material ratios.
+3. Your output MUST be valid JSON matching the schema below.
 
-SCHEMA:
+JSON SCHEMA:
 {
-  "overallAssessment": "string",
-  "progressIndicator": "on_track" | "at_risk" | "critical",
-  "observations": [{ "issue": "string", "severity": "low" | "medium" | "high", "recommendation": "string" }],
-  "concerns": ["string"],
-  "photoQuality": "clear" | "blurry" | "distorted" | "not_relevant",
-  "recommendedOwnerAction": "string"
+  "overallAssessment": "S1 text — what is visible",
+  "progressIndicator": "S2 text — stage assessment with reasoning",
+  "confidenceLevel": "High" | "Medium" | "Low",
+  "concerns": ["anomaly 1", "anomaly 2"],
+  "limitations": ["limit 1", "limit 2"],
+  "photoQuality": "High" | "Medium" | "Low",
+  "recommendedOwnerAction": "action for the owner"
 }`
 
 /**
@@ -56,7 +57,10 @@ export async function analyzeSubmissionPhotos(
           'Authorization': `Bearer ${config.deepseekApiKey}`,
         },
         body: JSON.stringify({
-          model: 'deepseek-chat', // Assuming vision-enabled model name; update if specific vision model is required
+          // deepseek-chat is text-only; use the vision-capable model for photo analysis.
+          // NOTE: Verify current model name at https://platform.deepseek.com/api-docs — model names can change.
+          // Use 'deepseek-chat' (multimodal, supports vision). Verify at https://platform.deepseek.com/api-docs
+          model: 'deepseek-chat',
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
             {

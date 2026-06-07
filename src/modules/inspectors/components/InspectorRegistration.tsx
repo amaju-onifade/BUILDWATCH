@@ -50,20 +50,20 @@ export function InspectorRegistration() {
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.field}>
           <label htmlFor="name" className={styles.label}>Full Name / Firm</label>
-          <input type="text" id="name" name="name" required className={styles.input} placeholder="e.g. Adebayo & Sons Engineering" />
+          <input type="text" id="name" name="name" required className={styles.input} placeholder="e.g. Adebayo & Sons Engineering" suppressHydrationWarning />
         </div>
 
         <div className={styles.field}>
           <label htmlFor="registrationNumber" className={styles.label}>NIQS / COREN Number</label>
-          <input type="text" id="registrationNumber" name="registrationNumber" className={styles.input} placeholder="Registration ID (optional)" />
+          <input type="text" id="registrationNumber" name="registrationNumber" className={styles.input} placeholder="Registration ID (optional)" suppressHydrationWarning />
         </div>
 
         <div className={styles.field}>
           <label htmlFor="location" className={styles.label}>LGA / State</label>
-          <input type="text" id="location" name="location" required className={styles.input} placeholder="e.g. Ikeja, Lagos" />
+          <input type="text" id="location" name="location" required className={styles.input} placeholder="e.g. Ikeja, Lagos" suppressHydrationWarning />
         </div>
 
-        <button type="submit" disabled={status === 'loading'} className={styles.button}>
+        <button type="submit" disabled={status === 'loading'} className={styles.button} suppressHydrationWarning>
           {status === 'loading' ? 'Registering...' : 'Register Interest'}
         </button>
         

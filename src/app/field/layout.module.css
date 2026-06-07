@@ -30,10 +30,6 @@
   text-decoration: none;
 }
 
-.brand svg {
-  color: var(--color-primary);
-}
-
 .nav {
   display: flex;
   align-items: center;

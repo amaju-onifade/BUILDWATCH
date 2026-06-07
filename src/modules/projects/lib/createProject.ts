@@ -7,12 +7,20 @@ import { NIGERIAN_RESIDENTIAL_TEMPLATE } from './templates'
 export async function createProject(ownerId: string, input: CreateProjectInput): Promise<Result<{ projectId: string }>> {
   try {
     const { project } = await prisma.$transaction(async tx => {
+      // Derive a human-readable location string from address parts
+      const derivedLocation = [input.lga, input.state].filter(Boolean).join(', ')
+
       // Create Project
       const project = await tx.projects.create({
         data: {
           ownerId,
           name: input.name,
-          location: input.location,
+          location: input.location ?? derivedLocation,
+          streetNumber: input.streetNumber,
+          streetName: input.streetName,
+          lga: input.lga,
+          state: input.state,
+          googleMapsPin: input.googleMapsPin || null,
           buildType: input.buildType,
           totalBudget: input.totalBudget,
           currency: input.currency ?? 'NGN',
@@ -25,11 +33,12 @@ export async function createProject(ownerId: string, input: CreateProjectInput):
       // So no need to add owner to projectMembers table.
       
       // Auto-populate Milestones using the Nigerian Residential Template
-      const milestonesData = NIGERIAN_RESIDENTIAL_TEMPLATE.map((m, index) => ({
+      // All milestones start as pending — no linear locking. Multiple milestones can run in parallel.
+      const milestonesData = NIGERIAN_RESIDENTIAL_TEMPLATE.map((m) => ({
         projectId: project.id,
         name: m.name,
         order: m.order,
-        status: index === 0 ? 'pending' : 'locked',
+        status: 'pending',
       }))
 
       await tx.milestones.createMany({

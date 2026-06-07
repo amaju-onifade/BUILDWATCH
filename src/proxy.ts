@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifySession } from '@/lib/auth'
 
-const OWNER_ROUTES = ['/dashboard', '/projects', '/reports', '/billing']
+const OWNER_ROUTES = ['/dashboard', '/onboarding', '/projects', '/reports', '/billing', '/inspectors', '/settings']
 const PROXY_ROUTES = ['/submit', '/proxy', '/field']
 const CONTRACTOR_ROUTES = ['/site', '/contractor', '/field']
-const PUBLIC_ROUTES = ['/login', '/register', '/invite']
+const PUBLIC_ROUTES = ['/', '/login', '/register', '/invite']
 const PUBLIC_API_ROUTES = ['/api/auth/login', '/api/auth/register', '/api/auth/redeem']
 
 export async function proxy(req: NextRequest) {
@@ -21,12 +21,6 @@ export async function proxy(req: NextRequest) {
 
   const debug = { pathname, hasCookie: !!cookieToken, hasSession: !!session, role: session?.role, method: req.method }
   console.log('[proxy]', JSON.stringify(debug))
-
-  if (pathname === '/') {
-    if (!session) return NextResponse.redirect(new URL('/login', req.url))
-    if (session.role === 'owner') return NextResponse.redirect(new URL('/dashboard', req.url))
-    return NextResponse.redirect(new URL('/field', req.url))
-  }
 
   if (!session) {
     console.log('[proxy] no session, redirecting to /login')

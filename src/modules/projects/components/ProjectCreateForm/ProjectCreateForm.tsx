@@ -16,10 +16,22 @@ const BUILD_TYPES = [
   'Renovation / Extension',
 ]
 
+const NIGERIAN_STATES = [
+  'Abia', 'Adamawa', 'Akwa Ibom', 'Anambra', 'Bauchi', 'Bayelsa', 'Benue',
+  'Borno', 'Cross River', 'Delta', 'Ebonyi', 'Edo', 'Ekiti', 'Enugu',
+  'FCT - Abuja', 'Gombe', 'Imo', 'Jigawa', 'Kaduna', 'Kano', 'Katsina',
+  'Kebbi', 'Kogi', 'Kwara', 'Lagos', 'Nasarawa', 'Niger', 'Ogun', 'Ondo',
+  'Osun', 'Oyo', 'Plateau', 'Rivers', 'Sokoto', 'Taraba', 'Yobe', 'Zamfara',
+]
+
 export function ProjectCreateForm() {
   const router = useRouter()
   const [name, setName] = useState('')
-  const [location, setLocation] = useState('')
+  const [streetNumber, setStreetNumber] = useState('')
+  const [streetName, setStreetName] = useState('')
+  const [lga, setLga] = useState('')
+  const [state, setState] = useState('')
+  const [googleMapsPin, setGoogleMapsPin] = useState('')
   const [buildType, setBuildType] = useState('')
   const [totalBudget, setTotalBudget] = useState('')
   const [error, setError] = useState('')
@@ -36,7 +48,11 @@ export function ProjectCreateForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name,
-          location,
+          streetNumber,
+          streetName,
+          lga,
+          state,
+          googleMapsPin: googleMapsPin || undefined,
           buildType: buildType || undefined,
           totalBudget: totalBudget ? parseFloat(totalBudget) : undefined,
           currency: 'NGN',
@@ -55,8 +71,7 @@ export function ProjectCreateForm() {
         return
       }
 
-      // Redirect to the new project's milestone configuration page
-      router.push(`/dashboard/projects/${data.data.projectId}/milestones`)
+      router.push(`/projects/${data.data.projectId}/milestones`)
     } catch {
       setError('A network error occurred. Please try again.')
       setIsLoading(false)
@@ -79,6 +94,7 @@ export function ProjectCreateForm() {
         </div>
       )}
 
+      {/* Project Name */}
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>Project Details</h2>
         <div className={styles.fieldGroup}>
@@ -91,18 +107,91 @@ export function ProjectCreateForm() {
             onChange={e => setName(e.target.value)}
             placeholder="e.g. Lekki Phase 1 Build"
           />
-          <Input
-            id="project-location"
-            label="Site location"
-            type="text"
-            required
-            value={location}
-            onChange={e => setLocation(e.target.value)}
-            placeholder="e.g. Lekki, Lagos"
-          />
         </div>
       </div>
 
+      {/* Site Address */}
+      <div className={styles.section}>
+        <h2 className={styles.sectionTitle}>Site Address</h2>
+        <div className={styles.addressRow}>
+          <div className={styles.addressNumberField}>
+            <Input
+              id="project-street-number"
+              label="Street No."
+              type="text"
+              required
+              value={streetNumber}
+              onChange={e => setStreetNumber(e.target.value)}
+              placeholder="e.g. 14"
+              suppressHydrationWarning
+            />
+          </div>
+          <div className={styles.addressStreetField}>
+            <Input
+              id="project-street-name"
+              label="Street name"
+              type="text"
+              required
+              value={streetName}
+              onChange={e => setStreetName(e.target.value)}
+              placeholder="e.g. Admiralty Way"
+              suppressHydrationWarning
+            />
+          </div>
+        </div>
+        <div className={styles.addressRow}>
+          <div className={styles.addressHalfField}>
+            <Input
+              id="project-lga"
+              label="Local Government Area"
+              type="text"
+              required
+              value={lga}
+              onChange={e => setLga(e.target.value)}
+              placeholder="e.g. Eti-Osa"
+              suppressHydrationWarning
+            />
+          </div>
+          <div className={styles.addressHalfField}>
+            <div className={styles.selectWrapper}>
+              <label htmlFor="project-state" className={styles.selectLabel}>
+                State <span aria-hidden="true">*</span>
+              </label>
+              <select
+                id="project-state"
+                className={styles.select}
+                value={state}
+                required
+                onChange={e => setState(e.target.value)}
+              >
+                <option value="">Select state…</option>
+                {NIGERIAN_STATES.map(s => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Google Maps Pin — optional */}
+        <div className={styles.mapsPinWrapper}>
+          <Input
+            id="project-maps-pin"
+            label="Google Maps pin"
+            type="url"
+            value={googleMapsPin}
+            onChange={e => setGoogleMapsPin(e.target.value)}
+            placeholder="https://maps.app.goo.gl/…"
+            helperText="Optional. Paste a Google Maps link to the site. Used to cross-verify proxy GPS on AI reports."
+            suppressHydrationWarning
+          />
+          <p className={styles.pinHint}>
+            How to get this: open Google Maps → long-press your site → tap &quot;Share&quot; → copy link.
+          </p>
+        </div>
+      </div>
+
+      {/* Build Information */}
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>Build Information <span className={styles.optional}>(optional)</span></h2>
         <div className={styles.fieldGroup}>

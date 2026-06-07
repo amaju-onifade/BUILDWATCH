@@ -9,10 +9,6 @@
 }
 
 .logo {
-  font-family: var(--typography-headline-large-font-family);
-  font-weight: 800;
-  font-size: 32px;
-  color: var(--color-primary);
   margin-bottom: var(--space-xl);
 }
 

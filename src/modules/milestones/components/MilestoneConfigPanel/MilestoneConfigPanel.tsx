@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { ChevronDown, Lock } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/Button/Button'
 import { Input } from '@/components/ui/Input/Input'
 import { MILESTONE_STATUS, type MilestoneRow } from '@/modules/milestones/types'
@@ -19,6 +19,7 @@ type BudgetDraft = {
   tranche1Planned: string
   tranche2Planned: string
   tranche3Planned: string
+  completed: boolean
 }
 
 const emptyDraft = (): BudgetDraft => ({
@@ -27,11 +28,13 @@ const emptyDraft = (): BudgetDraft => ({
   tranche1Planned: '',
   tranche2Planned: '',
   tranche3Planned: '',
+  completed: false,
 })
 
+import { formatCurrency } from '@/lib/format'
+
 function formatNGN(value: number | null): string {
-  if (value === null) return '—'
-  return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', maximumFractionDigits: 0 }).format(value)
+  return formatCurrency(value, 'NGN')
 }
 
 const STATUS_LABEL: Record<string, string> = {
@@ -60,6 +63,7 @@ export function MilestoneConfigPanel({ projectId, milestones }: Props) {
       tranche1Planned: m.tranche1Planned?.toString() ?? '',
       tranche2Planned: m.tranche2Planned?.toString() ?? '',
       tranche3Planned: m.tranche3Planned?.toString() ?? '',
+      completed: m.status === 'approved',
     }
   }, [drafts, milestones])
 
@@ -67,8 +71,8 @@ export function MilestoneConfigPanel({ projectId, milestones }: Props) {
     setDrafts(prev => ({ ...prev, [id]: { ...getDraft(id), ...patch } }))
   }
 
-  const isLocked = (m: MilestoneRow) =>
-    m.status === MILESTONE_STATUS.APPROVED || m.status === MILESTONE_STATUS.LOCKED
+  const isCompleted = (m: MilestoneRow) =>
+    m.status === MILESTONE_STATUS.APPROVED
 
   const handleSave = async (milestoneId: string) => {
     const draft = getDraft(milestoneId)
@@ -76,7 +80,7 @@ export function MilestoneConfigPanel({ projectId, milestones }: Props) {
     setErrors(prev => ({ ...prev, [milestoneId]: '' }))
 
     try {
-      const body = {
+      const body: Record<string, any> = {
         plannedCostTotal: parseFloat(draft.plannedCostTotal) || 0,
         paymentScheduleType: draft.paymentScheduleType,
         ...(draft.paymentScheduleType === 'tranche3' && {
@@ -84,6 +88,9 @@ export function MilestoneConfigPanel({ projectId, milestones }: Props) {
           tranche2Planned: parseFloat(draft.tranche2Planned) || undefined,
           tranche3Planned: parseFloat(draft.tranche3Planned) || undefined,
         }),
+      }
+      if (draft.completed) {
+        body.status = 'approved'
       }
 
       const res = await fetch(`/api/milestones/${milestoneId}`, {
@@ -131,16 +138,15 @@ export function MilestoneConfigPanel({ projectId, milestones }: Props) {
         {milestones.map((milestone) => {
           const draft = getDraft(milestone.id)
           const isExpanded = expandedId === milestone.id
-          const locked = isLocked(milestone)
+          const completed = isCompleted(milestone)
 
           return (
-            <li key={milestone.id} className={styles.item} data-expanded={isExpanded} data-locked={locked}>
+            <li key={milestone.id} className={styles.item} data-expanded={isExpanded} data-completed={completed}>
               <button
                 type="button"
                 className={styles.itemHeader}
                 onClick={() => setExpandedId(isExpanded ? null : milestone.id)}
                 aria-expanded={isExpanded}
-                disabled={locked}
                 id={`milestone-expand-${milestone.id}`}
               >
                 <span className={styles.orderBadge}>{milestone.order}</span>
@@ -151,20 +157,17 @@ export function MilestoneConfigPanel({ projectId, milestones }: Props) {
                   )}
                   <span
                     className={styles.statusBadge}
-                    data-status={milestone.status}
+                    data-status={completed ? 'approved' : (draft.completed ? 'approved' : milestone.status)}
                   >
-                    {STATUS_LABEL[milestone.status] ?? milestone.status}
+                    {completed || draft.completed ? 'Completed' : (STATUS_LABEL[milestone.status] ?? milestone.status)}
                   </span>
-                  {!locked && (
+                  {!completed && (
                     <ChevronDown size={16} className={styles.chevron} data-open={isExpanded} />
-                  )}
-                  {locked && (
-                    <Lock size={16} />
                   )}
                 </div>
               </button>
 
-              {isExpanded && !locked && (
+              {isExpanded && !completed && (
                 <div className={styles.budgetForm}>
                   {errors[milestone.id] && (
                     <div role="alert" className={styles.errorAlert}>{errors[milestone.id]}</div>
@@ -232,6 +235,15 @@ export function MilestoneConfigPanel({ projectId, milestones }: Props) {
                     </div>
                   )}
 
+                  <label className={styles.completedCheck}>
+                    <input
+                      type="checkbox"
+                      checked={draft.completed}
+                      onChange={e => updateDraft(milestone.id, { completed: e.target.checked })}
+                    />
+                    <span>Mark as completed — this phase is already done</span>
+                  </label>
+
                   <div className={styles.formActions}>
                     <button
                       type="button"
@@ -262,7 +274,7 @@ export function MilestoneConfigPanel({ projectId, milestones }: Props) {
           id="milestone-config-done"
           type="button"
           fullWidth
-          onClick={() => router.push(`/dashboard/projects/${projectId}`)}
+          onClick={() => router.push(`/projects/${projectId}`)}
         >
           Done — go to project dashboard
         </Button>

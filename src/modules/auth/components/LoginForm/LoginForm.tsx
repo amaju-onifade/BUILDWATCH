@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button/Button'
 import { Input } from '@/components/ui/Input/Input'
 import styles from './LoginForm.module.css'
@@ -30,7 +31,7 @@ export function LoginForm({ error: serverError }: { error?: string }) {
   return (
     <form className={styles.form} action="/api/auth/login" method="POST" onSubmit={handleSubmit}>
       <div className={styles.header}>
-        <h2 className={styles.title}>Welcome back to BuildWatch</h2>
+        <h2 className={styles.title}>Welcome back!</h2>
         <p className={styles.description}>Log in to manage your construction projects.</p>
       </div>
 
@@ -60,7 +61,7 @@ export function LoginForm({ error: serverError }: { error?: string }) {
       </div>
 
       <Button type="submit" fullWidth isLoading={isLoading}>
-        Log in
+        Log in <ArrowRight size={16} />
       </Button>
 
       <p className={styles.footer}>

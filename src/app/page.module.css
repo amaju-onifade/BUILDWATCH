@@ -124,9 +124,10 @@ a.secondary {
 }
 
 @media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
+.logo {
+  margin-bottom: var(--space-sm);
+  object-fit: contain;
+}
 
   .page {
     --background: #000;

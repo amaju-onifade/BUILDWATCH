@@ -21,6 +21,7 @@ export const UpdateMilestoneBudgetSchema = z.object({
   tranche1Planned: z.number().min(0).optional(),
   tranche2Planned: z.number().min(0).optional(),
   tranche3Planned: z.number().min(0).optional(),
+  status: z.enum(['approved']).optional(),
 })
 
 export type UpdateMilestoneBudgetInput = z.infer<typeof UpdateMilestoneBudgetSchema>

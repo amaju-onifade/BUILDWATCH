@@ -4,7 +4,7 @@ import { prisma } from '@/lib/db'
 import { logger } from '@/lib/logger'
 import { encrypt } from '@/lib/encryption'
 import { CreateSubmissionSchema } from '../types'
-import { analyzeSubmission } from '../../ai-analysis/lib/analyzeSubmission'
+import { triggerAIAnalysis } from '../../ai-analysis/lib/triggerAnalysis'
 import { notifyOwnerNewSubmission } from '../../notifications/lib/dispatch'
 import type { SessionUser } from '@/lib/auth'
 
@@ -122,7 +122,7 @@ export async function handleCreateSubmission(
     })
 
     // Tier 2: Fire-and-forget AI analysis
-    analyzeSubmission(submission.id).catch(err => {
+    triggerAIAnalysis(submission.id).catch(err => {
       logger.error('AI analysis background job failed to start', {
         submissionId: submission.id,
         error: { message: err.message }

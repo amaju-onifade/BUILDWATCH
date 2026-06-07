@@ -1,5 +1,6 @@
 import { logger } from '@/lib/logger'
 import { prisma } from '@/lib/db'
+import { getDownloadUrl } from '../../submissions/lib/storage'
 import { analyzeSubmissionPhotos } from './deepseek'
 import { saveAIReport } from './saveReport'
 
@@ -23,10 +24,9 @@ export async function triggerAIAnalysis(submissionId: string) {
       return
     }
 
-    // 2. Prepare photo URLs (assuming public or presigned URLs)
-    // NOTE: In production, these should be signed Cloudflare R2 URLs.
-    const photoUrls = submission.photos.map(p => 
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/photos/${p.storageKey}`
+    // 2. Generate signed download URLs for each photo
+    const photoUrls = await Promise.all(
+      submission.photos.map(p => getDownloadUrl(p.storageKey))
     )
 
     // 3. Perform analysis (handles its own retries)

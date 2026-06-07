@@ -32,7 +32,7 @@ export async function notifyOwnerNewSubmission(submissionId: string): Promise<vo
       ? aiConcerns.length > 0
       : !!aiConcerns
 
-    const projectUrl = `${config.appUrl}/dashboard/projects/${submission.projectId}`
+    const projectUrl = `${config.appUrl}/projects/${submission.projectId}`
 
     // 1. Send email to owner
     await sendEmail({
@@ -109,7 +109,7 @@ export async function notifyContractorMilestoneApproved(
       include: { user: { select: { email: true, fullName: true } } },
     })
 
-    const projectUrl = `${config.appUrl}/dashboard/projects/${projectId}`
+    const projectUrl = `${config.appUrl}/projects/${projectId}`
 
     for (const member of contractors) {
       await sendEmail({
@@ -188,7 +188,7 @@ export async function checkHeartbeatSilence(): Promise<void> {
             ownerName: project.owner.fullName,
             projectName: project.name,
             daysSinceLastSubmission: daysSince,
-            projectUrl: `${config.appUrl}/dashboard/projects/${project.id}`,
+            projectUrl: `${config.appUrl}/projects/${project.id}`,
           }),
         })
 

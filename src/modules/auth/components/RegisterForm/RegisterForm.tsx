@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button/Button'
 import { Input } from '@/components/ui/Input/Input'
 import styles from './RegisterForm.module.css'
@@ -38,7 +39,7 @@ export function RegisterForm() {
         return
       }
 
-      router.push('/dashboard')
+      router.push('/onboarding')
       router.refresh()
     } catch {
       setError('A network error occurred. Please try again.')
@@ -84,7 +85,7 @@ export function RegisterForm() {
       </div>
 
       <Button type="submit" fullWidth isLoading={isLoading}>
-        Sign up
+        Sign up <ArrowRight size={16} />
       </Button>
       
       <p className={styles.footer}>

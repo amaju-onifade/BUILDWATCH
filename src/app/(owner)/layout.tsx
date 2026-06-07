@@ -1,8 +1,12 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { LayoutGrid, Plus } from 'lucide-react'
+import Image from 'next/image'
+import { LayoutGrid, Milestone, Camera, Wallet, ScrollText, ShieldCheck, Settings } from 'lucide-react'
+import { getSession } from '@/lib/auth'
+import { prisma } from '@/lib/db'
 import { SidebarToggle } from '@/components/SidebarToggle'
-import { LogoutButton } from '@/components/LogoutButton'
+import { ProjectSelector } from '@/components/ProjectSelector/ProjectSelector'
+import { UserMenu } from '@/components/UserMenu/UserMenu'
 import styles from './layout.module.css'
 
 export const metadata: Metadata = {
@@ -22,13 +26,7 @@ export default function OwnerLayout({
       <aside className={styles.sidebar}>
         <div className={styles.sidebarHeader}>
           <Link href="/dashboard" className={styles.brand}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <rect x="3" y="3" width="7" height="7" rx="1" fill="currentColor" opacity="0.8" />
-              <rect x="14" y="3" width="7" height="7" rx="1" fill="currentColor" opacity="0.4" />
-              <rect x="3" y="14" width="7" height="7" rx="1" fill="currentColor" opacity="0.4" />
-              <rect x="14" y="14" width="7" height="7" rx="1" fill="currentColor" />
-            </svg>
-            BuildWatch
+            <Image src="/logo.png" alt="BuildWatch" width={130} height={36} />
           </Link>
           <SidebarToggle className={styles.toggleBtn} />
         </div>

@@ -84,7 +84,7 @@
   box-shadow: 0 0 0 2px var(--color-primary-container);
 }
 
-.item[data-locked='true'] {
+.item[data-completed='true'] {
   background-color: var(--color-surface-container-low);
   opacity: 0.7;
 }
@@ -244,6 +244,25 @@
   background-color: var(--color-surface-container-low);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-outline-variant);
+}
+
+/* ── Completed checkbox ──────────────────── */
+.completedCheck {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) 0;
+  cursor: pointer;
+  font-family: var(--typography-body-medium-font-family);
+  font-size: var(--typography-body-medium-font-size);
+  color: var(--color-on-surface);
+}
+
+.completedCheck input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
 }
 
 /* ── Form Actions ────────────────────────── */

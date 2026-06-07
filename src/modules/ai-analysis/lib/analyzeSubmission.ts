@@ -14,8 +14,15 @@ export async function analyzeSubmission(submissionId: string) {
         photos: true,
         milestone: true,
         project: {
-          include: {
-            // Future reference materials layer
+          select: {
+            id: true,
+            name: true,
+            streetNumber: true,
+            streetName: true,
+            lga: true,
+            state: true,
+            googleMapsPin: true,
+            location: true,
           }
         }
       }
@@ -25,16 +32,35 @@ export async function analyzeSubmission(submissionId: string) {
 
     logger.info('F-09: Starting structured AI analysis', { submissionId })
 
-    // 1. Construct strict system prompt for DeepSeek (F-09 compliant)
+    // 1. Build site address context string for GPS anchor verification
+    const p = submission.project
+    const siteAddress = [
+      [p.streetNumber, p.streetName].filter(Boolean).join(' '),
+      p.lga,
+      p.state,
+    ].filter(Boolean).join(', ') || p.location
+    const gpsAnchorNote = p.googleMapsPin
+      ? `The registered GPS anchor for this site is: ${p.googleMapsPin}`
+      : 'No Google Maps pin was registered for this site.'
+
+    // 2. Construct strict system prompt for DeepSeek (F-09 compliant)
     const prompt = `
-      You are an expert construction inspector for BuildWatch. 
+      You are an expert construction inspector for BuildWatch.
       Analyze the provided photos for the milestone: "${submission.milestone.name}".
+
+      PROJECT SITE CONTEXT:
+      - Project Name: ${p.name}
+      - Registered Site Address: ${siteAddress}
+      - GPS Anchor: ${gpsAnchorNote}
+      If the submission includes GPS coordinates, note whether they are consistent
+      with the registered site address above. Do NOT state coordinates explicitly.
 
       REPORT STRUCTURE (S1-S4 Mandatory):
       S1. WHAT IS VISIBLE: Plain-English description of walls, roof, materials, workers, and activity.
-      S2. STAGE ASSESSMENT: Professional assessment of construction stage. 
+      S2. STAGE ASSESSMENT: Professional assessment of construction stage.
           Respond with Confidence: High | Medium | Low. Explain reasoning.
       S3. ANOMALIES & CONCERNS: Flag incomplete work, safety issues, or material shortages.
+          Include a note if captured GPS location appears inconsistent with the registered site.
       S4. LIMITATIONS: Explicitly state what you CANNOT see (concrete mix ratios, rebar diameter/spacing, foundation depth, waterproofing, structural adequacy).
 
       JSON STRUCTURE:

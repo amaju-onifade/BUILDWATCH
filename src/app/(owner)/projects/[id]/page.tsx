@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { formatCurrency } from '@/lib/format'
 import { notFound } from 'next/navigation'
 import { InviteForm } from '@/modules/projects/components/InviteForm/InviteForm'
 import { SubmissionFeed } from '@/modules/submissions/components/SubmissionFeed/SubmissionFeed'
@@ -67,13 +68,7 @@ export default async function ProjectDetailPage({ params }: Props) {
       <div className={styles.statsRow}>
         <div className={styles.statCard}>
           <span className={styles.statValue}>
-            {project.totalBudget != null
-              ? new Intl.NumberFormat('en-NG', {
-                  style: 'currency',
-                  currency: project.currency ?? 'NGN',
-                  maximumFractionDigits: 0,
-                }).format(project.totalBudget)
-              : '—'}
+            {formatCurrency(project.totalBudget, project.currency)}
           </span>
           <span className={styles.statLabel}>Total Budget</span>
         </div>
@@ -108,6 +103,37 @@ export default async function ProjectDetailPage({ params }: Props) {
         </div>
       </div>
 
+      {/* Site Address Card */}
+      <div className={styles.addressCard}>
+        <div className={styles.addressCardHeader}>
+          <h3 className={styles.statusTitle}>📍 Site Address</h3>
+          {project.googleMapsPin && (
+            <a
+              href={project.googleMapsPin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.mapsLink}
+              id="project-maps-link"
+            >
+              View on Google Maps →
+            </a>
+          )}
+        </div>
+        <p className={styles.addressText}>
+          {[project.streetNumber, project.streetName].filter(Boolean).join(' ')}
+          {(project.streetNumber || project.streetName) && (project.lga || project.state) ? ', ' : ''}
+          {[project.lga, project.state].filter(Boolean).join(', ')}
+          {!project.streetNumber && !project.streetName && !project.lga && !project.state
+            ? project.location
+            : ''}
+        </p>
+        {!project.googleMapsPin && (
+          <p className={styles.mapsPinHint}>
+            No Google Maps pin set — GPS cross-verification will use location name only.
+          </p>
+        )}
+      </div>
+
       <div className={styles.grid2Col}>
         <div className={styles.gridCol}>
           <ProjectHealthCard 
@@ -136,23 +162,19 @@ export default async function ProjectDetailPage({ params }: Props) {
               <div className={styles.budgetItem}>
                 <span className={styles.budgetLabel}>Total Budget</span>
                 <span className={styles.budgetValue}>
-                  {project.totalBudget != null
-                    ? new Intl.NumberFormat('en-NG', { style: 'currency', currency: project.currency ?? 'NGN', maximumFractionDigits: 0 }).format(project.totalBudget)
-                    : '—'}
+                  {formatCurrency(project.totalBudget, project.currency)}
                 </span>
               </div>
               <div className={styles.budgetItem}>
                 <span className={styles.budgetLabel}>Allocated</span>
                 <span className={styles.budgetValue}>
-                  {new Intl.NumberFormat('en-NG', { style: 'currency', currency: project.currency ?? 'NGN', maximumFractionDigits: 0 }).format(totalAllocated)}
+                  {formatCurrency(totalAllocated, project.currency)}
                 </span>
               </div>
               <div className={styles.budgetItem}>
                 <span className={styles.budgetLabel}>Remaining</span>
                 <span className={styles.budgetValue} data-type={project.totalBudget != null && totalAllocated > project.totalBudget ? 'over' : 'safe'}>
-                  {project.totalBudget != null
-                    ? new Intl.NumberFormat('en-NG', { style: 'currency', currency: project.currency ?? 'NGN', maximumFractionDigits: 0 }).format(Math.max(0, project.totalBudget - totalAllocated))
-                    : '—'}
+                  {formatCurrency(project.totalBudget != null ? Math.max(0, project.totalBudget - totalAllocated) : null, project.currency)}
                 </span>
               </div>
               <div className={styles.budgetItem}>
@@ -177,50 +199,11 @@ export default async function ProjectDetailPage({ params }: Props) {
         </div>
       </div>
 
-      <Link href={`/dashboard/projects/${id}/phases`} className={styles.viewPhasesBtn}>
+      <Link href={`/projects/${id}/phases`} className={styles.viewPhasesBtn}>
         View all phases &rarr;
       </Link>
 
       <SubmissionFeed projectId={id} />
-
-      <NotificationCard sessionUserId={session.userId} />
     </div>
-  )
-}
-
-function notificationTimestamp(createdAt: Date): string {
-  // Use a stable date string for SSR to prevent hydration mismatch
-  return createdAt.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' })
-}
-
-async function NotificationCard({ sessionUserId }: { sessionUserId: string }) {
-  const notifications = await prisma.notifications.findMany({
-    where: { userId: sessionUserId },
-    orderBy: { createdAt: 'desc' },
-    take: 5,
-  })
-
-  return (
-    <section className={styles.notifCard}>
-      <h2 className={styles.sectionTitle}>Recent Notifications</h2>
-      {notifications.length === 0 ? (
-        <p className={styles.notifEmpty}>No notifications yet.</p>
-      ) : (
-        <div className={styles.notifList}>
-          {notifications.map((n) => {
-            return (
-              <div key={n.id} className={styles.notifRow} data-unread={!n.readAt}>
-                <div className={styles.notifDot} data-unread={!n.readAt} />
-                <div className={styles.notifContent}>
-                  <span className={styles.notifTitle}>{n.title}</span>
-                  <span className={styles.notifBody}>{n.body}</span>
-                </div>
-                <span className={styles.notifTime}>{notificationTimestamp(n.createdAt)}</span>
-              </div>
-            )
-          })}
-        </div>
-      )}
-    </section>
   )
 }

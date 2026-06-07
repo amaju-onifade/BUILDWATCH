@@ -55,7 +55,7 @@ async function main() {
 
   console.log(`Project "${project.name}" created with 12 milestones (2 approved).`)
   console.log(`→ Dashboard: http://localhost:3000/dashboard`)
-  console.log(`→ Configure budgets: http://localhost:3000/dashboard/projects/${project.id}/milestones`)
+  console.log(`→ Configure budgets: http://localhost:3000/projects/${project.id}/milestones`)
 }
 
 main()

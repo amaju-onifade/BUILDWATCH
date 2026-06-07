@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { formatCurrency } from '@/lib/format'
 import styles from './page.module.css'
 
 export const metadata: Metadata = {
@@ -18,7 +19,6 @@ const STATUS_LABEL: Record<string, string> = {
 }
 
 import { OnboardingChecklist } from '@/modules/projects/components/OnboardingChecklist'
-import { InspectorRegistration } from '@/modules/inspectors/components/InspectorRegistration'
 
 export default async function DashboardPage() {
   const session = await getSession()
@@ -37,21 +37,21 @@ export default async function DashboardPage() {
       id: 'project',
       label: 'Create your first project',
       isComplete: projectCount > 0,
-      link: '/dashboard/projects/new',
+      link: '/projects/new',
       icon: '🏗️',
     },
     {
       id: 'invite',
       label: 'Invite a site proxy',
       isComplete: memberCount > 0,
-      link: projectCount > 0 ? `/dashboard/projects` : '/dashboard/projects/new',
+      link: projectCount > 0 ? `/projects` : '/projects/new',
       icon: '👥',
     },
     {
       id: 'activate',
       label: 'Start a construction phase',
       isComplete: activeMilestoneCount > 0 || submissionCount > 0,
-      link: projectCount > 0 ? `/dashboard/projects` : '/dashboard/projects/new',
+      link: projectCount > 0 ? `/projects` : '/projects/new',
       icon: '⚡',
     },
     {
@@ -134,7 +134,7 @@ export default async function DashboardPage() {
               : `${totalProjects} project${totalProjects !== 1 ? 's' : ''}`}
           </p>
         </div>
-        <Link href="/dashboard/projects/new" className={styles.newProjectBtn} id="btn-new-project">
+        <Link href="/projects/new" className={styles.newProjectBtn} id="btn-new-project">
           + New project
         </Link>
       </div>
@@ -147,7 +147,7 @@ export default async function DashboardPage() {
           <p className={styles.emptyDesc}>
             Create your first project to start tracking construction milestones with your team.
           </p>
-          <Link href="/dashboard/projects/new" className={styles.emptyAction} id="btn-create-first-project">
+          <Link href="/projects/new" className={styles.emptyAction} id="btn-create-first-project">
             Create a project
           </Link>
         </div>
@@ -161,7 +161,7 @@ export default async function DashboardPage() {
             return (
               <div key={project.id} className={styles.projectCard}>
                 <Link
-                  href={`/dashboard/projects/${project.id}`}
+                  href={`/projects/${project.id}`}
                   className={styles.cardLink}
                   id={`project-card-${project.id}`}
                 >
@@ -202,11 +202,7 @@ export default async function DashboardPage() {
                     {project.totalBudget != null && (
                       <span className={styles.footerItem}>
                         Budget:{' '}
-                        {new Intl.NumberFormat('en-NG', {
-                          style: 'currency',
-                          currency: project.currency ?? 'NGN',
-                          maximumFractionDigits: 0,
-                        }).format(project.totalBudget)}
+                        {formatCurrency(project.totalBudget, project.currency)}
                       </span>
                     )}
                     <span className={styles.footerItem}>
@@ -219,8 +215,7 @@ export default async function DashboardPage() {
           })}
         </div>
       )}
-      {/* Inspector Network CTA */}
-      <InspectorRegistration />
+
     </div>
   )
 }

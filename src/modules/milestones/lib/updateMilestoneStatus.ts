@@ -8,8 +8,8 @@ export type MilestoneStatus = 'pending' | 'in_progress' | 'under_review' | 'appr
 
 /**
  * Updates a milestone's status and records an audit event.
- * Validates ownership and enforces strict linear transitions.
- * If approved, automatically unlocks the next milestone in sequence.
+ * Validates ownership. Allows parallel work — any milestone can be started independently.
+ * Once approved, a milestone cannot be reverted.
  */
 export async function updateMilestoneStatus(
   milestoneId: string,
@@ -28,7 +28,6 @@ export async function updateMilestoneStatus(
       select: {
         id: true,
         status: true,
-        order: true,
         name: true,
       }
     })
@@ -39,19 +38,12 @@ export async function updateMilestoneStatus(
 
     const currentStatus = milestone.status as MilestoneStatus
 
-    // 2. Validate linear transitions
-    // - approved/locked milestones cannot be reverted (safety/audit trail requirement)
-    if (currentStatus === 'approved' || currentStatus === 'locked' && newStatus !== 'pending') {
-       // Note: 'locked' can only move to 'pending' via the 'unlock' logic (previous milestone approval)
-       if (currentStatus === 'locked' && newStatus !== 'pending') {
-          return err('Cannot manually activate a locked milestone. Approve the previous milestone first.', 'LOCKED')
-       }
-       if (currentStatus === 'approved') {
-          return err('This milestone is already approved and locked.', 'LOCKED')
-       }
+    // 2. Approved milestones cannot be reverted
+    if (currentStatus === 'approved') {
+      return err('This milestone is already approved and cannot be changed.', 'LOCKED')
     }
 
-    // 3. Atomically update status and handle chaining
+    // 3. Atomically update status
     const updated = await prisma.$transaction(async (tx) => {
       const updateData: any = { status: newStatus }
 
@@ -67,7 +59,7 @@ export async function updateMilestoneStatus(
         data: updateData,
       })
 
-      // Verification Receipt LOG
+      // Audit event
       const eventDate = new Date()
       await tx.auditEvents.create({
         data: {
@@ -92,47 +84,6 @@ export async function updateMilestoneStatus(
           }),
         } as any,
       })
-
-      // 4. AUTOMATIC UNLOCKING: If this one was approved, unlock the next one
-      if (newStatus === 'approved') {
-        const nextMilestone = await tx.milestones.findFirst({
-          where: {
-            projectId,
-            order: { gt: milestone.order },
-          },
-          orderBy: { order: 'asc' },
-        })
-
-        if (nextMilestone && nextMilestone.status === 'locked') {
-          await tx.milestones.update({
-            where: { id: nextMilestone.id },
-            data: { status: 'pending' },
-          })
-
-          const unlockDate = new Date()
-          await tx.auditEvents.create({
-            data: {
-              id: nanoid(),
-              actorId: ownerId, // System event but triggered by owner's approval
-              projectId,
-              eventType: 'MILESTONE_UNLOCKED',
-              resourceId: nextMilestone.id,
-              resourceType: 'milestone',
-              metadata: {
-                previousMilestoneId: milestoneId,
-                nextMilestoneName: nextMilestone.name,
-              },
-              createdAt: unlockDate,
-              signature: signAuditEvent({
-                actorId: ownerId,
-                eventType: 'MILESTONE_UNLOCKED',
-                resourceId: nextMilestone.id,
-                createdAt: unlockDate
-              })
-            } as any,
-          })
-        }
-      }
 
       return m
     })

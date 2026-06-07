@@ -16,6 +16,7 @@ export function SidebarToggle({ className }: { className?: string }) {
       onClick={() => setCollapsed(v => !v)}
       className={className}
       aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+      suppressHydrationWarning
     >
       {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
     </button>

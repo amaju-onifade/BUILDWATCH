@@ -36,7 +36,12 @@ model Projects {
   ownerId         String
   owner           Users             @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: Restrict)
   name            String
-  location        String
+  location        String            // General location/city
+  streetNumber    String?
+  streetName      String?
+  lga             String?
+  state           String?
+  googleMapsPin   String?           // Google Maps URL
   buildType       String?
   startDate       DateTime?
   totalBudget     Float?

@@ -111,3 +111,42 @@
 .actions {
   padding-top: var(--space-sm);
 }
+
+/* Address row — street number + street name side by side */
+.addressRow {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: var(--space-md);
+}
+
+.addressRow + .addressRow {
+  margin-top: var(--space-md);
+}
+
+/* LGA + State: second addressRow uses equal halves */
+.addressRow:last-of-type {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Google Maps pin section */
+.mapsPinWrapper {
+  margin-top: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.pinHint {
+  font-family: var(--typography-body-small-font-family);
+  font-size: var(--typography-body-small-font-size);
+  line-height: var(--typography-body-small-line-height);
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+/* Responsive — stack to a single column on very small screens */
+@media (max-width: 400px) {
+  .addressRow {
+    grid-template-columns: 1fr;
+  }
+}

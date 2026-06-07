@@ -16,8 +16,8 @@ export async function approveMilestoneAction(projectId: string, milestoneId: str
   const result = await updateMilestoneStatus(milestoneId, projectId, session.userId, 'approved')
 
   if (result.ok) {
-    revalidatePath(`/dashboard/projects/${projectId}`)
-    revalidatePath(`/dashboard/projects/${projectId}/phases`)
+    revalidatePath(`/projects/${projectId}`)
+    revalidatePath(`/projects/${projectId}/phases`)
 
     // Notify contractors in the background
     const owner = await prisma.users.findUnique({ where: { id: session.userId }, select: { fullName: true } })
