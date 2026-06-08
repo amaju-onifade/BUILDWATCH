@@ -1,0 +1,164 @@
+.row {
+  background: var(--color-surface);
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: border-color 0.15s;
+  display: flex;
+  flex-direction: column;
+}
+
+.rowHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  border-color: var(--color-primary);
+}
+
+.expanded {
+  border-color: var(--color-primary);
+}
+
+.dimmed {
+  pointer-events: none;
+}
+
+.under_review {
+  background: var(--color-secondary-container);
+  border-color: var(--color-secondary);
+}
+
+.dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dotApproved {
+  background: var(--color-primary);
+}
+
+.dotUnderReview {
+  background: var(--color-secondary);
+}
+
+.dotLocked {
+  background: var(--color-outline);
+}
+
+.dotPending {
+  background: var(--color-outline);
+}
+
+.phaseNumber {
+  font-size: var(--typography-label-medium-font-size);
+  line-height: var(--typography-label-medium-line-height);
+  font-weight: var(--typography-label-medium-font-weight);
+  color: var(--color-on-surface-variant);
+  width: 24px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.phaseName {
+  font-size: var(--typography-body-medium-font-size);
+  line-height: var(--typography-body-medium-line-height);
+  color: var(--color-on-surface);
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.phaseNameBold {
+  font-weight: 700;
+}
+
+.actionBadge {
+  font-size: var(--typography-label-small-font-size);
+  line-height: var(--typography-label-small-line-height);
+  font-weight: var(--typography-label-small-font-weight);
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-sm);
+  background: var(--color-error-container);
+  color: var(--color-on-error-container);
+  white-space: nowrap;
+}
+
+.metadata {
+  font-size: var(--typography-body-small-font-size);
+  line-height: var(--typography-body-small-line-height);
+  color: var(--color-on-surface-variant);
+  text-align: right;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.statusChip {
+  font-size: var(--typography-label-medium-font-size);
+  line-height: var(--typography-label-medium-line-height);
+  font-weight: var(--typography-label-medium-font-weight);
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  min-width: 72px;
+  text-align: center;
+}
+
+.statusApproved {
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+}
+
+.statusUnderReview {
+  background: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
+}
+
+.statusLocked {
+  background: var(--color-surface-container-high);
+  color: var(--color-on-surface-variant);
+}
+
+.statusPending {
+  background: var(--color-surface-container-high);
+  color: var(--color-on-surface-variant);
+}
+
+.pdfBtn {
+  height: 28px;
+  padding: 0 var(--space-sm);
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-on-surface-variant);
+  font-size: var(--typography-label-small-font-size);
+  line-height: var(--typography-label-small-line-height);
+  font-weight: var(--typography-label-small-font-weight);
+  cursor: pointer;
+  font-family: inherit;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.pdfBtn:hover {
+  background: var(--color-surface-variant);
+}
+
+.locked {
+  opacity: 0.5;
+}
+
+.pending {
+  opacity: 0.4;
+}

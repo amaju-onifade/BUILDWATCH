@@ -1,0 +1,103 @@
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 220px;
+  right: 0;
+  z-index: var(--z-sticky);
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-outline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-xl);
+  height: 56px;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dotActive {
+  background: var(--color-primary);
+}
+
+.dotInactive {
+  background: var(--color-outline);
+}
+
+.stepLabel {
+  font-size: var(--typography-body-small-font-size);
+  line-height: var(--typography-body-small-line-height);
+  color: var(--color-on-surface-variant);
+}
+
+.stepLabelActive {
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.connector {
+  width: 24px;
+  height: 1px;
+  background: var(--color-outline);
+  margin: 0 var(--space-sm);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.ghostBtn {
+  height: 40px;
+  padding: 0 var(--space-lg);
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-on-surface);
+  font-size: var(--typography-label-large-font-size);
+  line-height: var(--typography-label-large-line-height);
+  font-weight: var(--typography-label-large-font-weight);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.ghostBtn:hover {
+  background: var(--color-surface-variant);
+}
+
+.primaryBtn {
+  height: 40px;
+  padding: 0 var(--space-xl);
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--typography-label-large-font-size);
+  line-height: var(--typography-label-large-line-height);
+  font-weight: var(--typography-label-large-font-weight);
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+
+.primaryBtn:hover {
+  opacity: 0.9;
+}

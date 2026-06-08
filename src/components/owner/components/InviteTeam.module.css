@@ -1,0 +1,143 @@
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.sectionTitle {
+  font-size: var(--typography-title-small-font-size);
+  line-height: var(--typography-title-small-line-height);
+  font-weight: var(--typography-title-small-font-weight);
+  color: var(--color-on-surface);
+}
+
+.columns {
+  display: flex;
+  gap: var(--space-xl);
+}
+
+.subSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.subHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.subLabel {
+  font-size: var(--typography-body-medium-font-size);
+  line-height: var(--typography-body-medium-line-height);
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.subChip {
+  font-size: var(--typography-label-small-font-size);
+  line-height: var(--typography-label-small-line-height);
+  font-weight: var(--typography-label-small-font-weight);
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+.chipRequired {
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+}
+
+.chipOptional {
+  background: var(--color-surface-container-high);
+  color: var(--color-on-surface-variant);
+}
+
+.subHelper {
+  font-size: var(--typography-body-small-font-size);
+  line-height: var(--typography-body-small-line-height);
+  color: var(--color-on-surface-variant);
+}
+
+.buttonRow {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.secondaryBtn {
+  flex: 1;
+  height: 40px;
+  padding: 0 var(--space-md);
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  font-size: var(--typography-label-medium-font-size);
+  line-height: var(--typography-label-medium-line-height);
+  font-weight: var(--typography-label-medium-font-weight);
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.secondaryBtn:hover {
+  background: var(--color-surface-variant);
+}
+
+.primaryBtn {
+  flex: 1;
+  height: 40px;
+  padding: 0 var(--space-md);
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--typography-label-medium-font-size);
+  line-height: var(--typography-label-medium-line-height);
+  font-weight: var(--typography-label-medium-font-weight);
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+
+.primaryBtn:hover {
+  opacity: 0.9;
+}
+
+.expiry {
+  font-size: var(--typography-body-small-font-size);
+  line-height: var(--typography-body-small-line-height);
+  color: var(--color-on-surface-variant);
+}
+
+.statusChip {
+  font-size: var(--typography-label-small-font-size);
+  line-height: var(--typography-label-small-line-height);
+  font-weight: var(--typography-label-small-font-weight);
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-sm);
+  width: fit-content;
+}
+
+.statusPending {
+  background: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
+}
+
+.statusAccepted {
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+}
+
+@media (max-width: 900px) {
+  .columns {
+    flex-direction: column;
+  }
+}

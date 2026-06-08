@@ -1,0 +1,258 @@
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.mainArea {
+  flex: 1;
+  margin-left: 220px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-xl);
+  background: var(--color-background);
+}
+
+.layout {
+  display: flex;
+  gap: var(--space-xl);
+  align-items: flex-start;
+}
+
+.leftCol {
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.rightCol {
+  width: 380px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.photoThumb {
+  aspect-ratio: 4/3;
+  background: var(--color-surface-variant);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: var(--color-on-surface-variant);
+  border: 1px solid var(--color-outline-variant);
+}
+
+.photoHighlighted {
+  border: 2px solid var(--color-primary);
+}
+
+.photoIcon {
+  opacity: 0.4;
+}
+
+.aiBadge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  background: #f3e8ff;
+  color: #6b21a8;
+  padding: 1px 5px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.submissionMeta {
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.divider {
+  height: 1px;
+  background: var(--color-outline-variant);
+  margin: var(--space-sm) 0;
+}
+
+.annotationSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.annotationHeader {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cancelAnnotate {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.startAnnotate {
+  background: none;
+  border: 1px dashed var(--color-outline);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  color: var(--color-on-surface-variant);
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.startAnnotate:hover {
+  background: var(--color-surface-variant);
+}
+
+.annotationArea {
+  position: relative;
+  background: var(--color-surface-variant);
+  border-radius: var(--radius-md);
+  padding: var(--space-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+}
+
+.annotationImage {
+  font-size: 32px;
+  color: var(--color-on-surface-variant);
+}
+
+.annotationCircle {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--color-error);
+  border-radius: 50%;
+  top: 30%;
+  right: 25%;
+}
+
+.queryInput {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-md);
+  font-size: 11px;
+  font-family: inherit;
+  resize: vertical;
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+}
+
+.queryInput::placeholder {
+  color: var(--color-on-surface-variant);
+}
+
+.sendBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+
+.sendBtn:hover {
+  opacity: 0.9;
+}
+
+.aiReportCard {
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.aiReportHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  border-bottom: 1px solid var(--color-outline-variant);
+  background: var(--color-surface);
+}
+
+.ownerBadge {
+  margin-left: auto;
+  font-size: 9px;
+  font-weight: 600;
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+
+.filterBtn {
+  height: 36px;
+  padding: 0 var(--space-lg);
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-on-surface);
+  font-size: var(--typography-label-medium-font-size);
+  font-weight: var(--typography-label-medium-font-weight);
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.filterBtn:hover {
+  background: var(--color-surface-variant);
+}
+
+@media (max-width: 1000px) {
+  .layout {
+    flex-direction: column;
+  }
+  .rightCol {
+    width: 100%;
+  }
+}

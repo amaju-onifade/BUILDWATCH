@@ -1,0 +1,79 @@
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.sectionTitle {
+  font-size: var(--typography-title-small-font-size);
+  line-height: var(--typography-title-small-line-height);
+  font-weight: var(--typography-title-small-font-weight);
+  color: var(--color-on-surface);
+}
+
+.chip {
+  font-size: var(--typography-label-small-font-size);
+  line-height: var(--typography-label-small-line-height);
+  font-weight: var(--typography-label-small-font-weight);
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-sm);
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.label {
+  font-size: var(--typography-label-medium-font-size);
+  line-height: var(--typography-label-medium-line-height);
+  font-weight: var(--typography-label-medium-font-weight);
+  color: var(--color-on-surface-variant);
+}
+
+.mapPlaceholder {
+  height: 140px;
+  background: var(--color-surface-variant);
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+.pinIcon {
+  font-size: 24px;
+}
+
+.mapLabel {
+  font-size: var(--typography-body-small-font-size);
+  line-height: var(--typography-body-small-line-height);
+  color: var(--color-on-surface-variant);
+}
+
+.infoBox {
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+}
+
+.infoText {
+  font-size: var(--typography-body-small-font-size);
+  line-height: var(--typography-body-small-line-height);
+}

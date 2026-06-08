@@ -1,0 +1,196 @@
+.mobilePage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--color-surface-container);
+}
+
+.statusBar {
+  height: 20px;
+  background: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  font-size: 10px;
+  color: var(--color-on-surface-variant);
+  border-bottom: 1px solid var(--color-outline-variant);
+  flex-shrink: 0;
+}
+
+.mobileTopbar {
+  height: 52px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-outline-variant);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.backBtn {
+  font-size: 22px;
+  color: var(--color-primary);
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1;
+}
+
+.topbarTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.mobileContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.scoreCard {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #047857 100%);
+  border-radius: 14px;
+  padding: 18px;
+  color: var(--color-on-primary);
+  text-align: center;
+}
+
+.scoreLabel {
+  font-size: 11px;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.scoreValue {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 4px 0;
+}
+
+.scoreSub {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.emptyTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.emptyDesc {
+  font-size: 13px;
+  color: var(--color-on-surface-variant);
+}
+
+.logCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.logHeader {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+.logTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.auditItem {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+.auditItem:last-child {
+  border-bottom: none;
+}
+
+.auditHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.auditTitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-on-surface);
+}
+
+.auditBadge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  flex-shrink: 0;
+}
+
+.auditMeta {
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+  margin-top: 4px;
+}
+
+.auditGps {
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+  margin-top: 2px;
+}
+
+.infoCard {
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+  background: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  padding: 12px 14px;
+  line-height: 1.5;
+}
+
+.bottomNav {
+  height: 64px;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-outline-variant);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px;
+  flex-shrink: 0;
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  padding: 6px 0;
+  text-decoration: none;
+}
+
+.navIcon { font-size: 20px; }
+.navLabel { font-size: 10px; color: var(--color-on-surface-variant); }
+.navActive .navLabel { color: var(--color-primary); font-weight: 600; }

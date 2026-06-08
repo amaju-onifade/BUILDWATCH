@@ -1,0 +1,147 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.attribution {
+  background: var(--color-primary-container);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  font-size: var(--typography-body-small-font-size);
+  line-height: var(--typography-body-small-line-height);
+  color: var(--color-on-primary-container);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.sectionLabel {
+  font-size: var(--typography-label-medium-font-size);
+  line-height: var(--typography-label-medium-line-height);
+  font-weight: var(--typography-label-medium-font-weight);
+  color: var(--color-on-surface-variant);
+}
+
+.sectionBody {
+  font-size: var(--typography-body-medium-font-size);
+  line-height: var(--typography-body-medium-line-height);
+  color: var(--color-on-surface);
+}
+
+.confidenceChip {
+  font-size: var(--typography-label-small-font-size);
+  line-height: var(--typography-label-small-line-height);
+  font-weight: var(--typography-label-small-font-weight);
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-sm);
+  width: fit-content;
+}
+
+.confidenceHigh {
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+}
+
+.confidenceMedium {
+  background: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
+}
+
+.confidenceLow {
+  background: var(--color-error-container);
+  color: var(--color-on-error-container);
+}
+
+.anomalyBox {
+  background: var(--color-secondary-container);
+  border-left: 3px solid var(--color-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+}
+
+.anomalyList {
+  margin: 0;
+  padding-left: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.anomalyItem {
+  font-size: var(--typography-body-medium-font-size);
+  line-height: var(--typography-body-medium-line-height);
+  color: var(--color-on-secondary-container);
+}
+
+.limitationsBox {
+  background: var(--color-surface-container);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+}
+
+.limitationsText {
+  font-size: var(--typography-body-small-font-size);
+  line-height: var(--typography-body-small-line-height);
+  color: var(--color-on-surface-variant);
+}
+
+.referencePlaceholder {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.referenceText {
+  font-size: var(--typography-body-small-font-size);
+  line-height: var(--typography-body-small-line-height);
+  color: var(--color-on-surface-variant);
+}
+
+.uploadLink {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--typography-label-medium-font-size);
+  line-height: var(--typography-label-medium-line-height);
+  font-weight: var(--typography-label-medium-font-weight);
+  color: var(--color-primary);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+
+.uploadLink:hover {
+  text-decoration: underline;
+}
+
+.exportBtn {
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--space-xl);
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  font-size: var(--typography-label-large-font-size);
+  line-height: var(--typography-label-large-line-height);
+  font-weight: var(--typography-label-large-font-weight);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.exportBtn:hover {
+  background: var(--color-surface-variant);
+}
+
+.disclaimer {
+  font-size: var(--typography-body-small-font-size);
+  line-height: var(--typography-body-small-line-height);
+  color: var(--color-on-surface-variant);
+  text-align: center;
+  margin: 0;
+}

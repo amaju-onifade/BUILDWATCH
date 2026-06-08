@@ -19,7 +19,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const project = await prisma.projects.findFirst({
     where: { id: projectId, ownerId: session.userId },
-    select: { name: true },
+    select: { name: true, owner: { select: { fullName: true } } },
   })
   if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
 
@@ -36,13 +36,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const inviteUrl = result.data
 
-  // Best-effort email delivery (stub uses console.log)
   await deliverInviteByEmail({
     inviteUrl,
     inviteeEmail: email,
     projectName: project.name,
     role: role as 'proxy' | 'contractor',
-    ownerName: '',
+    ownerName: project.owner.fullName,
   })
 
   const whatsappUrl = buildWhatsAppShareUrl(inviteUrl, project.name)

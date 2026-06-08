@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
-import { ProjectCreateForm } from '@/modules/projects/components/ProjectCreateForm/ProjectCreateForm'
+import ProjectSetup from '@/components/owner/ProjectSetup'
 
 export const metadata: Metadata = {
-  title: 'New Project — BuildWatch',
-  description: 'Create a new construction project and configure your 12 milestone phases.',
+  title: 'New Project Setup — BuildWatch',
+  description: 'Configure your project details, milestones, budget, and team.',
 }
 
 export default function NewProjectPage() {
-  return <ProjectCreateForm />
+  return <ProjectSetup />
 }

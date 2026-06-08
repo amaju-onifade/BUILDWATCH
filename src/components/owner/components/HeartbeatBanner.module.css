@@ -1,0 +1,62 @@
+.banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid;
+  margin-bottom: var(--space-lg);
+  font-size: var(--typography-body-medium-font-size);
+  line-height: var(--typography-body-medium-line-height);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.banner[data-state="active"] {
+  background: var(--color-primary-container);
+  border-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+}
+
+.banner[data-state="active"] .dot {
+  background: var(--color-primary);
+}
+
+.banner[data-state="warning"] {
+  background: var(--color-secondary-container);
+  border-color: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
+}
+
+.banner[data-state="warning"] .dot {
+  background: var(--color-secondary);
+}
+
+.banner[data-state="overdue"] {
+  background: var(--color-error-container);
+  border-color: var(--color-error-container);
+  color: var(--color-on-error-container);
+}
+
+.banner[data-state="overdue"] .dot {
+  background: var(--color-error);
+}
+
+.text {
+  flex: 1;
+}
+
+.chaseLink {
+  font-size: var(--typography-body-medium-font-size);
+  line-height: var(--typography-body-medium-line-height);
+  font-weight: 600;
+  color: var(--color-on-error-container);
+  text-decoration: underline;
+  cursor: pointer;
+  flex-shrink: 0;
+}

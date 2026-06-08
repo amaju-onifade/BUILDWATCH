@@ -16,7 +16,7 @@ const SYSTEM_PROMPT = `You are the BuildWatch AI site inspector. Analyze constru
 REPORT STRUCTURE:
 S1. WHAT IS VISIBLE: Plain-English description of walls, roof, materials, workers, and activity.
 S2. STAGE ASSESSMENT: Professional assessment of construction stage with confidence level (High/Medium/Low).
-S3. ANOMALIES & CONCERNS: Flag incomplete work, safety issues, or material shortages.
+S3. ANOMALIES & CONCERNS: Flag incomplete work, safety issues, or material shortages. If the photos show a location that appears inconsistent with the registered site address, include this as a concern.
 S4. LIMITATIONS: Explicitly state what you CANNOT see (concrete mix ratios, rebar diameter/spacing, foundation depth, waterproofing, structural adequacy).
 
 CONSTRAINTS:
@@ -43,7 +43,9 @@ export async function analyzeSubmissionPhotos(
   submissionId: string,
   milestoneName: string,
   photoUrls: string[],
-  caption?: string
+  caption: string | undefined,
+  siteAddress: string,
+  googleMapsPin: string | null,
 ): Promise<AIAnalysisResult | null> {
   let retries = 0
   const maxRetries = 3
@@ -66,7 +68,16 @@ export async function analyzeSubmissionPhotos(
             {
               role: 'user',
               content: [
-                { type: 'text', text: `Milestone: ${milestoneName}\nCaption: ${caption || 'None'}\nAnalyze these photos.` },
+                {
+                  type: 'text',
+                  text: [
+                    `Milestone: ${milestoneName}`,
+                    `Caption: ${caption || 'None'}`,
+                    `Registered Site Address: ${siteAddress}`,
+                    googleMapsPin ? `GPS Anchor: ${googleMapsPin}` : 'GPS Anchor: Not registered',
+                    'Analyze these photos for consistency with the registered site address above.',
+                  ].join('\n'),
+                },
                 ...photoUrls.map(url => ({ type: 'image_url', image_url: { url } }))
               ]
             }

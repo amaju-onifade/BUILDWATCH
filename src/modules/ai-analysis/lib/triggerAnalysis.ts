@@ -10,12 +10,22 @@ import { saveAIReport } from './saveReport'
  */
 export async function triggerAIAnalysis(submissionId: string) {
   try {
-    // 1. Fetch submission with milestones and photo keys
+    // 1. Fetch submission with milestones, photo keys, and project address fields
     const submission = await prisma.submissions.findUnique({
       where: { id: submissionId },
       include: {
         milestone: true,
         photos: true,
+        project: {
+          select: {
+            streetNumber: true,
+            streetName: true,
+            lga: true,
+            state: true,
+            location: true,
+            googleMapsPin: true,
+          }
+        }
       }
     })
 
@@ -24,17 +34,27 @@ export async function triggerAIAnalysis(submissionId: string) {
       return
     }
 
-    // 2. Generate signed download URLs for each photo
+    // 2. Build site address context for the AI prompt
+    const p = submission.project
+    const siteAddress = [
+      [p.streetNumber, p.streetName].filter(Boolean).join(' '),
+      p.lga,
+      p.state,
+    ].filter(Boolean).join(', ') || p.location
+
+    // 3. Generate signed download URLs for each photo
     const photoUrls = await Promise.all(
       submission.photos.map(p => getDownloadUrl(p.storageKey))
     )
 
-    // 3. Perform analysis (handles its own retries)
+    // 4. Perform analysis (handles its own retries)
     const result = await analyzeSubmissionPhotos(
       submissionId,
       submission.milestone.name,
       photoUrls,
-      submission.caption || undefined
+      submission.caption || undefined,
+      siteAddress,
+      p.googleMapsPin,
     )
 
     // 4. Save results (success or failure)

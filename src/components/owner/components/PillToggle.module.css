@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  background: var(--color-surface-variant);
+  border-radius: 999px;
+  padding: 3px;
+  width: fit-content;
+}
+
+.option {
+  padding: var(--space-sm) var(--space-lg);
+  border: none;
+  background: transparent;
+  color: var(--color-on-surface-variant);
+  font-size: var(--typography-body-small-font-size);
+  line-height: var(--typography-body-small-line-height);
+  font-weight: 500;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.option:hover {
+  color: var(--color-on-surface);
+}
+
+.active {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.active:hover {
+  color: var(--color-on-primary);
+}

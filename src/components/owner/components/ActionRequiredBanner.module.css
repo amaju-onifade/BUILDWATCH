@@ -1,0 +1,56 @@
+.banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-error-container);
+  border-left: 3px solid var(--color-error);
+  border-radius: var(--radius-md);
+  font-size: var(--typography-body-medium-font-size);
+  line-height: var(--typography-body-medium-line-height);
+  margin-bottom: var(--space-lg);
+}
+
+.countBadge {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-error);
+  color: var(--color-on-error);
+  font-size: var(--typography-label-medium-font-size);
+  line-height: var(--typography-label-medium-line-height);
+  font-weight: var(--typography-label-medium-font-weight);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.text {
+  flex: 1;
+  color: var(--color-on-error-container);
+}
+
+.reviewLink {
+  font-weight: 600;
+  color: var(--color-error);
+  text-decoration: underline;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.dismissBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-on-error-container);
+  opacity: 0.5;
+  flex-shrink: 0;
+  padding: var(--space-xs);
+}
+
+.dismissBtn:hover {
+  opacity: 1;
+}

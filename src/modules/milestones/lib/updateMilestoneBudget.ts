@@ -33,9 +33,9 @@ export async function updateMilestoneBudget(
       return err('Forbidden', 'FORBIDDEN')
     }
 
-    // Only allow budget edits on milestones that are not yet approved
-    if (milestone.status === 'approved') {
-      return err('Cannot edit budget of an approved milestone', 'MILESTONE_LOCKED')
+    // Only allow budget edits on milestones that are not yet approved or locked
+    if (milestone.status === 'approved' || milestone.status === 'locked') {
+      return err('Cannot edit budget of a locked milestone', 'MILESTONE_LOCKED')
     }
 
     await prisma.$transaction(async (tx) => {

@@ -50,7 +50,7 @@ export async function handleLoginOwner(req: NextRequest): Promise<NextResponse> 
       requestId
     })
 
-    const targetUrl = result.data.role === 'owner' ? '/dashboard' : '/field'
+    const targetUrl = result.data.role === 'owner' ? '/dashboard' : result.data.role === 'contractor' ? '/contractor' : '/field'
     const response = NextResponse.redirect(new URL(targetUrl, req.url), 303)
     response.cookies.set('bw_session', result.data.token, {
       httpOnly: true,

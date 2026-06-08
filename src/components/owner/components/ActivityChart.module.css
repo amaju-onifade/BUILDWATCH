@@ -1,0 +1,59 @@
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  flex: 1;
+}
+
+.title {
+  font-size: var(--typography-title-small-font-size);
+  line-height: var(--typography-title-small-line-height);
+  font-weight: var(--typography-title-small-font-weight);
+  color: var(--color-on-surface);
+  margin-bottom: var(--space-md);
+}
+
+.chart {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-xs);
+  height: 40px;
+}
+
+.bar {
+  flex: 1;
+  background: var(--color-primary);
+  border-radius: 2px 2px 0 0;
+  min-height: 4px;
+}
+
+.barZero {
+  background: var(--color-surface-variant);
+}
+
+.barWarning {
+  background: var(--color-secondary);
+}
+
+.weekLabels {
+  display: flex;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+}
+
+.weekLabel {
+  flex: 1;
+  font-size: var(--typography-label-small-font-size);
+  line-height: var(--typography-label-small-line-height);
+  font-weight: var(--typography-label-small-font-weight);
+  color: var(--color-on-surface-variant);
+  text-align: center;
+}
+
+.subLabel {
+  font-size: var(--typography-body-small-font-size);
+  line-height: var(--typography-body-small-line-height);
+  color: var(--color-on-surface-variant);
+  margin-top: var(--space-xs);
+}

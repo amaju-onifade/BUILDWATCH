@@ -1,6 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { PrismaClient } from '@prisma/client'
+import { mockDeep } from 'vitest-mock-extended'
 import { getMilestones } from './getMilestones'
 import { prismaMock } from '@/test/prismaMock'
+
+vi.mock('@/lib/db', () => ({
+  prisma: mockDeep<PrismaClient>(),
+}))
 
 const MOCK_PROJECT = { id: 'proj_001' } as any
 const MOCK_MILESTONES = [

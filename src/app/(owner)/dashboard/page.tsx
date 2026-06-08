@@ -1,221 +1,88 @@
-import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/db'
-import { formatCurrency } from '@/lib/format'
-import styles from './page.module.css'
+import OwnerDashboard from '@/components/owner/OwnerDashboard'
+import type { DashboardData } from '@/components/owner/OwnerDashboard'
 
-export const metadata: Metadata = {
-  title: 'Dashboard — BuildWatch',
-  description: 'Overview of all your construction projects.',
+function fmt(n: number): string {
+  return `₦${n.toLocaleString()}`
 }
 
-const STATUS_LABEL: Record<string, string> = {
-  active: 'Active',
-  completed: 'Completed',
-  on_hold: 'On hold',
-  archived: 'Archived',
+function daysAgo(d: Date): number {
+  return Math.floor((Date.now() - d.getTime()) / (1000 * 60 * 60 * 24))
 }
-
-import { OnboardingChecklist } from '@/modules/projects/components/OnboardingChecklist'
 
 export default async function DashboardPage() {
   const session = await getSession()
-  if (!session || session.role !== 'owner') redirect('/login')
-
-  // Onboarding Logic
-  const [projectCount, memberCount, submissionCount, activeMilestoneCount] = await Promise.all([
-    prisma.projects.count({ where: { ownerId: session.userId } }),
-    prisma.projectMembers.count({ where: { project: { ownerId: session.userId } } }),
-    prisma.submissions.count({ where: { project: { ownerId: session.userId } } }),
-    prisma.milestones.count({ where: { project: { ownerId: session.userId }, status: 'in_progress' } }),
-  ])
-
-  const onboardingSteps = [
-    {
-      id: 'project',
-      label: 'Create your first project',
-      isComplete: projectCount > 0,
-      link: '/projects/new',
-      icon: '🏗️',
-    },
-    {
-      id: 'invite',
-      label: 'Invite a site proxy',
-      isComplete: memberCount > 0,
-      link: projectCount > 0 ? `/projects` : '/projects/new',
-      icon: '👥',
-    },
-    {
-      id: 'activate',
-      label: 'Start a construction phase',
-      isComplete: activeMilestoneCount > 0 || submissionCount > 0,
-      link: projectCount > 0 ? `/projects` : '/projects/new',
-      icon: '⚡',
-    },
-    {
-      id: 'submission',
-      label: 'Receive your first update',
-      isComplete: submissionCount > 0,
-      link: '#',
-      icon: '📸',
-    },
-  ]
+  if (!session) redirect('/login')
 
   const projects = await prisma.projects.findMany({
     where: { ownerId: session.userId },
     orderBy: { createdAt: 'desc' },
-    take: 20,
-    select: {
-      id: true,
-      name: true,
-      location: true,
-      buildType: true,
-      totalBudget: true,
-      currency: true,
-      status: true,
-      createdAt: true,
-      _count: {
-        select: {
-          milestones: true,
-          submissions: true,
-        },
+    take: 1,
+    include: {
+      milestones: { orderBy: { order: 'asc' }, select: { id: true, name: true, order: true, status: true } },
+      submissions: {
+        orderBy: { createdAt: 'desc' },
+        take: 1,
+        include: { submittedBy: { select: { fullName: true } } },
       },
     },
   })
 
-  const approvedCounts = await Promise.all(
-    projects.map(p =>
-      prisma.milestones.count({
-        where: { projectId: p.id, status: 'approved' },
-      })
-    )
-  )
+  if (projects.length === 0) {
+    return <OwnerDashboard data={{
+      projectName: 'No project yet',
+      daysSinceLastUpdate: 0,
+      lastSubmittedBy: '—',
+      lastSubmissionDate: '—',
+      currentPhase: '—',
+      currentPhaseNumber: 0,
+      totalPhases: 0,
+      progressPercent: 0,
+      estimatedCompletion: '—',
+      totalBudget: '₦0',
+      budgetRemaining: '₦0',
+      actionsRequired: 0,
+      actionsDetail: 'Create your first project to get started',
+      aiAnomalyFlagged: false,
+      aiAnomalyMessage: '',
+    }} />
+  }
 
-  const totalProjects = projects.length
-  const totalMilestones = projects.reduce((s, p) => s + p._count.milestones, 0)
-  const totalApproved = approvedCounts.reduce((s, c) => s + c, 0)
-  const totalSubmissions = projects.reduce((s, p) => s + p._count.submissions, 0)
-  const overallProgress = totalMilestones > 0 ? Math.round((totalApproved / totalMilestones) * 100) : 0
+  const project = projects[0]
+  const milestones = project.milestones
+  const latestSubmission = project.submissions[0] ?? null
 
-  return (
-    <div className={styles.layout}>
-      {/* Onboarding Guidance */}
-      <OnboardingChecklist steps={onboardingSteps} />
+  const activeMilestone = milestones.find(m => m.status === 'in_progress' || m.status === 'under_review')
+  const approvedCount = milestones.filter(m => m.status === 'approved').length
+  const progressPercent = milestones.length > 0 ? Math.round((approvedCount / milestones.length) * 100) : 0
 
-      {/* Stats row */}
-      <div className={styles.statsRow}>
-        <div className={styles.statCard}>
-          <span className={styles.statValue}>{totalProjects}</span>
-          <span className={styles.statLabel}>Projects</span>
-        </div>
-        <div className={styles.statCard}>
-          <span className={styles.statValue}>{totalMilestones}</span>
-          <span className={styles.statLabel}>Total phases</span>
-        </div>
-        <div className={styles.statCard}>
-          <span className={styles.statValue}>{overallProgress}%</span>
-          <span className={styles.statLabel}>Overall progress</span>
-        </div>
-        <div className={styles.statCard}>
-          <span className={styles.statValue}>{totalSubmissions}</span>
-          <span className={styles.statLabel}>Submissions</span>
-        </div>
-      </div>
+  const daysSinceLastUpdate = latestSubmission ? daysAgo(latestSubmission.createdAt) : 99
 
-      {/* Section header */}
-      <div className={styles.pageHeader}>
-        <div>
-          <h2 className={styles.pageTitle}>Your Projects</h2>
-          <p className={styles.pageSubtitle}>
-            {totalProjects === 0
-              ? 'No projects yet — create your first one below.'
-              : `${totalProjects} project${totalProjects !== 1 ? 's' : ''}`}
-          </p>
-        </div>
-        <Link href="/projects/new" className={styles.newProjectBtn} id="btn-new-project">
-          + New project
-        </Link>
-      </div>
+  const actionsRequired = milestones.filter(m => m.status === 'under_review').length
+  const actionsReview = milestones.filter(m => m.status === 'under_review').length
+  const actionsPending = milestones.filter(m => m.status === 'pending' || m.status === 'in_progress').length
 
-      {/* Project grid or empty state */}
-      {totalProjects === 0 ? (
-        <div className={styles.emptyState}>
-          <div className={styles.emptyIcon} aria-hidden="true">🏗️</div>
-          <p className={styles.emptyTitle}>No projects yet</p>
-          <p className={styles.emptyDesc}>
-            Create your first project to start tracking construction milestones with your team.
-          </p>
-          <Link href="/projects/new" className={styles.emptyAction} id="btn-create-first-project">
-            Create a project
-          </Link>
-        </div>
-      ) : (
-        <div className={styles.projectGrid}>
-          {projects.map((project, idx) => {
-            const total = project._count.milestones
-            const approved = approvedCounts[idx]
-            const progress = total > 0 ? Math.round((approved / total) * 100) : 0
+  const data: DashboardData = {
+    projectName: project.name,
+    daysSinceLastUpdate,
+    lastSubmittedBy: latestSubmission?.submittedBy.fullName ?? '—',
+    lastSubmissionDate: latestSubmission
+      ? latestSubmission.createdAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+      : '—',
+    currentPhase: activeMilestone?.name ?? (milestones.length > 0 ? milestones[milestones.length - 1].name : '—'),
+    currentPhaseNumber: activeMilestone?.order ?? approvedCount + 1,
+    totalPhases: milestones.length,
+    progressPercent,
+    estimatedCompletion: '—',
+    totalBudget: project.totalBudget ? fmt(project.totalBudget) : '₦0',
+    budgetRemaining: project.totalBudget ? fmt(project.totalBudget) : '₦0',
+    actionsRequired,
+    actionsDetail: `${actionsReview > 0 ? `${actionsReview} review` : ''}${actionsReview > 0 && actionsPending > 0 ? ' · ' : ''}${actionsPending > 0 ? `${actionsPending} pending` : ''}`,
+    aiAnomalyFlagged: false,
+    aiAnomalyMessage: '',
+  }
 
-            return (
-              <div key={project.id} className={styles.projectCard}>
-                <Link
-                  href={`/projects/${project.id}`}
-                  className={styles.cardLink}
-                  id={`project-card-${project.id}`}
-                >
-                  <div className={styles.cardTop}>
-                    <div className={styles.cardInfo}>
-                      <span className={styles.projectName}>{project.name}</span>
-                      <span className={styles.projectMeta}>{project.location}</span>
-                      {project.buildType && (
-                        <span className={styles.buildTypePill}>{project.buildType}</span>
-                      )}
-                    </div>
-                    <span
-                      className={styles.statusBadge}
-                      data-status={project.status}
-                    >
-                      {STATUS_LABEL[project.status] ?? project.status}
-                    </span>
-                  </div>
-
-                  <div className={styles.cardProgress}>
-                    <div className={styles.progressTrack}>
-                      <div
-                        className={styles.progressFill}
-                        style={{ '--progress-pct': `${progress}%` } as React.CSSProperties}
-                        role="progressbar"
-                        aria-valuenow={progress}
-                        aria-valuemin={0}
-                        aria-valuemax={100}
-                        aria-label={`${progress}% complete`}
-                      />
-                    </div>
-                    <span className={styles.progressLabel}>
-                      {approved}/{total} phases complete
-                    </span>
-                  </div>
-
-                  <div className={styles.cardFooter}>
-                    {project.totalBudget != null && (
-                      <span className={styles.footerItem}>
-                        Budget:{' '}
-                        {formatCurrency(project.totalBudget, project.currency)}
-                      </span>
-                    )}
-                    <span className={styles.footerItem}>
-                      {project._count.submissions} submission{project._count.submissions !== 1 ? 's' : ''}
-                    </span>
-                  </div>
-                </Link>
-              </div>
-            )
-          })}
-        </div>
-      )}
-
-    </div>
-  )
+  return <OwnerDashboard data={data} />
 }

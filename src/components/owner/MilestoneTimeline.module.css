@@ -1,0 +1,151 @@
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.mainArea {
+  flex: 1;
+  margin-left: 220px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-xl);
+  background: var(--color-background);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  max-width: 960px;
+}
+
+.progressCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progressLabel {
+  font-size: var(--typography-label-medium-font-size);
+  line-height: var(--typography-label-medium-line-height);
+  font-weight: var(--typography-label-medium-font-weight);
+  color: var(--color-on-surface-variant);
+}
+
+.progressMeta {
+  font-size: var(--typography-body-small-font-size);
+  line-height: var(--typography-body-small-line-height);
+  color: var(--color-on-surface-variant);
+}
+
+.progressTrack {
+  width: 100%;
+  height: 6px;
+  background: var(--color-surface-variant);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: var(--radius-sm);
+  transition: width 0.3s ease;
+}
+
+.actionBanner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--color-error-container);
+  border-left: 3px solid var(--color-error);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+}
+
+.actionBannerContent {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.actionBannerIcon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-error);
+  color: var(--color-on-error);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.actionBannerText {
+  font-size: var(--typography-body-medium-font-size);
+  line-height: var(--typography-body-medium-line-height);
+  color: var(--color-on-error-container);
+}
+
+.reviewLink {
+  background: none;
+  border: none;
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--typography-label-medium-font-size);
+  line-height: var(--typography-label-medium-line-height);
+  font-weight: var(--typography-label-medium-font-weight);
+  color: var(--color-error);
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.reviewLink:hover {
+  text-decoration: underline;
+}
+
+.milestoneList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.receiptSection {
+  margin-top: var(--space-md);
+}
+
+.topGhostBtn {
+  height: 36px;
+  padding: 0 var(--space-lg);
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-on-surface);
+  font-size: var(--typography-label-medium-font-size);
+  line-height: var(--typography-label-medium-line-height);
+  font-weight: var(--typography-label-medium-font-weight);
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.topGhostBtn:hover {
+  background: var(--color-surface-variant);
+}
