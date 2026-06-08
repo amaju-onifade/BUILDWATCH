@@ -1,13 +1,14 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { Camera, Home, ClipboardList, FileText, ChevronLeft, Check } from 'lucide-react'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { notFound } from 'next/navigation'
 import styles from './page.module.css'
 
 const STATUS_LABELS: Record<string, { label: string; className: string }> = {
-  delivered: { label: 'Delivered ✓', className: 'statusDelivered' },
-  reviewed: { label: 'Approved ✓', className: 'statusApproved' },
+  delivered: { label: 'Delivered', className: 'statusDelivered' },
+  reviewed: { label: 'Approved', className: 'statusApproved' },
   queried: { label: 'Queried', className: 'statusQueried' },
 }
 
@@ -36,10 +37,10 @@ export default async function HistoryPage({ params }: Props) {
     <div className={styles.mobilePage}>
       <div className={styles.statusBar}>
         <span>{new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</span>
-        <span>📶 🔋</span>
+        <span></span>
       </div>
       <div className={styles.mobileTopbar}>
-        <Link href={`/field/projects/${id}`} className={styles.backBtn}>‹</Link>
+        <Link href={`/field/projects/${id}`} className={styles.backBtn}><ChevronLeft size={22} /></Link>
         <span className={styles.topbarTitle}>Submission history</span>
       </div>
       <div className={styles.mobileContent}>
@@ -55,7 +56,7 @@ export default async function HistoryPage({ params }: Props) {
               return (
                 <div key={s.id} className={styles.card}>
                   <div className={styles.row}>
-                    <div className={styles.thumb}>📷</div>
+                    <div className={styles.thumb}><Camera size={24} /></div>
                     <div className={styles.content}>
                       <div className={styles.title}>{s._count.photos} photo{s._count.photos !== 1 ? 's' : ''} — Phase {s.milestone.order}: {s.milestone.name}</div>
                       <div className={styles.meta}>
@@ -73,15 +74,15 @@ export default async function HistoryPage({ params }: Props) {
       </div>
       <div className={styles.bottomNav}>
         <Link href={`/field/projects/${id}`} className={styles.navItem}>
-          <span className={styles.navIcon}>🏠</span>
+          <span className={styles.navIcon}><Home size={20} /></span>
           <span className={styles.navLabel}>Home</span>
         </Link>
         <Link href={`/field/projects/${id}/history`} className={`${styles.navItem} ${styles.navActive}`}>
-          <span className={styles.navIcon}>📋</span>
+          <span className={styles.navIcon}><ClipboardList size={20} /></span>
           <span className={styles.navLabel}>History</span>
         </Link>
         <Link href={`/field/projects/${id}/log`} className={styles.navItem}>
-          <span className={styles.navIcon}>📄</span>
+          <span className={styles.navIcon}><FileText size={20} /></span>
           <span className={styles.navLabel}>My log</span>
         </Link>
       </div>

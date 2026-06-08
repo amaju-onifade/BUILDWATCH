@@ -34,24 +34,6 @@ export interface DashboardData {
   aiAnomalyMessage: string
 }
 
-const mockData: DashboardData = {
-  projectName: 'Village Home — Ikeja',
-  daysSinceLastUpdate: 3,
-  lastSubmittedBy: 'Ngozi Okonkwo',
-  lastSubmissionDate: 'Tue 3 June',
-  currentPhase: 'Roofing',
-  currentPhaseNumber: 3,
-  totalPhases: 12,
-  progressPercent: 33,
-  estimatedCompletion: 'Nov 2026',
-  totalBudget: '₦9,000,000',
-  budgetRemaining: '₦6.1M',
-  actionsRequired: 2,
-  actionsDetail: '1 review · 1 approval',
-  aiAnomalyFlagged: true,
-  aiAnomalyMessage: 'AI flagged 1 anomaly in the latest Roofing submission.',
-}
-
 function getHeartbeatState(days: number): HeartbeatState {
   if (days <= 2) return 'active'
   if (days <= 5) return 'warning'
@@ -59,10 +41,10 @@ function getHeartbeatState(days: number): HeartbeatState {
 }
 
 export type OwnerDashboardProps = {
-  data?: DashboardData
+  data: DashboardData
 }
 
-export default function OwnerDashboard({ data = mockData }: OwnerDashboardProps) {
+export default function OwnerDashboard({ data }: OwnerDashboardProps) {
   const router = useRouter()
   const heartbeatState = getHeartbeatState(data.daysSinceLastUpdate)
   const warningVariant: StatVariant = 'warning'

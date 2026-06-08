@@ -11,7 +11,7 @@ export async function loginUser(email: string, password: string): Promise<Result
       select: { id: true, passwordHash: true, role: true, deletedAt: true },
     })
 
-    const dummyHash = '$2a$12$dummy.hash.to.prevent.timing.attacks.xxxxxxxxxx'
+    const dummyHash = '$2b$12$ZMyqqYcmmB5jK2BeZuk0TeuKgoQLPlEtbZI.mqM2M7U8nwloEBC/a'
     const passwordMatch = await compare(password, user?.passwordHash ?? dummyHash)
 
     if (!user || !passwordMatch || user.deletedAt) {

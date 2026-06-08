@@ -22,11 +22,15 @@ function InviteSubSection({
   statusVariant,
 }: InviteSubSectionProps) {
   const handleCopy = () => {
-    navigator.clipboard.writeText('https://buildwatch.app/invite/placeholder-token')
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://buildwatch.app'
+    navigator.clipboard.writeText(`${base}/invite/${crypto.randomUUID()}`)
   }
 
   const handleWhatsApp = () => {
-    window.open('https://wa.me/?text=BuildWatch+invite+link', '_blank', 'noopener')
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://buildwatch.app'
+    const url = `${base}/invite/${crypto.randomUUID()}`
+    const msg = encodeURIComponent(`You've been invited to track a project on BuildWatch. Tap the link to get started: ${url}`)
+    window.open(`https://wa.me/?text=${msg}`, '_blank', 'noopener')
   }
 
   return (

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { requireRole } from '@/lib/auth'
 import { z } from 'zod'
 
 const InspectorSchema = z.object({
@@ -9,6 +10,11 @@ const InspectorSchema = z.object({
 })
 
 export async function POST(req: NextRequest) {
+  const session = await requireRole(req, ['owner'])
+  if (!session) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
   try {
     const body = await req.json()
     const { name, registrationNumber, location } = InspectorSchema.parse(body)

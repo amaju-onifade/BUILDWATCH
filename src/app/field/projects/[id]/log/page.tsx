@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { Home, ClipboardList, FileText, ChevronLeft, MapPin, Check, Info } from 'lucide-react'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { notFound } from 'next/navigation'
@@ -39,10 +40,10 @@ export default async function AuditLogPage({ params }: Props) {
     <div className={styles.mobilePage}>
       <div className={styles.statusBar}>
         <span>{new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</span>
-        <span>📶 🔋</span>
+        <span></span>
       </div>
       <div className={styles.mobileTopbar}>
-        <Link href={`/field/projects/${id}`} className={styles.backBtn}>‹</Link>
+        <Link href={`/field/projects/${id}`} className={styles.backBtn}><ChevronLeft size={22} /></Link>
         <span className={styles.topbarTitle}>My visit record</span>
       </div>
       <div className={styles.mobileContent}>
@@ -66,33 +67,33 @@ export default async function AuditLogPage({ params }: Props) {
               <div key={s.id} className={styles.auditItem}>
                 <div className={styles.auditHeader}>
                   <span className={styles.auditTitle}>Phase {s.milestone.order} — {s.milestone.name}</span>
-                  <span className={styles.auditBadge}>✓ Verified</span>
+                  <span className={styles.auditBadge}><Check size={10} /> Verified</span>
                 </div>
                 <div className={styles.auditMeta}>
                   {s.createdAt.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })} · {' '}
                   {s.createdAt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
                 </div>
-                <div className={styles.auditGps}>📍 GPS verified</div>
+                <div className={styles.auditGps}><MapPin size={12} /> GPS verified</div>
               </div>
             ))}
           </div>
         )}
 
         <div className={styles.infoCard}>
-          ℹ️ This record is your personal proof of every site visit. Keep it for your own records.
+          <Info size={14} style={{ flexShrink: 0 }} /> <span>This record is your personal proof of every site visit. Keep it for your own records.</span>
         </div>
       </div>
       <div className={styles.bottomNav}>
         <Link href={`/field/projects/${id}`} className={styles.navItem}>
-          <span className={styles.navIcon}>🏠</span>
+          <span className={styles.navIcon}><Home size={20} /></span>
           <span className={styles.navLabel}>Home</span>
         </Link>
         <Link href={`/field/projects/${id}/history`} className={styles.navItem}>
-          <span className={styles.navIcon}>📋</span>
+          <span className={styles.navIcon}><ClipboardList size={20} /></span>
           <span className={styles.navLabel}>History</span>
         </Link>
         <Link href={`/field/projects/${id}/log`} className={`${styles.navItem} ${styles.navActive}`}>
-          <span className={styles.navIcon}>📄</span>
+          <span className={styles.navIcon}><FileText size={20} /></span>
           <span className={styles.navLabel}>My log</span>
         </Link>
       </div>

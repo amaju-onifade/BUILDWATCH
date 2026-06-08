@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { Camera, Home, ClipboardList, FileText, ChevronLeft, MapPin, Check } from 'lucide-react'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { notFound } from 'next/navigation'
@@ -56,15 +57,15 @@ export default async function FieldProjectDetailPage({ params }: Props) {
       {/* Status bar simulation */}
       <div className={styles.statusBar}>
         <span>{now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</span>
-        <span>📶 🔋</span>
+        <span></span>
       </div>
 
       {/* Top bar */}
       <div className={styles.mobileTopbar}>
-        <Link href="/field" className={styles.backBtn}>‹</Link>
+        <Link href="/field" className={styles.backBtn}><ChevronLeft size={22} /></Link>
         <span className={styles.logoText}>Build<span className={styles.logoAccent}>Watch</span></span>
         <div className={styles.spacer} />
-        <Link href={`/field/projects/${id}/log`} className={styles.notifBtn}>📄</Link>
+        <Link href={`/field/projects/${id}/log`} className={styles.notifBtn}><FileText size={18} /></Link>
       </div>
 
       {/* Content */}
@@ -102,7 +103,7 @@ export default async function FieldProjectDetailPage({ params }: Props) {
             href={`/field/projects/${id}/milestones/${currentMilestone.id}/submit`}
             className={styles.cameraCta}
           >
-            <div className={styles.cameraIcon}>📷</div>
+            <div className={styles.cameraIcon}><Camera size={32} /></div>
             <div className={styles.cameraLabel}>Submit site update</div>
             <div className={styles.cameraSub}>Takes less than 2 minutes</div>
           </Link>
@@ -114,7 +115,7 @@ export default async function FieldProjectDetailPage({ params }: Props) {
             <div className={styles.sectionLabel}>Your last submission</div>
             <div className={styles.submissionCard}>
               <div className={styles.submissionRow}>
-                <div className={styles.subThumb}>📷</div>
+                <div className={styles.subThumb}><Camera size={24} /></div>
                 <div className={styles.subContent}>
                   <div className={styles.subTitle}>
                     {lastSubmission._count.photos} photo{lastSubmission._count.photos !== 1 ? 's' : ''} — {lastSubmission.milestone.name}
@@ -122,10 +123,10 @@ export default async function FieldProjectDetailPage({ params }: Props) {
                   <div className={styles.subMeta}>
                     {lastSubmission.createdAt.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })} · {' '}
                     {lastSubmission.createdAt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })} ·{' '}
-                    {lastSubmission.status === 'delivered' ? 'Delivered ✓' : lastSubmission.status}
+                    {lastSubmission.status === 'delivered' ? 'Delivered' : lastSubmission.status}
                   </div>
                 </div>
-                <span className={styles.statusSent}>✓ Sent</span>
+                <span className={styles.statusSent}><Check size={12} /> Sent</span>
               </div>
             </div>
           </>
@@ -144,15 +145,15 @@ export default async function FieldProjectDetailPage({ params }: Props) {
       {/* Bottom nav */}
       <div className={styles.bottomNav}>
         <Link href={`/field/projects/${id}`} className={`${styles.navItem} ${styles.navActive}`}>
-          <span className={styles.navIcon}>🏠</span>
+          <span className={styles.navIcon}><Home size={20} /></span>
           <span className={styles.navLabel}>Home</span>
         </Link>
         <Link href={`/field/projects/${id}/history`} className={styles.navItem}>
-          <span className={styles.navIcon}>📋</span>
+          <span className={styles.navIcon}><ClipboardList size={20} /></span>
           <span className={styles.navLabel}>History</span>
         </Link>
         <Link href={`/field/projects/${id}/log`} className={styles.navItem}>
-          <span className={styles.navIcon}>📄</span>
+          <span className={styles.navIcon}><FileText size={20} /></span>
           <span className={styles.navLabel}>My log</span>
         </Link>
       </div>

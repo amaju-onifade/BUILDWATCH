@@ -12,7 +12,9 @@ import {
   Search,
   Settings,
   ChevronDown,
+  LogOut,
 } from 'lucide-react'
+import { LogoutButton } from '@/components/LogoutButton'
 import styles from './Sidebar.module.css'
 
 const ICONS: Record<string, React.ReactNode> = {
@@ -66,9 +68,9 @@ export type SidebarProps = {
 
 export default function Sidebar({
   activeItem,
-  projectName = 'Village Home — Ikeja',
-  userName = 'Adaeze Okonkwo',
-  userInitials = 'AD',
+  projectName = '',
+  userName = '',
+  userInitials = '',
   userPlan = 'Standard Plan',
   mode = 'dashboard',
   disabledItems = [],
@@ -165,6 +167,7 @@ export default function Sidebar({
             <div className={styles.userPlan}>{userPlan}</div>
           </div>
         </div>
+        <LogoutButton className={styles.logoutBtn} />
       </div>
     </aside>
   )

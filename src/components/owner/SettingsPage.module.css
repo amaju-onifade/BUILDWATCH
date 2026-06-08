@@ -1,0 +1,472 @@
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.mainArea {
+  flex: 1;
+  margin-left: 220px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-xl);
+  background: var(--color-background);
+}
+
+.layout {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  max-width: 1100px;
+}
+
+.col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--color-surface);
+  border: 0.5px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+
+.cardTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 0.5px solid var(--color-outline-variant);
+}
+
+/* ── Profile fields ── */
+.field {
+  margin-bottom: 10px;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-on-surface-variant);
+  margin-bottom: 4px;
+  letter-spacing: 0.02em;
+}
+
+.fieldInput {
+  background: var(--color-surface-variant);
+  border: 0.5px solid var(--color-outline-variant);
+  border-radius: var(--radius-md);
+  padding: 7px 10px;
+  font-size: 13px;
+  color: var(--color-on-surface);
+  width: 100%;
+}
+
+.placeholder {
+  color: var(--color-on-surface-variant);
+}
+
+.fieldRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.changeLink {
+  font-size: 11px;
+  color: var(--color-primary);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.badgeReq {
+  display: inline-flex;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #fef3c7;
+  color: #92400e;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+.saveBtn {
+  margin-top: 12px;
+  padding: 7px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  border: none;
+  color: var(--color-on-primary);
+  cursor: pointer;
+  font-family: inherit;
+  width: 100%;
+  transition: opacity 0.15s;
+}
+
+.saveBtn:hover {
+  opacity: 0.9;
+}
+
+/* ── Settings rows ── */
+.settingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 0.5px solid var(--color-outline-variant);
+}
+
+.settingRow:last-child {
+  border-bottom: none;
+}
+
+.sLabel {
+  font-size: 13px;
+  color: var(--color-on-surface);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sSub {
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+  margin-top: 2px;
+}
+
+.badgeAlways {
+  display: inline-flex;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--color-surface-variant);
+  color: var(--color-on-surface-variant);
+  border: 0.5px solid var(--color-outline-variant);
+}
+
+/* ── Toggles ── */
+.toggle {
+  flex-shrink: 0;
+  width: 34px;
+  height: 18px;
+  border-radius: 9px;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  background: var(--color-surface-variant);
+  transition: background 0.15s;
+  position: relative;
+}
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-on-surface);
+  top: 3px;
+  right: auto;
+  left: 3px;
+  transition: right 0.15s, left 0.15s;
+}
+
+.toggleOn {
+  background: var(--color-primary);
+}
+
+.toggleOn::after {
+  right: 3px;
+  left: auto;
+  background: var(--color-on-primary);
+}
+
+.toggleOff {
+  background: var(--color-surface-variant);
+  border: 0.5px solid var(--color-outline);
+}
+
+.toggleLocked {
+  width: 34px;
+  height: 18px;
+  border-radius: 9px;
+  background: #00c26650;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 10px;
+}
+
+.thresholdRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.thresholdVal {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-primary);
+  background: var(--color-primary-container);
+  padding: 3px 10px;
+  border-radius: var(--radius-md);
+}
+
+/* ── Plan cards ── */
+.planGrid {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.planCard {
+  flex: 1;
+  border: 0.5px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  padding: 12px;
+  min-width: 0;
+}
+
+.planCardCurrent {
+  border: 1.5px solid var(--color-primary);
+  background: var(--color-primary-container);
+}
+
+.planBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 500;
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.planName {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-on-surface);
+  margin-bottom: 4px;
+}
+
+.planPrice {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--color-on-surface);
+  line-height: 1.2;
+}
+
+.planInterval {
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+  font-weight: 400;
+}
+
+.planFeatures {
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+  margin-top: 6px;
+  line-height: 1.6;
+  list-style: none;
+  padding: 0;
+}
+
+.planFeatures li::before {
+  content: '·';
+  color: var(--color-primary);
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.planBtn {
+  margin-top: 8px;
+  width: 100%;
+  padding: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  border: 0.5px solid var(--color-outline);
+  background: transparent;
+  color: var(--color-on-surface);
+  font-family: inherit;
+}
+
+.planBtnPrimary {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.planBtnDanger {
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+/* ── Billing rows ── */
+.billingRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 0.5px solid var(--color-outline-variant);
+  font-size: 12px;
+}
+
+.billingRow:last-child {
+  border-bottom: none;
+}
+
+.billingLabel {
+  color: var(--color-on-surface-variant);
+}
+
+.billingVal {
+  color: var(--color-on-surface);
+  font-weight: 500;
+}
+
+.billingLink {
+  color: var(--color-primary);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.cancelLabel {
+  color: var(--color-error);
+  font-size: 12px;
+}
+
+.cancelLink {
+  color: var(--color-error);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* ── Session rows ── */
+.sessionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 0.5px solid var(--color-outline-variant);
+  font-size: 12px;
+}
+
+.sessionRow:last-child {
+  border-bottom: none;
+}
+
+.sessionInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sessionIcon {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-variant);
+  border: 0.5px solid var(--color-outline-variant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sessionDevice {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-on-surface);
+}
+
+.sessionMeta {
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+}
+
+.revokeBtn {
+  font-size: 11px;
+  color: var(--color-error);
+  border: 0.5px solid var(--color-outline);
+  background: transparent;
+  padding: 3px 8px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ── Data rows ── */
+.dataRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 0.5px solid var(--color-outline-variant);
+}
+
+.dataRow:last-child {
+  border-bottom: none;
+}
+
+.dataBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  border: 0.5px solid var(--color-outline);
+  background: transparent;
+  padding: 4px 10px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--color-on-surface);
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.dataBtnDanger {
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.dangerLabel {
+  color: var(--color-error);
+}
+
+.retentionNote {
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+  margin-top: 10px;
+  padding: 8px;
+  background: var(--color-surface-variant);
+  border-left: 3px solid var(--color-outline);
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    flex-direction: column;
+  }
+}

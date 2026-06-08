@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
+import { prisma } from '@/lib/db'
 import { generateProjectDossier } from '../lib/generateDossier'
 import { logger } from '@/lib/logger'
 
@@ -14,6 +15,15 @@ export async function handleDownloadDossier(
     }
 
     const projectId = params.id
+
+    const project = await prisma.projects.findFirst({
+      where: { id: projectId, ownerId: session.userId },
+      select: { id: true },
+    })
+    if (!project) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
     const pdfBuffer = await generateProjectDossier(projectId)
 
     return new NextResponse(Buffer.from(pdfBuffer), {

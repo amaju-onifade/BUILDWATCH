@@ -1,11 +1,12 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { Home, ClipboardList, ChevronLeft, Check } from 'lucide-react'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import styles from './page.module.css'
 
 const PAYMENT_STATUS: Record<string, { label: string; className: string }> = {
-  approved: { label: 'Paid ✓', className: 'statusPaid' },
+  approved: { label: 'Paid', className: 'statusPaid' },
   under_review: { label: 'Under review', className: 'statusReview' },
   in_progress: { label: 'In progress', className: 'statusReview' },
   pending: { label: 'Locked', className: 'statusLocked' },
@@ -46,10 +47,10 @@ export default async function ContractorMilestonesPage() {
     <div className={styles.page}>
       <div className={styles.statusBar}>
         <span>{new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</span>
-        <span>📶 🔋</span>
+        <span></span>
       </div>
       <div className={styles.topbar}>
-        <Link href="/contractor" className={styles.backBtn}>‹</Link>
+        <Link href="/contractor" className={styles.backBtn}><ChevronLeft size={22} /></Link>
         <span className={styles.topbarTitle}>Milestones & payments</span>
       </div>
       <div className={styles.content}>
@@ -86,11 +87,11 @@ export default async function ContractorMilestonesPage() {
       </div>
       <div className={styles.bottomNav}>
         <Link href="/contractor" className={styles.navItem}>
-          <span className={styles.navIcon}>🏠</span>
+          <span className={styles.navIcon}><Home size={20} /></span>
           <span className={styles.navLabel}>Home</span>
         </Link>
         <Link href="/contractor/milestones" className={`${styles.navItem} ${styles.navActive}`}>
-          <span className={styles.navIcon}>📋</span>
+          <span className={styles.navIcon}><ClipboardList size={20} /></span>
           <span className={styles.navLabel}>Milestones</span>
         </Link>
       </div>

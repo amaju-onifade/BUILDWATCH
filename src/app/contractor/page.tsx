@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { Home, ClipboardList, HardHat } from 'lucide-react'
 import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import styles from './page.module.css'
@@ -55,14 +56,14 @@ export default async function ContractorHomePage() {
     <div className={styles.page}>
       <div className={styles.statusBar}>
         <span>{now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</span>
-        <span>📶 🔋</span>
+        <span></span>
       </div>
       <div className={styles.topbar}>
         <span className={styles.logoText}>Build<span className={styles.logoAccent}>Watch</span></span>
         <div className={styles.spacer} />
       </div>
       <div className={styles.content}>
-        <div className={styles.greeting}>{greeting}, Emeka 👷</div>
+        <div className={styles.greeting}>{greeting}, Emeka <HardHat size={18} style={{ display: 'inline' }} /></div>
         <div className={styles.projectLoc}>{project.name} · {project.location}</div>
 
         <div className={styles.paymentGate}>
@@ -95,11 +96,11 @@ export default async function ContractorHomePage() {
       </div>
       <div className={styles.bottomNav}>
         <Link href="/contractor" className={`${styles.navItem} ${styles.navActive}`}>
-          <span className={styles.navIcon}>🏠</span>
+          <span className={styles.navIcon}><Home size={20} /></span>
           <span className={styles.navLabel}>Home</span>
         </Link>
         <Link href="/contractor/milestones" className={styles.navItem}>
-          <span className={styles.navIcon}>📋</span>
+          <span className={styles.navIcon}><ClipboardList size={20} /></span>
           <span className={styles.navLabel}>Milestones</span>
         </Link>
       </div>

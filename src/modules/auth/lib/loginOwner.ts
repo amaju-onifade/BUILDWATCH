@@ -13,7 +13,7 @@ export async function loginOwner(email: string, password: string): Promise<Resul
 
     // Constant-time comparison path — always compare even if user not found
     // to prevent user enumeration via timing
-    const dummyHash = '$2a$12$dummy.hash.to.prevent.timing.attacks.xxxxxxxxxx'
+    const dummyHash = '$2b$12$ZMyqqYcmmB5jK2BeZuk0TeuKgoQLPlEtbZI.mqM2M7U8nwloEBC/a'
     const passwordMatch = await compare(password, user?.passwordHash ?? dummyHash)
 
     if (!user || !passwordMatch || user.deletedAt) {

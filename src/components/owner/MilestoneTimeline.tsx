@@ -12,7 +12,7 @@ import { VerificationReceipt } from './components/VerificationReceipt'
 import type { AIReport } from './components/AIReportPanel'
 import styles from './MilestoneTimeline.module.css'
 
-const MOCK_AI_REPORT: AIReport = {
+const DEMO_AI_REPORT: AIReport = {
   s1_visible:
     'The submission shows three photographs of roof structure work in progress. Timber rafters are visible across the full span of the structure. Ridge board and wall plates appear to be in place. Two workers are visible in the background of photo 2.',
   s2_assessment:
@@ -102,7 +102,7 @@ export default function MilestoneTimeline({
     doc.setFontSize(16)
     doc.text('AI Report — Roof Structure', 20, 30)
     doc.setFontSize(10)
-    const lines = doc.splitTextToSize(MOCK_AI_REPORT.s1_visible, 170)
+    const lines = doc.splitTextToSize(DEMO_AI_REPORT.s1_visible, 170)
     doc.text('What is visible:', 20, 45)
     doc.text(lines, 20, 53)
     doc.save('ai-report-roof-structure.pdf')
@@ -190,7 +190,7 @@ export default function MilestoneTimeline({
                         milestonePhase={milestone.phaseNumber}
                         submittedBy={milestone.id === latestMilestoneId && latestSubmitter ? latestSubmitter : 'Submitter'}
                         submittedDate={milestone.id === latestMilestoneId && latestSubmissionDate ? new Date(latestSubmissionDate).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}
-                        aiReport={MOCK_AI_REPORT}
+                        aiReport={DEMO_AI_REPORT}
                         onApprove={handleApprove}
                         onQuery={handleQuery}
                         onRequestEvidence={handleRequestEvidence}
