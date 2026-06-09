@@ -1,8 +1,9 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
+import Link from 'next/link'
 import { jsPDF } from 'jspdf'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, UserPlus } from 'lucide-react'
 import Sidebar from './components/Sidebar'
 import Topbar from './components/Topbar'
 import { MilestoneRow } from './components/MilestoneRow'
@@ -67,14 +68,35 @@ export default function MilestoneTimeline({
   const firstUnderReview = underReview[0] ?? null
 
   const [expandedMilestoneId, setExpandedMilestoneId] = useState(firstUnderReview?.id ?? '')
-  const [showReceipt, setShowReceipt] = useState(false)
+  const [approvedMilestone, setApprovedMilestone] = useState<{ id: string; name: string; phaseNumber: number } | null>(null)
 
   const handleToggle = (id: string) => {
     setExpandedMilestoneId(prev => (prev === id ? '' : id))
   }
 
-  const handleApprove = () => {
-    setShowReceipt(true)
+  const handleApprove = async (milestoneId: string) => {
+    const ms = milestones.find(m => m.id === milestoneId)
+    if (!ms) return
+
+    try {
+      const res = await fetch(`/api/milestones/${milestoneId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          plannedCostTotal: ms.plannedCost ?? 0,
+          paymentScheduleType: 'single',
+          status: 'approved',
+        }),
+      })
+      if (res.ok) {
+        setApprovedMilestone({ id: ms.id, name: ms.name, phaseNumber: ms.phaseNumber })
+      } else {
+        const err = await res.json()
+        alert(err.error || 'Failed to approve milestone')
+      }
+    } catch {
+      alert('Something went wrong. Please try again.')
+    }
   }
 
   const handleQuery = () => {
@@ -98,13 +120,60 @@ export default function MilestoneTimeline({
   }
 
   const handleExportPdf = () => {
+    const report = DEMO_AI_REPORT
     const doc = new jsPDF()
+    let y = 30
+    const MARGIN = 20
+    const WIDTH = 170
+    const LINE_HEIGHT = 5
+
     doc.setFontSize(16)
-    doc.text('AI Report — Roof Structure', 20, 30)
+    doc.text('AI Report — Roof Structure', MARGIN, y)
+    y += 10
+
     doc.setFontSize(10)
-    const lines = doc.splitTextToSize(DEMO_AI_REPORT.s1_visible, 170)
-    doc.text('What is visible:', 20, 45)
-    doc.text(lines, 20, 53)
+    doc.text('What is visible:', MARGIN, y)
+    y += 6
+    const s1 = doc.splitTextToSize(report.s1_visible, WIDTH)
+    doc.text(s1, MARGIN, y)
+    y += s1.length * LINE_HEIGHT + 4
+
+    doc.text('Stage assessment', MARGIN, y)
+    y += 6
+    doc.setFontSize(8)
+    doc.text(`Confidence: ${report.s2_confidence}`, MARGIN, y)
+    y += 4
+    doc.setFontSize(10)
+    const s2 = doc.splitTextToSize(report.s2_assessment, WIDTH)
+    doc.text(s2, MARGIN, y)
+    y += s2.length * LINE_HEIGHT + 4
+
+    doc.text('Anomalies & concerns', MARGIN, y)
+    y += 6
+    report.s3_anomalies.forEach(a => {
+      const lines = doc.splitTextToSize(`• ${a}`, WIDTH)
+      doc.text(lines, MARGIN, y)
+      y += lines.length * LINE_HEIGHT
+    })
+    y += 4
+
+    doc.text('Limitations', MARGIN, y)
+    y += 6
+    const s4 = doc.splitTextToSize(report.s4_limitations, WIDTH)
+    doc.text(s4, MARGIN, y)
+    y += s4.length * LINE_HEIGHT + 4
+
+    if (report.s5_reference) {
+      if (y > 260) { doc.addPage(); y = 30 }
+      doc.text('Reference comparison', MARGIN, y)
+      y += 6
+      const s5 = doc.splitTextToSize(report.s5_reference, WIDTH)
+      doc.text(s5, MARGIN, y)
+    }
+
+    doc.setFontSize(8)
+    doc.text('AI-generated report — Not a professional assessment.', MARGIN, y + 20)
+
     doc.save('ai-report-roof-structure.pdf')
   }
 
@@ -120,6 +189,9 @@ export default function MilestoneTimeline({
       <Sidebar activeItem="Milestones" projectName={projectName} userName={userName} userInitials={userInitials} userPlan={userPlan} />
       <div className={styles.mainArea}>
         <Topbar title="Milestones">
+          <Link href={`/projects/${projectId}`} className={styles.topGhostBtn}>
+            <UserPlus size={14} /> Invite team
+          </Link>
           <button
             type="button"
             className={styles.topGhostBtn}
@@ -191,7 +263,7 @@ export default function MilestoneTimeline({
                         submittedBy={milestone.id === latestMilestoneId && latestSubmitter ? latestSubmitter : 'Submitter'}
                         submittedDate={milestone.id === latestMilestoneId && latestSubmissionDate ? new Date(latestSubmissionDate).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}
                         aiReport={DEMO_AI_REPORT}
-                        onApprove={handleApprove}
+                        onApprove={() => handleApprove(milestone.id)}
                         onQuery={handleQuery}
                         onRequestEvidence={handleRequestEvidence}
                         onAnnotate={handleAnnotate}
@@ -206,11 +278,11 @@ export default function MilestoneTimeline({
           </div>
 
           {/* Verification Receipt (shown after approve) */}
-          {showReceipt && firstUnderReview && (
+          {approvedMilestone && (
             <div className={styles.receiptSection}>
               <VerificationReceipt
-                milestoneName={firstUnderReview.name}
-                milestonePhase={firstUnderReview.phaseNumber}
+                milestoneName={approvedMilestone.name}
+                milestonePhase={approvedMilestone.phaseNumber}
                 approvedBy={userName ?? 'Owner'}
                 approvedDate={new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
               />

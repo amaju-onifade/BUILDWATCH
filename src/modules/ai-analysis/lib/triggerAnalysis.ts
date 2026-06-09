@@ -10,23 +10,22 @@ import { saveAIReport } from './saveReport'
  */
 export async function triggerAIAnalysis(submissionId: string) {
   try {
-    // 1. Fetch submission with milestones, photo keys, and project address fields
+    // 1. Fetch submission with milestones, photo keys, and project details
     const submission = await prisma.submissions.findUnique({
       where: { id: submissionId },
       include: {
         milestone: true,
         photos: true,
         project: {
-          select: {
-            streetNumber: true,
-            streetName: true,
-            lga: true,
-            state: true,
-            location: true,
-            googleMapsPin: true,
-          }
-        }
-      }
+          include: {
+            milestones: {
+              orderBy: { order: 'asc' },
+              where: { status: 'approved' },
+              select: { name: true, order: true },
+            },
+          },
+        },
+      },
     })
 
     if (!submission) {
@@ -34,13 +33,21 @@ export async function triggerAIAnalysis(submissionId: string) {
       return
     }
 
-    // 2. Build site address context for the AI prompt
+    // 2. Build context fields
     const p = submission.project
     const siteAddress = [
       [p.streetNumber, p.streetName].filter(Boolean).join(' '),
       p.lga,
       p.state,
     ].filter(Boolean).join(', ') || p.location
+
+    const phaseHistory = (p as any).milestones
+      .map((m: { order: number; name: string }) => `Phase ${m.order} — ${m.name}`)
+      .join(', ') || 'None'
+
+    const submissionDate = submission.createdAt.toLocaleDateString('en-GB', {
+      day: 'numeric', month: 'long', year: 'numeric',
+    })
 
     // 3. Generate signed download URLs for each photo
     const photoUrls = await Promise.all(
@@ -55,6 +62,10 @@ export async function triggerAIAnalysis(submissionId: string) {
       submission.caption || undefined,
       siteAddress,
       p.googleMapsPin,
+      p.name,
+      phaseHistory,
+      submissionDate,
+      undefined, // referenceSummary — populated when R2 stores reference files
     )
 
     // 4. Save results (success or failure)

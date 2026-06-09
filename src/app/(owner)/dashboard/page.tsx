@@ -16,6 +16,12 @@ export default async function DashboardPage() {
   const session = await getSession()
   if (!session) redirect('/login')
 
+  const allProjects = await prisma.projects.findMany({
+    where: { ownerId: session.userId },
+    select: { id: true, name: true },
+    orderBy: { createdAt: 'desc' },
+  })
+
   const projects = await prisma.projects.findMany({
     where: { ownerId: session.userId },
     orderBy: { createdAt: 'desc' },
@@ -32,6 +38,7 @@ export default async function DashboardPage() {
 
   if (projects.length === 0) {
     return <OwnerDashboard data={{
+      projectId: '',
       projectName: 'No project yet',
       daysSinceLastUpdate: 0,
       lastSubmittedBy: '—',
@@ -47,7 +54,7 @@ export default async function DashboardPage() {
       actionsDetail: 'Create your first project to get started',
       aiAnomalyFlagged: false,
       aiAnomalyMessage: '',
-    }} />
+    }} projects={allProjects} />
   }
 
   const project = projects[0]
@@ -65,6 +72,7 @@ export default async function DashboardPage() {
   const actionsPending = milestones.filter(m => m.status === 'pending' || m.status === 'in_progress').length
 
   const data: DashboardData = {
+    projectId: project.id,
     projectName: project.name,
     daysSinceLastUpdate,
     lastSubmittedBy: latestSubmission?.submittedBy.fullName ?? '—',
@@ -84,5 +92,5 @@ export default async function DashboardPage() {
     aiAnomalyMessage: '',
   }
 
-  return <OwnerDashboard data={data} />
+  return <OwnerDashboard data={data} projects={allProjects} />
 }

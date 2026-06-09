@@ -4,6 +4,8 @@ import { getSession } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { formatCurrency } from '@/lib/format'
 import { notFound } from 'next/navigation'
+import Sidebar from '@/components/owner/components/Sidebar'
+import Topbar from '@/components/owner/components/Topbar'
 import { InviteForm } from '@/modules/projects/components/InviteForm/InviteForm'
 import { SubmissionFeed } from '@/modules/submissions/components/SubmissionFeed/SubmissionFeed'
 import styles from './page.module.css'
@@ -18,6 +20,12 @@ export default async function ProjectDetailPage({ params }: Props) {
   const session = await getSession()
 
   if (!session) return null
+
+  const allProjects = await prisma.projects.findMany({
+    where: { ownerId: session.userId },
+    select: { id: true, name: true },
+    orderBy: { createdAt: 'desc' },
+  })
 
   const project = await prisma.projects.findFirst({
     where: { id, ownerId: session.userId },
@@ -64,6 +72,11 @@ export default async function ProjectDetailPage({ params }: Props) {
   const totalSpent = (spentAgg._sum.tranche1Actual ?? 0) + (spentAgg._sum.tranche2Actual ?? 0) + (spentAgg._sum.tranche3Actual ?? 0)
 
   return (
+    <div className={styles.shell}>
+      <Sidebar activeItem="" projectName={project.name} projects={allProjects} />
+      <div className={styles.mainArea}>
+        <Topbar title={project.name} />
+        <div className={styles.content}>
     <div className={styles.container}>
       <div className={styles.statsRow}>
         <div className={styles.statCard}>
@@ -204,6 +217,9 @@ export default async function ProjectDetailPage({ params }: Props) {
       </Link>
 
       <SubmissionFeed projectId={id} />
+    </div>
+        </div>
+      </div>
     </div>
   )
 }

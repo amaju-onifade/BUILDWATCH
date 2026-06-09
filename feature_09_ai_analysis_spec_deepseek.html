@@ -1,0 +1,986 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&family=DM+Sans:wght@400;500&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#0F2340;
+  --amber:#D97706;
+  --amber-lt:#FEF3C7;
+  --amber-dk:#92400E;
+  --teal:#0D7A5F;
+  --teal-lt:#D1FAE5;
+  --teal-dk:#064E3B;
+  --red:#B91C1C;
+  --red-lt:#FEE2E2;
+  --purple:#5B21B6;
+  --purple-lt:#EDE9FE;
+  --blue:#1D4ED8;
+  --blue-lt:#DBEAFE;
+  --slate:#F8F9FB;
+  --border:rgba(15,35,64,0.1);
+  --text:#0F2340;
+  --muted:#64748B;
+  --ff-display:'Fraunces',serif;
+  --ff-body:'DM Sans',sans-serif;
+  --ff-mono:'DM Mono',monospace;
+}
+
+body{font-family:var(--ff-body);color:var(--text);background:transparent;font-size:15px;line-height:1.6;}
+
+.masthead{
+  padding:2rem 0 1.5rem;
+  border-bottom:1.5px solid var(--navy);
+  margin-bottom:2rem;
+}
+.feature-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--ff-mono);font-size:11px;
+  background:var(--navy);color:#fff;
+  padding:4px 12px;border-radius:2px;
+  margin-bottom:1rem;letter-spacing:.04em;
+}
+.masthead h1{
+  font-family:var(--ff-display);font-weight:300;font-size:28px;
+  color:var(--navy);line-height:1.2;margin-bottom:.4rem;
+}
+.masthead h1 em{font-style:italic;font-weight:300;}
+.masthead-meta{display:flex;flex-wrap:wrap;gap:12px;margin-top:1rem;}
+.meta-pill{
+  font-size:12px;font-family:var(--ff-mono);
+  padding:3px 10px;border:1px solid var(--border);
+  border-radius:2px;color:var(--muted);
+}
+
+.toc{
+  background:var(--slate);
+  border:0.5px solid var(--border);
+  border-left:3px solid var(--navy);
+  padding:1rem 1.25rem;
+  margin-bottom:2rem;
+  border-radius:0 4px 4px 0;
+}
+.toc-title{font-family:var(--ff-mono);font-size:11px;color:var(--muted);letter-spacing:.06em;margin-bottom:.6rem;}
+.toc-items{display:flex;flex-direction:column;gap:4px;}
+.toc-item{
+  font-size:13px;color:var(--navy);text-decoration:none;
+  display:flex;align-items:center;gap:8px;cursor:pointer;
+  padding:2px 0;
+}
+.toc-item:hover{color:var(--amber);}
+.toc-num{font-family:var(--ff-mono);font-size:11px;color:var(--muted);min-width:20px;}
+
+.section{margin-bottom:2.5rem;}
+.section-header{
+  display:flex;align-items:baseline;gap:12px;
+  border-bottom:0.5px solid var(--border);
+  padding-bottom:.6rem;margin-bottom:1.25rem;
+}
+.section-num{font-family:var(--ff-mono);font-size:11px;color:var(--muted);}
+.section-title{font-family:var(--ff-display);font-weight:500;font-size:19px;color:var(--navy);}
+
+.prose{font-size:14px;color:#1E293B;line-height:1.7;margin-bottom:1rem;}
+.prose strong{font-weight:500;color:var(--navy);}
+
+/* PIPELINE */
+.pipeline{display:flex;flex-direction:column;gap:0;}
+.pipe-step{
+  display:flex;gap:14px;
+  padding:1rem 0;
+  border-bottom:0.5px solid var(--border);
+  position:relative;
+}
+.pipe-step:last-child{border-bottom:none;}
+.pipe-left{display:flex;flex-direction:column;align-items:center;gap:0;min-width:36px;}
+.pipe-icon{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:15px;
+}
+.pipe-line{width:1px;background:var(--border);flex:1;min-height:20px;margin-top:4px;}
+.pipe-content{flex:1;padding-top:6px;}
+.pipe-label{font-family:var(--ff-mono);font-size:11px;color:var(--muted);letter-spacing:.04em;margin-bottom:4px;}
+.pipe-title{font-size:14px;font-weight:500;color:var(--navy);margin-bottom:4px;}
+.pipe-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+.pipe-detail{
+  margin-top:8px;background:var(--slate);
+  border:0.5px solid var(--border);
+  border-radius:4px;padding:.75rem 1rem;
+  font-size:12px;font-family:var(--ff-mono);
+  color:#334155;line-height:1.8;
+}
+
+/* REPORT SCHEMA */
+.report-card{
+  border:0.5px solid var(--border);
+  border-radius:6px;overflow:hidden;
+  margin-bottom:12px;
+}
+.report-card-head{
+  display:flex;align-items:center;gap:10px;
+  padding:.75rem 1rem;
+  background:var(--navy);
+}
+.report-card-num{
+  font-family:var(--ff-mono);font-size:11px;
+  background:rgba(255,255,255,.15);color:#fff;
+  padding:2px 7px;border-radius:2px;
+}
+.report-card-title{font-size:13px;font-weight:500;color:#fff;}
+.report-card-badge{
+  margin-left:auto;font-family:var(--ff-mono);font-size:10px;
+  padding:2px 8px;border-radius:2px;
+}
+.badge-always{background:#D1FAE5;color:#064E3B;}
+.badge-ref{background:#FEF3C7;color:#92400E;}
+.report-card-body{padding:.85rem 1rem;background:#fff;}
+.report-card-body p{font-size:13px;color:#334155;line-height:1.65;margin-bottom:.5rem;}
+.report-card-body p:last-child{margin-bottom:0;}
+.field-row{display:flex;gap:8px;align-items:baseline;margin-bottom:6px;}
+.field-name{font-family:var(--ff-mono);font-size:11px;color:var(--purple);min-width:140px;flex-shrink:0;}
+.field-type{font-family:var(--ff-mono);font-size:11px;color:var(--muted);}
+.field-desc{font-size:12px;color:#475569;}
+
+/* PROMPT BLOCK */
+.prompt-block{
+  background:#0F172A;
+  border-radius:6px;padding:1.25rem;
+  margin-bottom:1rem;overflow-x:auto;
+}
+.prompt-block pre{
+  font-family:var(--ff-mono);font-size:12px;
+  color:#E2E8F0;line-height:1.8;white-space:pre-wrap;
+  word-break:break-word;
+}
+.prompt-block .c-comment{color:#64748B;}
+.prompt-block .c-key{color:#7DD3FC;}
+.prompt-block .c-val{color:#86EFAC;}
+.prompt-block .c-str{color:#FCA5A5;}
+.prompt-block .c-head{color:#FDBA74;font-weight:500;}
+
+/* CONFIDENCE METER */
+.conf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem;}
+.conf-card{
+  border:0.5px solid var(--border);border-radius:6px;
+  padding:.85rem 1rem;
+}
+.conf-label{font-size:12px;font-weight:500;color:var(--navy);margin-bottom:6px;}
+.conf-bar-wrap{height:6px;background:var(--border);border-radius:3px;margin-bottom:6px;overflow:hidden;}
+.conf-bar{height:100%;border-radius:3px;}
+.conf-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* EDGE CASES */
+.edge-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.edge-card{
+  border:0.5px solid var(--border);border-radius:6px;
+  padding:.85rem 1rem;
+}
+.edge-icon{font-size:18px;margin-bottom:6px;}
+.edge-title{font-size:13px;font-weight:500;color:var(--navy);margin-bottom:4px;}
+.edge-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* UI MOCKUP */
+.report-mockup{
+  border:0.5px solid var(--border);border-radius:8px;
+  overflow:hidden;background:#fff;
+}
+.mockup-topbar{
+  background:var(--navy);padding:.75rem 1rem;
+  display:flex;align-items:center;gap:10px;
+}
+.mockup-dots{display:flex;gap:5px;}
+.mockup-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);}
+.mockup-title-bar{font-family:var(--ff-mono);font-size:11px;color:rgba(255,255,255,.6);margin-left:8px;}
+.mockup-body{padding:1rem;}
+.m-project{font-family:var(--ff-mono);font-size:10px;color:var(--muted);margin-bottom:.5rem;letter-spacing:.04em;}
+.m-title{font-size:17px;font-weight:500;color:var(--navy);margin-bottom:.25rem;}
+.m-sub{font-size:12px;color:var(--muted);margin-bottom:1rem;}
+
+.m-score-row{display:flex;gap:10px;margin-bottom:1rem;}
+.m-score-card{
+  flex:1;padding:.6rem .8rem;
+  border:0.5px solid var(--border);border-radius:6px;
+  text-align:center;
+}
+.m-score-val{font-size:20px;font-weight:500;margin-bottom:2px;}
+.m-score-lbl{font-size:10px;color:var(--muted);font-family:var(--ff-mono);}
+.score-green{color:var(--teal);}
+.score-amber{color:var(--amber);}
+.score-red{color:var(--red);}
+
+.m-section{margin-bottom:.85rem;}
+.m-section-head{
+  display:flex;align-items:center;gap:6px;
+  margin-bottom:.4rem;
+}
+.m-section-num{
+  font-family:var(--ff-mono);font-size:10px;
+  background:var(--navy);color:#fff;
+  padding:1px 6px;border-radius:2px;
+}
+.m-section-title{font-size:12px;font-weight:500;color:var(--navy);}
+.m-section-badge{
+  margin-left:auto;font-size:10px;font-family:var(--ff-mono);
+  padding:1px 6px;border-radius:2px;
+}
+
+.m-content{
+  font-size:12px;color:#334155;line-height:1.6;
+  background:var(--slate);border-radius:4px;
+  padding:.6rem .75rem;
+}
+
+.m-finding{
+  display:flex;gap:6px;align-items:flex-start;
+  margin-bottom:6px;
+  font-size:12px;color:#334155;
+}
+.m-finding:last-child{margin-bottom:0;}
+.m-dot{width:5px;height:5px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+.dot-ok{background:var(--teal);}
+.dot-warn{background:var(--amber);}
+.dot-err{background:var(--red);}
+.dot-info{background:#93C5FD;}
+
+.m-footer{
+  border-top:0.5px solid var(--border);
+  padding:.75rem 1rem;
+  display:flex;align-items:center;gap:8px;
+  background:var(--slate);
+}
+.m-footer-txt{font-size:11px;color:var(--muted);flex:1;}
+.m-btn{
+  font-size:11px;font-family:var(--ff-mono);
+  padding:4px 12px;border-radius:3px;border:none;cursor:pointer;
+}
+.m-btn-primary{background:var(--navy);color:#fff;}
+.m-btn-sec{background:#fff;color:var(--navy);border:0.5px solid var(--border);}
+
+/* CONSTRAINTS */
+.constraint-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.constraint-card{
+  border-left:3px solid var(--border);
+  padding:.75rem 1rem;
+}
+.constraint-card.c-warn{border-color:var(--amber);}
+.constraint-card.c-info{border-color:var(--blue);}
+.constraint-card.c-ok{border-color:var(--teal);}
+.constraint-card.c-err{border-color:var(--red);}
+.constraint-title{font-size:13px;font-weight:500;color:var(--navy);margin-bottom:4px;}
+.constraint-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* API call */
+.api-block{
+  background:#0F172A;border-radius:6px;
+  padding:1.25rem;margin-bottom:1rem;
+  position:relative;overflow-x:auto;
+}
+.api-block pre{
+  font-family:var(--ff-mono);font-size:11.5px;
+  color:#CBD5E1;line-height:1.9;white-space:pre-wrap;word-break:break-word;
+}
+.lang-tag{
+  position:absolute;top:.75rem;right:.75rem;
+  font-family:var(--ff-mono);font-size:10px;
+  color:#64748B;
+}
+.k{color:#7DD3FC;}.v{color:#86EFAC;}.s{color:#FCA5A5;}.c{color:#64748B;font-style:italic;}.p{color:#FDBA74;}
+</style>
+
+<div class="masthead">
+  <div class="feature-tag">
+    <i class="ti ti-cpu" aria-hidden="true"></i>
+    Feature 09 · AI Analysis Engine
+  </div>
+  <h1>AI-Powered Submission <em>Analysis &amp; Reporting</em></h1>
+  <p style="font-size:14px;color:var(--muted);margin-top:.5rem;max-width:560px;">
+    Full technical and product specification. Covers pipeline architecture, prompt design, report schema, UI, edge cases, and constraints.
+  </p>
+  <div class="masthead-meta">
+    <span class="meta-pill">Tier: Trust</span>
+    <span class="meta-pill">Model: DeepSeek deepseek-sonnet-4-20250514</span>
+    <span class="meta-pill">Inputs: photos · drawings · renders · reference images</span>
+    <span class="meta-pill">Output: structured JSON → rendered report</span>
+    <span class="meta-pill">Report: always generated</span>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toc-title">CONTENTS</div>
+  <div class="toc-items">
+    <div class="toc-item"><span class="toc-num">01</span>Feature definition &amp; scope</div>
+    <div class="toc-item"><span class="toc-num">02</span>Analysis pipeline (step by step)</div>
+    <div class="toc-item"><span class="toc-num">03</span>Reference input types &amp; handling</div>
+    <div class="toc-item"><span class="toc-num">04</span>Report schema (all 6 sections)</div>
+    <div class="toc-item"><span class="toc-num">05</span>System prompt design</div>
+    <div class="toc-item"><span class="toc-num">06</span>Confidence scoring model</div>
+    <div class="toc-item"><span class="toc-num">07</span>Report UI &amp; owner experience</div>
+    <div class="toc-item"><span class="toc-num">08</span>Edge cases &amp; failure modes</div>
+    <div class="toc-item"><span class="toc-num">09</span>API call structure</div>
+    <div class="toc-item"><span class="toc-num">10</span>Constraints &amp; honest limitations</div>
+    <div class="toc-item"><span class="toc-num">11</span>What the proxy sees (and does not see)</div>
+  </div>
+</div>
+
+<!-- 01 DEFINITION -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <span class="section-title">Feature definition &amp; scope</span>
+  </div>
+  <p class="prose">
+    Every proxy submission triggers an AI analysis. The analysis produces a <strong>structured report visible only to the diaspora owner</strong>. The report is always generated — even with no reference material — and becomes progressively richer as more context is provided.
+  </p>
+  <p class="prose">
+    The AI receives: (a) the proxy's submitted photos, (b) the current milestone label, (c) any reference material the owner has uploaded (drawings, renders, reference photos), and (d) the project's phase history. It returns a structured JSON object that the app renders as a human-readable report card on the owner's dashboard.
+  </p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:1rem;">
+    <div style="border:0.5px solid var(--border);border-radius:6px;padding:.85rem 1rem;background:#fff;">
+      <div style="font-size:11px;font-family:var(--ff-mono);color:var(--teal);margin-bottom:6px;">IN SCOPE — MVP</div>
+      <div style="font-size:13px;color:#334155;line-height:1.7;">
+        Photo scene description<br>
+        Milestone stage assessment<br>
+        Anomaly detection<br>
+        Reference comparison (when available)<br>
+        Confidence scoring<br>
+        AI limitation disclosure<br>
+        Owner-only report card
+      </div>
+    </div>
+    <div style="border:0.5px solid var(--border);border-radius:6px;padding:.85rem 1rem;background:#fff;">
+      <div style="font-size:11px;font-family:var(--ff-mono);color:var(--red);margin-bottom:6px;">OUT OF SCOPE — MVP</div>
+      <div style="font-size:13px;color:#334155;line-height:1.7;">
+        Structural safety assessment<br>
+        Quantity surveying / cost estimation<br>
+        Regulatory compliance checking<br>
+        Real-time video analysis<br>
+        AI-to-proxy direct messaging<br>
+        Automated fund release decisions
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 02 PIPELINE -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <span class="section-title">Analysis pipeline</span>
+  </div>
+  <div class="pipeline">
+
+    <div class="pipe-step">
+      <div class="pipe-left">
+        <div class="pipe-icon" style="background:#DBEAFE;color:#1D4ED8;"><i class="ti ti-device-mobile-upload" aria-hidden="true"></i></div>
+        <div class="pipe-line"></div>
+      </div>
+      <div class="pipe-content">
+        <div class="pipe-label">STEP 01 — PROXY ACTION</div>
+        <div class="pipe-title">Proxy submits photos at site</div>
+        <div class="pipe-desc">1–10 photos uploaded via two-tap flow. Each photo is geotagged and timestamped by the app before upload. Photos are compressed to ≤1.5MB each for bandwidth efficiency while preserving enough detail for visual analysis. Raw originals stored separately.</div>
+      </div>
+    </div>
+
+    <div class="pipe-step">
+      <div class="pipe-left">
+        <div class="pipe-icon" style="background:#F3E8FF;color:#5B21B6;"><i class="ti ti-database" aria-hidden="true"></i></div>
+        <div class="pipe-line"></div>
+      </div>
+      <div class="pipe-content">
+        <div class="pipe-label">STEP 02 — CONTEXT ASSEMBLY</div>
+        <div class="pipe-title">Backend assembles analysis payload</div>
+        <div class="pipe-desc">The server collects everything the AI needs: compressed submission photos, current milestone label and description, all reference materials the owner has uploaded (drawings, renders, reference photos — each tagged by type), and the last 3 submission summaries for continuity context.</div>
+        <div class="pipe-detail">payload = {
+  milestone:        "Roofing — timber frame",
+  submission_photos: [img_1, img_2, img_3],
+  reference_files:  [{ type: "floor_plan", file: pdf_raster },
+                     { type: "3d_render",  file: render_jpg }],
+  phase_history:    ["Foundation ✓", "Block-laying ✓", "Lintel ✓"],
+  prior_summaries:  ["Week 12: walls complete...", ...]
+}</div>
+      </div>
+    </div>
+
+    <div class="pipe-step">
+      <div class="pipe-left">
+        <div class="pipe-icon" style="background:#D1FAE5;color:#065F46;"><i class="ti ti-transform" aria-hidden="true"></i></div>
+        <div class="pipe-line"></div>
+      </div>
+      <div class="pipe-content">
+        <div class="pipe-label">STEP 03 — PRE-PROCESSING</div>
+        <div class="pipe-title">Reference materials prepared for vision input</div>
+        <div class="pipe-desc">PDF drawings are rasterised to high-resolution JPEGs (300 DPI) page by page. The relevant page (typically ground floor plan or structural drawing) is selected based on the current milestone. 3D renders are passed as-is. Floor plans have their scale stripped — the AI is told the drawing type but not asked to interpret dimensions precisely.</div>
+      </div>
+    </div>
+
+    <div class="pipe-step">
+      <div class="pipe-left">
+        <div class="pipe-icon" style="background:#FEF3C7;color:#92400E;"><i class="ti ti-brain" aria-hidden="true"></i></div>
+        <div class="pipe-line"></div>
+      </div>
+      <div class="pipe-content">
+        <div class="pipe-label">STEP 04 — AI ANALYSIS</div>
+        <div class="pipe-title">DeepSeek vision API called with full context</div>
+        <div class="pipe-desc">A single API call sends all images (submission + references) with the structured system prompt. The model is instructed to return only valid JSON matching the report schema. Max tokens set to 1800. Temperature 0 for consistency. The call is async — the owner sees "Analysis in progress" for 15–45 seconds.</div>
+      </div>
+    </div>
+
+    <div class="pipe-step">
+      <div class="pipe-left">
+        <div class="pipe-icon" style="background:#FEE2E2;color:#B91C1C;"><i class="ti ti-shield-check" aria-hidden="true"></i></div>
+        <div class="pipe-line"></div>
+      </div>
+      <div class="pipe-content">
+        <div class="pipe-label">STEP 05 — VALIDATION</div>
+        <div class="pipe-title">Response validated and sanitised</div>
+        <div class="pipe-desc">JSON is parsed and validated against the schema. Each field is type-checked. Confidence scores are clamped to valid ranges. If parsing fails (rare model error), a fallback report is generated from a simpler second call asking for plain text only, which is then wrapped in the schema structure. The submission is never left without a report.</div>
+      </div>
+    </div>
+
+    <div class="pipe-step">
+      <div class="pipe-left">
+        <div class="pipe-icon" style="background:#E0F2FE;color:#0369A1;"><i class="ti ti-file-analytics" aria-hidden="true"></i></div>
+      </div>
+      <div class="pipe-content">
+        <div class="pipe-label">STEP 06 — DELIVERY</div>
+        <div class="pipe-title">Report stored, owner notified</div>
+        <div class="pipe-desc">Validated report JSON is stored against the submission record. Owner receives a push notification: "AI report ready for [Milestone name]." The report is rendered on-demand from the stored JSON — no re-calling the AI. Reports are immutable once stored; any re-analysis (e.g. after owner uploads new reference material) creates a new versioned report, not an overwrite.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 03 REFERENCE TYPES -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <span class="section-title">Reference input types &amp; handling</span>
+  </div>
+  <p class="prose">The system accepts four reference types. Each unlocks a different depth of comparison analysis. Reference materials are uploaded once by the owner during project setup and remain attached to the project throughout.</p>
+
+  <div style="display:flex;flex-direction:column;gap:8px;">
+    <div class="report-card">
+      <div class="report-card-head" style="background:#1E3A5F;">
+        <span class="report-card-num">TYPE A</span>
+        <span class="report-card-title">Floor plan / architectural drawing (PDF or image)</span>
+        <span class="report-card-badge badge-ref" style="background:#DBEAFE;color:#1E3A8A;">Richest comparison</span>
+      </div>
+      <div class="report-card-body">
+        <p><strong>What the AI can do:</strong> Identify whether visible rooms, openings, wall arrangements, and structural elements correspond roughly to the drawn layout. Detect obvious deviations (e.g. a wall where none is drawn, a missing opening).</p>
+        <p><strong>What it cannot do:</strong> Read dimensions accurately. Verify setbacks, angles, or structural specifications. Assess concrete mixes, rebar spacing, or load-bearing calculations.</p>
+        <p><strong>Pre-processing:</strong> PDF rasterised at 300 DPI. First relevant page auto-selected based on milestone (ground floor for early phases, roof plan for roofing). Owner can pin the correct page manually.</p>
+      </div>
+    </div>
+    <div class="report-card">
+      <div class="report-card-head" style="background:#1E3A5F;">
+        <span class="report-card-num">TYPE B</span>
+        <span class="report-card-title">3D architectural render</span>
+        <span class="report-card-badge" style="background:#EDE9FE;color:#4C1D95;">Strong visual match</span>
+      </div>
+      <div class="report-card-body">
+        <p><strong>What the AI can do:</strong> Compare visible external features — roof shape, window positions, facade materials, overall massing — against the render. Most effective during finishing and external work phases.</p>
+        <p><strong>What it cannot do:</strong> Compare internal work or structural elements not visible in the render. Assess colour accuracy in variable lighting conditions.</p>
+        <p><strong>Pre-processing:</strong> Passed as-is. Multiple render angles accepted (max 4). Owner labels each angle (front, rear, left side, right side) during upload.</p>
+      </div>
+    </div>
+    <div class="report-card">
+      <div class="report-card-head" style="background:#1E3A5F;">
+        <span class="report-card-num">TYPE C</span>
+        <span class="report-card-title">Reference photographs (similar completed build)</span>
+        <span class="report-card-badge" style="background:#D1FAE5;color:#065F46;">Useful baseline</span>
+      </div>
+      <div class="report-card-body">
+        <p><strong>What the AI can do:</strong> Compare workmanship quality, material appearance, and construction stage against a known-good example. Flag obvious quality discrepancies (rough versus smooth plaster, aligned versus misaligned blocks).</p>
+        <p><strong>What it cannot do:</strong> Make structural comparisons. The reference is aesthetic and qualitative only.</p>
+        <p><strong>Pre-processing:</strong> Passed as-is. Owner labels each photo with what it shows (e.g. "finished plastering — external wall"). Max 6 reference photos.</p>
+      </div>
+    </div>
+    <div class="report-card">
+      <div class="report-card-head" style="background:#1E3A5F;">
+        <span class="report-card-num">TYPE D</span>
+        <span class="report-card-title">No reference uploaded</span>
+        <span class="report-card-badge" style="background:var(--amber-lt);color:var(--amber-dk);">Description only</span>
+      </div>
+      <div class="report-card-body">
+        <p><strong>What the AI does:</strong> Generates a full description-only report: what is visible, what construction activity appears to be in progress, anomalies or concerns, and what cannot be determined. The report is still structured and valuable — it is simply not a comparison.</p>
+        <p><strong>When this applies:</strong> Owner has not uploaded any reference material. Also used as the fallback if reference files fail to process.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 04 REPORT SCHEMA -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <span class="section-title">Report schema — all 6 sections</span>
+  </div>
+  <p class="prose">The AI returns a single JSON object. All six sections are always present. Sections 5 and 6 are populated only when reference material exists; they contain a <code style="font-family:var(--ff-mono);font-size:12px;background:var(--slate);padding:1px 5px;border-radius:3px;">not_applicable</code> value otherwise.</p>
+
+  <div style="display:flex;flex-direction:column;gap:10px;">
+
+    <div class="report-card">
+      <div class="report-card-head"><span class="report-card-num">S1</span><span class="report-card-title">Scene description</span><span class="report-card-badge badge-always">Always present</span></div>
+      <div class="report-card-body">
+        <p>A plain-language description of what is visible across all submitted photos. Written for a non-technical owner. Describes the site conditions, visible work, materials present, number of workers (if any), weather/lighting, and any notable site features.</p>
+        <div class="field-row"><span class="field-name">scene_summary</span><span class="field-type">string</span><span class="field-desc">2–4 sentence overview of site conditions</span></div>
+        <div class="field-row"><span class="field-name">photos_described</span><span class="field-type">array[object]</span><span class="field-desc">Per-photo description: photo_index, what_visible, notable_details</span></div>
+        <div class="field-row"><span class="field-name">workers_present</span><span class="field-type">boolean | null</span><span class="field-desc">Null if indeterminate from photos</span></div>
+        <div class="field-row"><span class="field-name">materials_visible</span><span class="field-type">array[string]</span><span class="field-desc">List of identifiable materials on site</span></div>
+      </div>
+    </div>
+
+    <div class="report-card">
+      <div class="report-card-head"><span class="report-card-num">S2</span><span class="report-card-title">Milestone stage assessment</span><span class="report-card-badge badge-always">Always present</span></div>
+      <div class="report-card-body">
+        <p>The AI's assessment of whether the visible work corresponds to the milestone the proxy has tagged. If the milestone is "Roofing — timber frame" and the photos show completed block walls but no timber, this section flags the discrepancy without accusing — it describes what it sees and what would be expected.</p>
+        <div class="field-row"><span class="field-name">declared_milestone</span><span class="field-type">string</span><span class="field-desc">Passed in from proxy submission tag</span></div>
+        <div class="field-row"><span class="field-name">stage_appears_consistent</span><span class="field-type">boolean | null</span><span class="field-desc">Null if insufficient evidence</span></div>
+        <div class="field-row"><span class="field-name">stage_assessment_text</span><span class="field-type">string</span><span class="field-desc">Plain-language assessment, 2–5 sentences</span></div>
+        <div class="field-row"><span class="field-name">expected_vs_visible</span><span class="field-type">string</span><span class="field-desc">What the AI expected to see for this milestone vs what it observed</span></div>
+      </div>
+    </div>
+
+    <div class="report-card">
+      <div class="report-card-head"><span class="report-card-num">S3</span><span class="report-card-title">Anomaly &amp; concern detection</span><span class="report-card-badge badge-always">Always present</span></div>
+      <div class="report-card-body">
+        <p>Things that look unusual, incomplete, or potentially problematic. The AI is calibrated to flag observations, not conclusions — it notes what it sees, not what it means structurally. Every finding is prefaced with an epistemic qualifier (e.g. "appears to show", "may indicate", "worth asking about").</p>
+        <div class="field-row"><span class="field-name">anomalies</span><span class="field-type">array[object]</span><span class="field-desc">Each item: description, photo_index, severity (low/medium/high), suggested_question</span></div>
+        <div class="field-row"><span class="field-name">inactivity_signal</span><span class="field-type">boolean</span><span class="field-desc">True if photos suggest site is not actively worked (no workers, no fresh materials, unchanged vs prior submission)</span></div>
+        <div class="field-row"><span class="field-name">positive_observations</span><span class="field-type">array[string]</span><span class="field-desc">Things that look correct or well-executed</span></div>
+      </div>
+    </div>
+
+    <div class="report-card">
+      <div class="report-card-head"><span class="report-card-num">S4</span><span class="report-card-title">AI limitations disclosure</span><span class="report-card-badge badge-always">Always present</span></div>
+      <div class="report-card-body">
+        <p>An explicit, honest list of what could not be assessed from the photos. This section is mandatory and cannot be empty — the AI must always disclose its limitations for this specific submission. It is rendered visibly in the report to calibrate owner trust.</p>
+        <div class="field-row"><span class="field-name">cannot_assess</span><span class="field-type">array[string]</span><span class="field-desc">Specific things not determinable (e.g. "concrete mix quality", "rebar spacing inside columns")</span></div>
+        <div class="field-row"><span class="field-name">photo_quality_issues</span><span class="field-type">array[object]</span><span class="field-desc">Blurry, too dark, too far: photo_index + issue description</span></div>
+        <div class="field-row"><span class="field-name">inspector_recommended</span><span class="field-type">boolean</span><span class="field-desc">True if AI assessment is significantly limited by photo quality or complexity</span></div>
+      </div>
+    </div>
+
+    <div class="report-card">
+      <div class="report-card-head"><span class="report-card-num">S5</span><span class="report-card-title">Reference comparison</span><span class="report-card-badge badge-ref">When reference exists</span></div>
+      <div class="report-card-body">
+        <p>Comparison of what is visible in the submission against the reference material. Each comparison item is tagged with the reference type it uses. The AI never makes absolute judgments — it expresses observations as degrees of correspondence.</p>
+        <div class="field-row"><span class="field-name">reference_types_used</span><span class="field-type">array[string]</span><span class="field-desc">Which reference types were available for this comparison</span></div>
+        <div class="field-row"><span class="field-name">comparison_items</span><span class="field-type">array[object]</span><span class="field-desc">feature_name, reference_expectation, observed, correspondence (matches / partial / differs / cannot_determine)</span></div>
+        <div class="field-row"><span class="field-name">overall_correspondence</span><span class="field-type">string enum</span><span class="field-desc">strong / partial / limited / insufficient_evidence</span></div>
+      </div>
+    </div>
+
+    <div class="report-card">
+      <div class="report-card-head"><span class="report-card-num">S6</span><span class="report-card-title">Confidence scores</span><span class="report-card-badge badge-always">Always present</span></div>
+      <div class="report-card-body">
+        <p>Numeric confidence scores (0.0–1.0) for each major claim the AI makes. Lower scores appear with explicit uncertainty language in the rendered report. Scores below 0.4 trigger a recommendation to dispatch an inspector.</p>
+        <div class="field-row"><span class="field-name">scene_description_confidence</span><span class="field-type">float 0–1</span><span class="field-desc">How clearly visible the site conditions are</span></div>
+        <div class="field-row"><span class="field-name">milestone_assessment_confidence</span><span class="field-type">float 0–1</span><span class="field-desc">How confidently the milestone can be assessed</span></div>
+        <div class="field-row"><span class="field-name">reference_comparison_confidence</span><span class="field-type">float 0–1 | null</span><span class="field-desc">Null if no reference. Quality of comparison possible.</span></div>
+        <div class="field-row"><span class="field-name">overall_confidence</span><span class="field-type">float 0–1</span><span class="field-desc">Weighted composite. Drives the summary badge colour.</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 05 SYSTEM PROMPT -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <span class="section-title">System prompt design</span>
+  </div>
+  <p class="prose">The system prompt is assembled dynamically per submission. Static sections are cached; variable sections (milestone, reference context, phase history) are injected at runtime.</p>
+
+  <div class="prompt-block">
+    <span class="lang-tag">SYSTEM PROMPT</span>
+    <pre><span class="c-head">## ROLE</span>
+You are a construction progress analyst for a diaspora construction
+monitoring application. You help Nigerians living abroad track building
+projects back home by analysing photos submitted from the site.
+
+<span class="c-head">## AUDIENCE</span>
+Your report is read by the diaspora owner — a non-technical person who
+is emotionally invested in this project. Write clearly, avoid jargon,
+and never present uncertain observations as facts.
+
+<span class="c-head">## CONTEXT FOR THIS SUBMISSION</span>
+Project:          {project_name}
+Current milestone: {milestone_label} — {milestone_description}
+Completed phases:  {phase_history_list}
+Submission date:   {submission_date}
+Reference files:   {reference_summary} <span class="c-comment">// e.g. "floor plan (PDF, ground floor) + 3D render (front elevation)"</span>
+
+<span class="c-head">## IMAGE ORDER</span>
+Images are provided in this order:
+  1. Submission photo 1 of {n}
+  ... (all submission photos)
+  {n+1}. Floor plan — ground floor [IF PROVIDED]
+  {n+2}. 3D render — front elevation [IF PROVIDED]
+  ... (all reference images, labelled)
+
+<span class="c-head">## ANALYSIS INSTRUCTIONS</span>
+
+1. SCENE DESCRIPTION
+   Describe what you can see across all submission photos. Be specific
+   about visible construction elements. Note worker presence, materials,
+   and site conditions. Do not describe what you expect — only what is
+   visible.
+
+2. MILESTONE ASSESSMENT
+   State whether what is visible is consistent with the declared
+   milestone. If it appears inconsistent, describe the discrepancy
+   factually without implying deception. Use phrases like "the photos
+   appear to show" not "the photos prove."
+
+3. ANOMALY DETECTION
+   Flag anything unusual: unfinished work at visible edges, materials
+   that appear inconsistent with this phase, apparent site inactivity,
+   water pooling, structural elements that appear misaligned. For each
+   anomaly, generate a plain-language question the owner could ask
+   their proxy. Rate severity: low (aesthetic), medium (worth monitoring),
+   high (warrants immediate query or inspection).
+   ALSO note positive observations — things that look correct.
+
+4. LIMITATIONS
+   Be explicit about what cannot be determined from these photos. Always
+   include at least 3 items. Never omit this section.
+
+5. REFERENCE COMPARISON [ONLY IF REFERENCE FILES PROVIDED]
+   Compare specific visible features against the reference material.
+   For each comparison, state what the reference shows, what you observe,
+   and your assessment of correspondence. Use: matches / partial / differs
+   / cannot_determine. Never guess at dimensions or structural compliance.
+
+6. CONFIDENCE SCORES
+   Score each section 0.0–1.0. Consider photo quality, angle coverage,
+   lighting, and the complexity of what is being assessed.
+
+<span class="c-head">## CALIBRATION RULES</span>
+- Never use the words "fraud", "theft", "cheating", or "lying"
+- Never make structural safety assessments
+- Never state that work is definitely complete or definitely not complete
+- Always qualify claims about internal/hidden elements (e.g. "the exterior
+  of the column appears complete; the internal reinforcement cannot be
+  assessed from these photos")
+- If a photo is too blurry, dark, or distant to analyse, say so explicitly
+  in the photo_quality_issues field
+
+<span class="c-head">## OUTPUT FORMAT</span>
+Return ONLY valid JSON matching the schema below. No preamble, no
+explanation, no markdown fences. Your entire response must be parseable
+JSON.
+
+{schema_definition}</pre>
+  </div>
+</div>
+
+<!-- 06 CONFIDENCE MODEL -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <span class="section-title">Confidence scoring model</span>
+  </div>
+  <p class="prose">Confidence scores drive visual treatment in the rendered report and determine whether an inspector dispatch prompt is shown. They are AI-generated but clamped and validated server-side.</p>
+  <div class="conf-grid">
+    <div class="conf-card">
+      <div class="conf-label">0.8 – 1.0  High confidence</div>
+      <div class="conf-bar-wrap"><div class="conf-bar" style="width:90%;background:var(--teal);"></div></div>
+      <div class="conf-desc">Clear photos, good coverage, visible elements match expectations. Report rendered with solid colours and direct language.</div>
+    </div>
+    <div class="conf-card">
+      <div class="conf-label">0.55 – 0.79  Moderate confidence</div>
+      <div class="conf-bar-wrap"><div class="conf-bar" style="width:65%;background:var(--amber);"></div></div>
+      <div class="conf-desc">Some photo quality issues or partial coverage. Report renders with amber accents and hedged language ("appears to show").</div>
+    </div>
+    <div class="conf-card">
+      <div class="conf-label">0.4 – 0.54  Low confidence</div>
+      <div class="conf-bar-wrap"><div class="conf-bar" style="width:45%;background:#F97316;"></div></div>
+      <div class="conf-desc">Poor photos, limited angles, or complex milestone. Inspector dispatch prompt shown. Language uses strong qualifiers throughout.</div>
+    </div>
+    <div class="conf-card">
+      <div class="conf-label">0.0 – 0.39  Very low confidence</div>
+      <div class="conf-bar-wrap"><div class="conf-bar" style="width:20%;background:var(--red);"></div></div>
+      <div class="conf-desc">Analysis severely limited by photo quality. Description-only report. Inspector dispatch strongly recommended. Owner prompted to request better photos.</div>
+    </div>
+  </div>
+  <p class="prose" style="margin-top:1rem;">The <strong>overall_confidence</strong> composite is weighted: scene description (0.2) + milestone assessment (0.4) + reference comparison (0.4 if available, else 0). If no reference exists, milestone assessment is weighted 0.6 and scene description 0.4.</p>
+</div>
+
+<!-- 07 REPORT UI -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <span class="section-title">Report UI &amp; owner experience</span>
+  </div>
+  <p class="prose">The report renders as a card on the owner's submission detail screen. It sits below the submitted photos. The owner sees the photos first, then scrolls to the AI report. The report is always labelled as AI-generated.</p>
+
+  <div class="report-mockup">
+    <div class="mockup-topbar">
+      <div class="mockup-dots"><div class="mockup-dot"></div><div class="mockup-dot"></div><div class="mockup-dot"></div></div>
+      <div class="mockup-title-bar">AI Analysis Report — Owner view</div>
+    </div>
+    <div class="mockup-body">
+      <div class="m-project">ADEKUNLE RESIDENCE · ROOFING — TIMBER FRAME</div>
+      <div class="m-title">AI Analysis Report</div>
+      <div class="m-sub">Submitted 14 May 2026 · Analysed against floor plan + 3D render · 4 photos</div>
+
+      <div class="m-score-row">
+        <div class="m-score-card">
+          <div class="m-score-val score-amber">0.71</div>
+          <div class="m-score-lbl">Overall</div>
+        </div>
+        <div class="m-score-card">
+          <div class="m-score-val score-green">0.88</div>
+          <div class="m-score-lbl">Scene clarity</div>
+        </div>
+        <div class="m-score-card">
+          <div class="m-score-val score-amber">0.65</div>
+          <div class="m-score-lbl">Milestone match</div>
+        </div>
+        <div class="m-score-card">
+          <div class="m-score-val score-amber">0.60</div>
+          <div class="m-score-lbl">Ref comparison</div>
+        </div>
+      </div>
+
+      <div class="m-section">
+        <div class="m-section-head">
+          <span class="m-section-num">S1</span>
+          <span class="m-section-title">What is visible on site</span>
+        </div>
+        <div class="m-content">
+          The site shows an active roofing phase. Timber wall plates are visible along the top of the block walls in photos 1 and 2. Rafters appear to be partially installed on the right-hand side of the structure. Bundles of additional timber are stacked near the left wall. No workers are visible in any photo; the site appears unoccupied at the time of capture.
+        </div>
+      </div>
+
+      <div class="m-section">
+        <div class="m-section-head">
+          <span class="m-section-num">S2</span>
+          <span class="m-section-title">Milestone assessment</span>
+          <span class="m-section-badge" style="background:var(--amber-lt);color:var(--amber-dk);">Partially consistent</span>
+        </div>
+        <div class="m-content">
+          <div class="m-finding"><div class="m-dot dot-ok"></div><div>Wall plates appear correctly installed along both visible wall runs</div></div>
+          <div class="m-finding"><div class="m-dot dot-warn"></div><div>Rafter installation appears approximately 30–40% complete — only the right side is visible with timbers in place</div></div>
+          <div class="m-finding"><div class="m-dot dot-warn"></div><div>The left-side rafter run is not visible in any photo — coverage is incomplete</div></div>
+        </div>
+      </div>
+
+      <div class="m-section">
+        <div class="m-section-head">
+          <span class="m-section-num">S3</span>
+          <span class="m-section-title">Observations worth noting</span>
+        </div>
+        <div class="m-content">
+          <div class="m-finding"><div class="m-dot dot-warn"></div><div>Photo 3 appears to show a gap in the wall plate alignment above the rear window opening — worth asking your proxy to photograph this area more closely</div></div>
+          <div class="m-finding"><div class="m-dot dot-ok"></div><div>Timber quality appears consistent and well-seasoned in the visible sections</div></div>
+          <div class="m-finding"><div class="m-dot dot-info"></div><div>Cannot determine ridge beam installation — no photo captures the roof apex</div></div>
+        </div>
+      </div>
+
+      <div class="m-section">
+        <div class="m-section-head">
+          <span class="m-section-num">S5</span>
+          <span class="m-section-title">Reference comparison</span>
+          <span class="m-section-badge" style="background:var(--purple-lt);color:var(--purple);">vs floor plan + render</span>
+        </div>
+        <div class="m-content">
+          <div class="m-finding"><div class="m-dot dot-ok"></div><div>Front elevation roofline pitch appears consistent with the 3D render</div></div>
+          <div class="m-finding"><div class="m-dot dot-ok"></div><div>Overall building footprint visible in photo 1 matches the drawn floor plan</div></div>
+          <div class="m-finding"><div class="m-dot dot-warn"></div><div>Cannot confirm rear extension roof — not visible in submitted photos</div></div>
+        </div>
+      </div>
+
+      <div class="m-section">
+        <div class="m-section-head">
+          <span class="m-section-num">S4</span>
+          <span class="m-section-title">What this analysis cannot determine</span>
+        </div>
+        <div class="m-content" style="background:#FEF2F2;border-left:2px solid var(--red);border-radius:0;">
+          <div class="m-finding"><div class="m-dot dot-err"></div><div>Structural integrity of rafter connections (not visible)</div></div>
+          <div class="m-finding"><div class="m-dot dot-err"></div><div>Timber treatment and preservative application</div></div>
+          <div class="m-finding"><div class="m-dot dot-err"></div><div>Left-side roof progress (no photos submitted for this area)</div></div>
+          <div class="m-finding"><div class="m-dot dot-err"></div><div>Ridge board installation and apex detail</div></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="m-footer">
+      <span class="m-footer-txt" style="font-size:11px;font-family:var(--ff-mono);">AI analysis · Not a structural assessment · Generated by DeepSeek</span>
+      <button class="m-btn m-btn-sec">Request better photos</button>
+      <button class="m-btn m-btn-primary">Dispatch inspector ↗</button>
+    </div>
+  </div>
+</div>
+
+<!-- 08 EDGE CASES -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <span class="section-title">Edge cases &amp; failure modes</span>
+  </div>
+  <div class="edge-grid">
+    <div class="edge-card">
+      <div class="edge-icon"><i class="ti ti-photo-off" aria-hidden="true" style="color:var(--red);font-size:20px;"></i></div>
+      <div class="edge-title">All photos unusable</div>
+      <div class="edge-desc">If every photo is too dark, blurry, or fails to load, the report is generated with confidence 0.1. Section S1 states "No usable images received." Owner prompted: "Ask your proxy to resubmit clearer photos." Submission flagged for re-upload request.</div>
+    </div>
+    <div class="edge-card">
+      <div class="edge-icon"><i class="ti ti-clock-exclamation" aria-hidden="true" style="color:var(--amber);font-size:20px;"></i></div>
+      <div class="edge-title">API timeout / model failure</div>
+      <div class="edge-desc">If the DeepSeek API call times out or returns an error, a second simplified call is made (text only, no images). If that also fails, a placeholder report is stored: "Analysis could not be completed for this submission. Photos are saved and visible above." Retried automatically after 30 minutes.</div>
+    </div>
+    <div class="edge-card">
+      <div class="edge-icon"><i class="ti ti-map-pin-off" aria-hidden="true" style="color:var(--purple);font-size:20px;"></i></div>
+      <div class="edge-title">Photos appear off-site</div>
+      <div class="edge-desc">If geotag coordinates are more than 500m from the registered site address, the report includes a flagged note: "These photos were taken approximately X km from the registered site location." The AI still analyses what it sees. The owner decides how to interpret the discrepancy.</div>
+    </div>
+    <div class="edge-card">
+      <div class="edge-icon"><i class="ti ti-file-shredder" aria-hidden="true" style="color:var(--muted);font-size:20px;"></i></div>
+      <div class="edge-title">Reference file unreadable</div>
+      <div class="edge-desc">If the PDF fails to rasterise or the reference image is corrupt, the report falls back to Type D (no reference) and notes: "Your uploaded floor plan could not be processed for this analysis." The submission is still analysed. Owner is prompted to re-upload the reference file.</div>
+    </div>
+    <div class="edge-card">
+      <div class="edge-icon"><i class="ti ti-json" aria-hidden="true" style="color:var(--blue);font-size:20px;"></i></div>
+      <div class="edge-title">Invalid JSON returned</div>
+      <div class="edge-desc">If the model returns malformed JSON (rare), the raw text is stored for debugging. A second call is made with a simpler prompt asking for plain text analysis. This plain text is wrapped in a minimal schema object and stored. Report renders in a "simplified mode" with a notice.</div>
+    </div>
+    <div class="edge-card">
+      <div class="edge-icon"><i class="ti ti-repeat" aria-hidden="true" style="color:var(--teal);font-size:20px;"></i></div>
+      <div class="edge-title">Duplicate submission photos</div>
+      <div class="edge-desc">Server-side perceptual hash check before the API call. If two photos are >95% identical, one is deduplicated and a note added: "1 duplicate photo was excluded from analysis." This prevents inflated confidence from repeated near-identical images.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 09 API STRUCTURE -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">09</span>
+    <span class="section-title">API call structure</span>
+  </div>
+  <p class="prose">A single <code style="font-family:var(--ff-mono);font-size:12px;background:var(--slate);padding:1px 5px;border-radius:3px;">POST /v1/messages</code> call with vision. All images are base64-encoded. The message array contains the system prompt followed by a single user turn containing all images and the analysis instruction.</p>
+
+  <div class="api-block">
+    <span class="lang-tag">JavaScript / Node</span>
+    <pre><span class="k">const</span> analysisPayload = {
+  <span class="k">model</span>: <span class="s">"deepseek-sonnet-4-20250514"</span>,
+  <span class="k">max_tokens</span>: <span class="v">1800</span>,
+  <span class="k">temperature</span>: <span class="v">0</span>,
+  <span class="k">system</span>: buildSystemPrompt({
+    projectName:        submission.projectName,
+    milestone:          submission.milestoneLabel,
+    milestoneDesc:      submission.milestoneDescription,
+    phaseHistory:       project.completedPhases,
+    referenceFileSummary: describeReferenceFiles(project.referenceFiles),
+    schemaDefinition:   REPORT_SCHEMA_JSON,
+  }),
+  <span class="k">messages</span>: [{
+    <span class="k">role</span>: <span class="s">"user"</span>,
+    <span class="k">content</span>: [
+      <span class="c">// Submission photos first, labelled</span>
+      ...submission.photos.map((photo, i) => ({
+        <span class="k">type</span>: <span class="s">"image"</span>,
+        <span class="k">source</span>: {
+          <span class="k">type</span>: <span class="s">"base64"</span>,
+          <span class="k">media_type</span>: photo.mimeType,
+          <span class="k">data</span>: photo.base64,
+        },
+      })),
+      <span class="c">// Reference files after, each with a text label</span>
+      ...project.referenceFiles.flatMap((ref, i) => [
+        { <span class="k">type</span>: <span class="s">"text"</span>, <span class="k">text</span>: <span class="s">`Reference file ${i+1}: ${ref.label}`</span> },
+        { <span class="k">type</span>: <span class="s">"image"</span>, <span class="k">source</span>: { <span class="k">type</span>: <span class="s">"base64"</span>, <span class="k">media_type</span>: ref.mimeType, <span class="k">data</span>: ref.base64 } },
+      ]),
+      <span class="c">// Final instruction turn</span>
+      {
+        <span class="k">type</span>: <span class="s">"text"</span>,
+        <span class="k">text</span>: <span class="s">`Analyse the ${submission.photos.length} submission photo(s) above`</span>
+             + (project.referenceFiles.length > 0
+               ? <span class="s">` against the ${project.referenceFiles.length} reference file(s) provided.`</span>
+               : <span class="s">`. No reference files are available for this project.`</span>)
+             + <span class="s">` Return only valid JSON matching the schema in your instructions.`</span>,
+      },
+    ],
+  }],
+};
+
+<span class="k">const</span> response = <span class="p">await</span> fetch(<span class="s">"https://api.anthropic.com/v1/messages"</span>, {
+  <span class="k">method</span>: <span class="s">"POST"</span>,
+  <span class="k">headers</span>: { <span class="s">"Content-Type"</span>: <span class="s">"application/json"</span> },
+  <span class="k">body</span>: JSON.stringify(analysisPayload),
+});
+
+<span class="k">const</span> raw = <span class="p">await</span> response.json();
+<span class="k">const</span> reportJson = JSON.parse(raw.content[<span class="v">0</span>].text);
+<span class="p">await</span> validateAndStore(submission.id, reportJson);</pre>
+  </div>
+</div>
+
+<!-- 10 CONSTRAINTS -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">10</span>
+    <span class="section-title">Constraints &amp; honest limitations</span>
+  </div>
+  <div class="constraint-grid">
+    <div class="constraint-card c-warn">
+      <div class="constraint-title">Latency: 15–45 seconds</div>
+      <div class="constraint-desc">Vision API calls with multiple large images take time. The report is async — shown as "in progress" on the dashboard. Push notification sent when complete. Never block the proxy submission flow on AI response.</div>
+    </div>
+    <div class="constraint-card c-warn">
+      <div class="constraint-title">Cost per analysis: ~$0.04–0.12</div>
+      <div class="constraint-desc">Estimated based on ~10–15 images at Sonnet pricing. With 4 submissions/month per project, this is ~$0.20–0.50/project/month. Factored into the subscription pricing — not a per-use charge visible to owners.</div>
+    </div>
+    <div class="constraint-card c-err">
+      <div class="constraint-title">Cannot assess structural integrity</div>
+      <div class="constraint-desc">Rebar spacing, concrete grade, load calculations, footing depth — none of these are visible in photos and the AI is explicitly instructed never to comment on them. This is a fundamental ceiling, not a future feature.</div>
+    </div>
+    <div class="constraint-card c-err">
+      <div class="constraint-title">Cannot detect staged photos</div>
+      <div class="constraint-desc">If a proxy submits photos taken previously, the AI cannot reliably detect this beyond obvious inconsistencies (different scaffolding, different vegetation state). Geotag verification is the primary defence; the AI is a secondary layer, not the fraud prevention mechanism.</div>
+    </div>
+    <div class="constraint-card c-info">
+      <div class="constraint-title">Drawing interpretation is approximate</div>
+      <div class="constraint-desc">The AI reads floor plans visually, not as CAD data. It identifies room shapes, opening positions, and general layout — not dimensions. Scale and precise measurements are not assessed. This must be stated clearly in the report and in owner onboarding.</div>
+    </div>
+    <div class="constraint-card c-ok">
+      <div class="constraint-title">Report always generated</div>
+      <div class="constraint-desc">Even with poor photos and no reference material, a description-only report is generated. The owner always receives something useful from every proxy submission, even if it is only "the site appears active and the following materials are visible."</div>
+    </div>
+  </div>
+</div>
+
+<!-- 11 PROXY VIEW -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">11</span>
+    <span class="section-title">What the proxy sees (and does not see)</span>
+  </div>
+  <p class="prose">The proxy sees only a submission confirmation screen. They never see the AI report. This is a deliberate product decision with three reasons: it prevents the proxy feeling surveilled or critiqued, it avoids confusion ("the AI said my photos were blurry"), and it preserves the owner's information advantage when having conversations with the proxy about what they've observed.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:1rem;">
+    <div style="border:0.5px solid var(--border);border-radius:6px;padding:1rem;background:#fff;">
+      <div style="font-size:11px;font-family:var(--ff-mono);color:var(--teal);margin-bottom:8px;">PROXY SEES</div>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#334155;line-height:1.6;">
+        <div style="display:flex;gap:8px;"><i class="ti ti-circle-check" style="color:var(--teal);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i><span>"Update submitted successfully"</span></div>
+        <div style="display:flex;gap:8px;"><i class="ti ti-circle-check" style="color:var(--teal);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i><span>Their own submission history (dates, milestone tags, photo count)</span></div>
+        <div style="display:flex;gap:8px;"><i class="ti ti-circle-check" style="color:var(--teal);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i><span>Milestone checklist — what's been submitted, what's still outstanding</span></div>
+        <div style="display:flex;gap:8px;"><i class="ti ti-circle-check" style="color:var(--teal);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i><span>If the owner requests better photos — a simple nudge notification with the area to focus on (no AI language, framed as coming from the owner)</span></div>
+      </div>
+    </div>
+    <div style="border:0.5px solid var(--border);border-radius:6px;padding:1rem;background:#fff;">
+      <div style="font-size:11px;font-family:var(--ff-mono);color:var(--red);margin-bottom:8px;">PROXY DOES NOT SEE</div>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#334155;line-height:1.6;">
+        <div style="display:flex;gap:8px;"><i class="ti ti-circle-x" style="color:var(--red);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i><span>AI report or any AI-generated language</span></div>
+        <div style="display:flex;gap:8px;"><i class="ti ti-circle-x" style="color:var(--red);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i><span>Confidence scores</span></div>
+        <div style="display:flex;gap:8px;"><i class="ti ti-circle-x" style="color:var(--red);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i><span>Anomaly flags or concern ratings</span></div>
+        <div style="display:flex;gap:8px;"><i class="ti ti-circle-x" style="color:var(--red);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i><span>Reference comparison results</span></div>
+        <div style="display:flex;gap:8px;"><i class="ti ti-circle-x" style="color:var(--red);flex-shrink:0;margin-top:2px;" aria-hidden="true"></i><span>Inspector recommendations</span></div>
+      </div>
+    </div>
+  </div>
+</div>

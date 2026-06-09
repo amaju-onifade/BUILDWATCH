@@ -6,9 +6,9 @@
 }
 
 .label {
-  font-size: var(--typography-label-medium-font-size);
-  line-height: var(--typography-label-medium-line-height);
-  font-weight: var(--typography-label-medium-font-weight);
+  font-size: var(--typography-label-large-font-size);
+  line-height: var(--typography-label-large-line-height);
+  font-weight: var(--typography-label-large-font-weight);
   color: var(--color-on-surface-variant);
   margin-bottom: 6px;
 }

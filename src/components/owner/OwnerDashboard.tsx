@@ -1,7 +1,8 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { AlertTriangle } from 'lucide-react'
+import Link from 'next/link'
+import { AlertTriangle, UserPlus } from 'lucide-react'
 import Sidebar from './components/Sidebar'
 import Topbar from './components/Topbar'
 import HeartbeatBanner from './components/HeartbeatBanner'
@@ -17,6 +18,7 @@ import type { HeartbeatState } from './components/HeartbeatBanner'
 import type { StatVariant } from './components/StatCard'
 
 export interface DashboardData {
+  projectId: string
   projectName: string
   daysSinceLastUpdate: number
   lastSubmittedBy: string
@@ -42,9 +44,10 @@ function getHeartbeatState(days: number): HeartbeatState {
 
 export type OwnerDashboardProps = {
   data: DashboardData
+  projects?: { id: string; name: string }[]
 }
 
-export default function OwnerDashboard({ data }: OwnerDashboardProps) {
+export default function OwnerDashboard({ data, projects }: OwnerDashboardProps) {
   const router = useRouter()
   const heartbeatState = getHeartbeatState(data.daysSinceLastUpdate)
   const warningVariant: StatVariant = 'warning'
@@ -73,9 +76,13 @@ export default function OwnerDashboard({ data }: OwnerDashboardProps) {
 
   return (
     <div className={styles.shell}>
-      <Sidebar activeItem="Overview" projectName={data.projectName} />
+      <Sidebar activeItem="Overview" projectName={data.projectName} projects={projects} />
       <div className={styles.mainArea}>
-        <Topbar title="Overview" onNotificationClick={handleNotifications} />
+        <Topbar title="Overview" onNotificationClick={handleNotifications}>
+          <Link href="/dashboard" className={styles.inviteBtn}>
+            <UserPlus size={14} /> Invite team
+          </Link>
+        </Topbar>
         <div className={styles.content}>
           {/* Above the fold — all 4 elements visible on 1280px */}
           <HeartbeatBanner

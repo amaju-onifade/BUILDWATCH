@@ -13,6 +13,7 @@ const MOCK_MILESTONE = {
   projectId: 'proj_001',
   name: 'Foundation',
   status: 'pending',
+  order: 1,
   project: { ownerId: 'owner_001' },
 } as any
 
@@ -105,5 +106,32 @@ describe('updateMilestoneBudget', () => {
     if (!result.ok) {
       expect(result.code).toBe('INTERNAL_ERROR')
     }
+  })
+
+  it('auto-unlocks next milestone on approval', async () => {
+    prismaMock.milestones.findFirst.mockResolvedValue(MOCK_MILESTONE)
+
+    prismaMock.$transaction.mockImplementation(async (cb) => await cb(prismaMock))
+
+    prismaMock.milestones.findFirst
+      .mockResolvedValueOnce(MOCK_MILESTONE)           // first call: confirm ownership
+      .mockResolvedValueOnce({ id: 'ms_002', name: 'Walling' } as any) // second call: find next milestone
+
+    const result = await updateMilestoneBudget('ms_001', { ...VALID_INPUT, status: 'approved' }, 'owner_001')
+
+    expect(result.ok).toBe(true)
+    expect(prismaMock.milestones.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'ms_002' },
+        data: { status: 'pending' },
+      })
+    )
+    expect(prismaMock.auditEvents.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          eventType: 'MILESTONE_UNLOCKED',
+        }),
+      })
+    )
   })
 })

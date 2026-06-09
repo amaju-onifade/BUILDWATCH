@@ -11,6 +11,12 @@ export const metadata: Metadata = {
 export default async function AuditPage() {
   const user = await requirePageUser()
 
+  const allProjects = await prisma.projects.findMany({
+    where: { ownerId: user.userId },
+    select: { id: true, name: true },
+    orderBy: { createdAt: 'desc' },
+  })
+
   const projects = await prisma.projects.findMany({
     where: { ownerId: user.userId },
     orderBy: { createdAt: 'desc' },
@@ -45,11 +51,12 @@ export default async function AuditPage() {
       proxyName={proxyName}
       entries={submissions.map(s => ({
         title: `${s.photos.length} photos submitted — ${s.milestone.name}`,
-        meta: `${s.createdAt.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })} · ${s.createdAt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })} · Delivered ✓`,
+        meta: `${s.createdAt.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })} · ${s.createdAt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })} · Delivered`,
         gps: 'GPS confirmed',
         thumbnails: s.photos.length,
       }))}
       visitCount={submissions.length}
+      projects={allProjects}
     />
   )
 }

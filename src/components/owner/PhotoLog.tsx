@@ -61,13 +61,66 @@ export default function PhotoLog({
   const activeAiReport = latest?.aiReport && hasContent(latest.aiReport) ? latest.aiReport : FALLBACK_AI_REPORT
 
   const handleExportPdf = () => {
+    const report = latest?.aiReport
+    if (!report) return
+
     const doc = new jsPDF()
+    let y = 30
+    const MARGIN = 20
+    const WIDTH = 170
+    const LINE_HEIGHT = 5
+
     doc.setFontSize(16)
-    doc.text(`AI Report — ${latest?.milestoneName ?? 'Submission'}`, 20, 30)
+    doc.text(`AI Report — ${latest?.milestoneName ?? 'Submission'}`, MARGIN, y)
+    y += 10
+
     doc.setFontSize(10)
-    const lines = doc.splitTextToSize(latest?.aiReport?.s1_visible ?? '', 170)
-    doc.text('What is visible:', 20, 45)
-    doc.text(lines, 20, 53)
+    doc.text('What is visible:', MARGIN, y)
+    y += 6
+    const s1 = doc.splitTextToSize(report.s1_visible, WIDTH)
+    doc.text(s1, MARGIN, y)
+    y += s1.length * LINE_HEIGHT + 4
+
+    doc.text('Stage assessment', MARGIN, y)
+    y += 6
+    doc.setFontSize(8)
+    doc.text(`Confidence: ${report.s2_confidence}`, MARGIN, y)
+    y += 4
+    doc.setFontSize(10)
+    const s2 = doc.splitTextToSize(report.s2_assessment, WIDTH)
+    doc.text(s2, MARGIN, y)
+    y += s2.length * LINE_HEIGHT + 4
+
+    doc.text('Anomalies & concerns', MARGIN, y)
+    y += 6
+    if (report.s3_anomalies.length > 0) {
+      report.s3_anomalies.forEach(a => {
+        const lines = doc.splitTextToSize(`• ${a}`, WIDTH)
+        doc.text(lines, MARGIN, y)
+        y += lines.length * LINE_HEIGHT
+      })
+    } else {
+      doc.text('No anomalies detected.', MARGIN, y)
+    }
+    y += 4
+
+    doc.text('Limitations', MARGIN, y)
+    y += 6
+    const s4 = doc.splitTextToSize(report.s4_limitations, WIDTH)
+    doc.text(s4, MARGIN, y)
+    y += s4.length * LINE_HEIGHT + 4
+
+    if (report.s5_reference) {
+      if (y > 260) { doc.addPage(); y = 30 }
+      doc.text('Reference comparison', MARGIN, y)
+      y += 6
+      const s5 = doc.splitTextToSize(report.s5_reference, WIDTH)
+      doc.text(s5, MARGIN, y)
+    }
+
+    doc.setFontSize(8)
+    doc.text('AI-generated report — Not a professional assessment.', MARGIN, y + 20)
+
     doc.save('ai-report-photo-log.pdf')
   }
 

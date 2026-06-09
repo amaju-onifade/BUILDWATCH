@@ -29,6 +29,7 @@ export async function updateMilestoneStatus(
         id: true,
         status: true,
         name: true,
+        order: true,
       }
     })
 
@@ -46,12 +47,51 @@ export async function updateMilestoneStatus(
     // 3. Atomically update status
     const updated = await prisma.$transaction(async (tx) => {
       const updateData: any = { status: newStatus }
+      const eventDate = new Date()
 
-      // If approving, set timestamps
+      // If approving, set timestamps and auto-unlock next milestone
       if (newStatus === 'approved') {
-        updateData.approvedAt = new Date()
-        updateData.completedAt = new Date()
+        updateData.approvedAt = eventDate
+        updateData.completedAt = eventDate
         updateData.approvedById = ownerId
+
+        const nextMilestone = await tx.milestones.findFirst({
+          where: {
+            projectId,
+            order: milestone.order + 1,
+            status: { in: ['pending', 'locked'] },
+          },
+          select: { id: true, name: true },
+        })
+
+        if (nextMilestone) {
+          await tx.milestones.update({
+            where: { id: nextMilestone.id },
+            data: { status: 'pending' },
+          })
+
+          await tx.auditEvents.create({
+            data: {
+              id: nanoid(),
+              eventType: 'MILESTONE_UNLOCKED',
+              actorId: ownerId,
+              resourceId: nextMilestone.id,
+              resourceType: 'milestone',
+              projectId,
+              metadata: {
+                milestoneName: nextMilestone.name,
+                unlockedByApprovalOf: milestone.name,
+              },
+              createdAt: eventDate,
+              signature: signAuditEvent({
+                actorId: ownerId,
+                eventType: 'MILESTONE_UNLOCKED',
+                resourceId: nextMilestone.id,
+                createdAt: eventDate,
+              }),
+            } as any,
+          })
+        }
       }
 
       const m = await tx.milestones.update({
@@ -59,8 +99,6 @@ export async function updateMilestoneStatus(
         data: updateData,
       })
 
-      // Audit event
-      const eventDate = new Date()
       await tx.auditEvents.create({
         data: {
           id: nanoid(),

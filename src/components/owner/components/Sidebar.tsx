@@ -1,18 +1,18 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
   LayoutDashboard,
   ClipboardList,
-  Image,
+  Image as ImageIcon,
   Wallet,
   ScrollText,
   Search,
   Settings,
   ChevronDown,
-  LogOut,
+  ChevronUp,
+  Plus,
 } from 'lucide-react'
 import { LogoutButton } from '@/components/LogoutButton'
 import styles from './Sidebar.module.css'
@@ -20,7 +20,7 @@ import styles from './Sidebar.module.css'
 const ICONS: Record<string, React.ReactNode> = {
   LayoutDashboard: <LayoutDashboard size={16} />,
   ClipboardList: <ClipboardList size={16} />,
-  Image: <Image size={16} />,
+  Image: <ImageIcon size={16} />,
   Wallet: <Wallet size={16} />,
   ScrollText: <ScrollText size={16} />,
   Search: <Search size={16} />,
@@ -52,10 +52,6 @@ const setupNavItems: NavItem[] = [
   { label: 'Inspectors', icon: 'Search', href: '/dashboard/inspectors' },
 ]
 
-const bottomNav: NavItem[] = [
-  { label: 'Settings', icon: 'Settings', href: '/dashboard/settings' },
-]
-
 export type SidebarProps = {
   activeItem: string
   projectName?: string
@@ -64,6 +60,7 @@ export type SidebarProps = {
   userPlan?: string
   mode?: 'dashboard' | 'setup'
   disabledItems?: string[]
+  projects?: { id: string; name: string }[]
 }
 
 export default function Sidebar({
@@ -74,27 +71,22 @@ export default function Sidebar({
   userPlan = 'Standard Plan',
   mode = 'dashboard',
   disabledItems = [],
+  projects: initialProjects,
 }: SidebarProps) {
-  const router = useRouter()
-  const [projectOpen, setProjectOpen] = useState(false)
-  const projectRef = useRef<HTMLDivElement>(null)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const [projects, setProjects] = useState<{ id: string; name: string }[]>(initialProjects ?? [])
   const navItems = mode === 'setup' ? setupNavItems : defaultNavItems
 
-  const projects = [
-    { id: 'p1', name: 'Village Home — Ikeja' },
-    { id: 'p2', name: 'Shoprite — Lekki' },
-    { id: 'p3', name: 'School Block — Aba' },
-  ]
-
   useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (projectRef.current && !projectRef.current.contains(e.target as Node)) {
-        setProjectOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
-  }, [])
+    fetch('/api/projects')
+      .then(r => r.ok ? r.json() : { data: [] })
+      .then(res => {
+        if (Array.isArray(res.data)) {
+          setProjects(res.data)
+        }
+      })
+      .catch(() => {})
+  }, [projectName])
 
   return (
     <aside className={styles.sidebar}>
@@ -103,31 +95,6 @@ export default function Sidebar({
           Build<span className={styles.logoAccent}>Watch</span>
         </span>
       </Link>
-
-      <div className={styles.projectSelectorWrapper} ref={projectRef}>
-        <button
-          type="button"
-          className={styles.projectSelector}
-          onClick={() => setProjectOpen(o => !o)}
-        >
-          <span className={styles.projectName}>{projectName}</span>
-          <ChevronDown size={12} className={styles.chevron} data-open={projectOpen} />
-        </button>
-        {projectOpen && (
-          <div className={styles.projectMenu}>
-            {projects.map(p => (
-              <Link
-                key={p.id}
-                href={`/projects/${p.id}`}
-                className={styles.projectItem}
-                onClick={() => setProjectOpen(false)}
-              >
-                {p.name}
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
 
       <nav className={styles.nav}>
         {mode === 'dashboard' && <div className={styles.navSection}>Main</div>}
@@ -146,28 +113,40 @@ export default function Sidebar({
             </Link>
           )
         })}
-        <div className={styles.navSpacer} />
-        {bottomNav.map((item) => (
+        <div className={styles.navSection}>Projects ({projects.length})</div>
+        {projects.map(p => (
           <Link
-            key={item.label}
-            href={item.href}
-            className={`${styles.navItem} ${activeItem === item.label ? styles.active : ''}`}
+            key={p.id}
+            href={`/projects/${p.id}`}
+            className={`${styles.navItem} ${projectName === p.name ? styles.active : ''}`}
           >
-            <span className={styles.navIcon}>{item.icon}</span>
-            <span>{item.label}</span>
+            <span>{p.name}</span>
           </Link>
         ))}
+        <Link href="/projects/new" className={styles.navItem}>
+          <Plus size={16} />
+          <span>Create New Project</span>
+        </Link>
+        <div className={styles.navSpacer} />
       </nav>
 
       <div className={styles.footer}>
-        <div className={styles.userRow}>
-          <div className={styles.avatar}>{userInitials}</div>
+        <button type="button" className={styles.userRow} onClick={() => setUserMenuOpen(v => !v)}>
+          <div className={styles.avatar}>{userInitials || '?'}</div>
           <div className={styles.userInfo}>
-            <div className={styles.userName}>{userName}</div>
+            <div className={styles.userName}>{userName || 'User'}</div>
             <div className={styles.userPlan}>{userPlan}</div>
           </div>
-        </div>
-        <LogoutButton className={styles.logoutBtn} />
+          {userMenuOpen ? <ChevronUp size={14} className={styles.chevronIcon} /> : <ChevronDown size={14} className={styles.chevronIcon} />}
+        </button>
+        {userMenuOpen && (
+          <div className={styles.userMenu}>
+            <Link href="/dashboard/settings" className={styles.userMenuItem} onClick={() => setUserMenuOpen(false)}>
+              <Settings size={14} /> Settings
+            </Link>
+            <LogoutButton className={styles.userMenuLogout} />
+          </div>
+        )}
       </div>
     </aside>
   )

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { jsPDF } from 'jspdf'
-import { Camera, Lock } from 'lucide-react'
+import { Camera, Lock, MapPin } from 'lucide-react'
 import Sidebar from './components/Sidebar'
 import Topbar from './components/Topbar'
 import styles from './ProxyAuditTrail.module.css'
@@ -22,6 +22,7 @@ export type ProxyAuditTrailProps = {
   proxyName?: string
   entries?: AuditEntry[]
   visitCount?: number
+  projects?: { id: string; name: string }[]
 }
 
 export default function ProxyAuditTrail({
@@ -32,6 +33,7 @@ export default function ProxyAuditTrail({
   proxyName = 'Proxy',
   entries = [],
   visitCount = 0,
+  projects,
 }: ProxyAuditTrailProps) {
   const initials = proxyName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'PR'
 
@@ -58,7 +60,7 @@ export default function ProxyAuditTrail({
 
   return (
     <div className={styles.shell}>
-      <Sidebar activeItem="Proxy Audit Trail" projectName={projectName} userName={userName} userInitials={userInitials} userPlan={userPlan} />
+      <Sidebar activeItem="Proxy Audit Trail" projectName={projectName} userName={userName} userInitials={userInitials} userPlan={userPlan} projects={projects} />
       <div className={styles.mainArea}>
         <Topbar title="Proxy Audit Trail">
           <button type="button" className={styles.topBtn} onClick={handleExportDossier}>
@@ -89,11 +91,11 @@ export default function ProxyAuditTrail({
             ) : (
               entries.map((entry, i) => (
                 <div key={i} className={styles.auditRow}>
-                  <span className={styles.auditIcon}>📷</span>
+                  <span className={styles.auditIcon}><Camera size={16} /></span>
                   <div className={styles.auditContent}>
                     <div className={styles.auditTitle}>{entry.title}</div>
                     <div className={styles.auditMeta}>{entry.meta}</div>
-                    <div className={styles.auditGps}>📍 {entry.gps}</div>
+                    <div className={styles.auditGps}><MapPin size={12} /> {entry.gps}</div>
                   </div>
                   {entry.thumbnails > 0 && (
                     <div className={styles.thumbStrip}>

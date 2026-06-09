@@ -154,7 +154,7 @@
 .featureGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-xl);
+  gap: var(--space-2xl);
   max-width: 960px;
   margin: 0 auto;
 }
